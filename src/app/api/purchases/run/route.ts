@@ -12,7 +12,7 @@ import {
   verifyDelivery,
 } from "@/lib/purchasing";
 import { planPurchase } from "@/lib/agent";
-import { simulateMonadX402Purchase } from "@/lib/monad";
+import { purchaseDeliveryVerification } from "@/lib/monad";
 
 const approvedVendorIds = new Set(["clay-workflow", "apollo-export"]);
 
@@ -199,14 +199,24 @@ export async function POST(request: Request) {
       status: "verified",
     });
 
-    const monad = simulateMonadX402Purchase();
-    timeline.push({
-      id: "monad",
-      title: "Monad x402 test payment simulated",
-      detail: `${monad.amount} ${monad.asset} purchased the delivery-quality report on ${monad.network}. No real funds were used.`,
-      status: "verified",
-      providerId: monad.receiptId,
-    });
+    let monad = null;
+    if (liveRain) {
+      monad = await purchaseDeliveryVerification(new URL(request.url).origin);
+      timeline.push({
+        id: "monad",
+        title: "Monad x402 payment settled",
+        detail: `${monad.amount} ${monad.asset} purchased the delivery-quality report on ${monad.network}. The facilitator paid the gas.`,
+        status: "verified",
+        providerId: monad.transactionHash,
+      });
+    } else {
+      timeline.push({
+        id: "monad-preview",
+        title: "Monad x402 payment ready",
+        detail: "Live mode will settle 0.001 test USDC for the delivery-quality report without requiring MON for gas.",
+        status: "complete",
+      });
+    }
 
     return Response.json({
       mandate,

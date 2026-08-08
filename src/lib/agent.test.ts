@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { planPurchase } from "./agent";
-import { simulateMonadX402Purchase } from "./monad";
+import { getMonadBuyerPrivateKey, getMonadProviderAddress } from "./monad";
 
 const originalOpenAIKey = process.env.OPENAI_API_KEY;
 const originalLowercaseOpenAIKey = process.env.openai_key;
@@ -31,11 +31,8 @@ describe("agent commerce fallback", () => {
     expect(plan.summary).toContain("$0.32 per record");
   });
 
-  it("creates an explicitly simulated Monad x402 receipt", () => {
-    const receipt = simulateMonadX402Purchase();
-
-    expect(receipt.mode).toBe("simulation");
-    expect(receipt.network).toBe("Monad Testnet");
-    expect(receipt.receiptId).toMatch(/^x402-sim-/);
+  it("rejects missing Monad buyer credentials without spending funds", () => {
+    expect(() => getMonadBuyerPrivateKey({})).toThrow("MONAD_BUYER_PRIVATE_KEY");
+    expect(() => getMonadProviderAddress({})).toThrow("MONAD_PROVIDER_ADDRESS");
   });
 });

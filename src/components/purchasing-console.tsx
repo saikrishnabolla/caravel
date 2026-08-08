@@ -28,10 +28,12 @@ type WorkflowResult = {
     checks: Array<{ label: string; passed: boolean; detail: string }>;
   };
   monad: null | {
-    mode: "simulation";
+    mode: "testnet";
     amount: string;
     asset: string;
     receiptId: string;
+    transactionHash: string;
+    explorerUrl: string;
   };
 };
 
@@ -95,7 +97,7 @@ export function PurchasingConsole() {
         <div className="rail-statuses">
           <span className="status-pill connected"><i /> Agent ready</span>
           <span className={`status-pill ${rainStatus}`}><i /> Rain {rainStatus === "checking" ? "checking" : rainStatus}</span>
-          <span className="status-pill connected"><i /> Monad simulated</span>
+          <span className="status-pill connected"><i /> Monad x402 ready</span>
         </div>
       </header>
 
@@ -111,7 +113,7 @@ export function PurchasingConsole() {
         <div className="hero-proof">
           <span>Current proof</span>
           <strong>Agent → approval → payment</strong>
-          <small>Real Rain sandbox · simulated Monad x402</small>
+          <small>Real Rain sandbox · real Monad testnet x402</small>
         </div>
       </section>
 
@@ -190,7 +192,11 @@ export function PurchasingConsole() {
           <div><span>SELECTED PROVIDER</span><strong>{result.selected.provider}</strong></div>
           <div><span>AUTHORIZED AMOUNT</span><strong>{formatUsd(result.selected.amountCents)}</strong></div>
           <div><span>DELIVERY</span><strong className={result.delivery.passed ? "pass" : "fail"}>{result.delivery.passed ? "Verified" : "Failed"}</strong></div>
-          <div><span>MONAD X402</span><strong>{result.monad ? `${result.monad.amount} ${result.monad.asset} · simulated` : "Pending"}</strong></div>
+          <div>
+            <span>MONAD X402</span>
+            <strong>{result.monad ? `${result.monad.amount} ${result.monad.asset} · settled` : "Ready in live mode"}</strong>
+            {result.monad && <a href={result.monad.explorerUrl} target="_blank" rel="noreferrer">View transaction ↗</a>}
+          </div>
         </section>
       )}
     </main>
