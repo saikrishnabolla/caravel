@@ -1,7 +1,6 @@
 import {
   authorizeCard,
   createScopedCard,
-  fundCollateral,
   RainApiError,
   settleAuthorization,
 } from "@/lib/rain";
@@ -53,27 +52,12 @@ export async function POST(request: Request) {
 
     let rain;
     if (liveRain) {
-      let funding: Awaited<ReturnType<typeof fundCollateral>> | null = null;
-      try {
-        funding = await fundCollateral();
-        timeline.push({
-          id: "funding",
-          title: "Sandbox collateral funded",
-          detail: "Rain made simulated spending capacity available.",
-          status: "complete",
-          providerId: funding.transactionId,
-        });
-      } catch (fundingError) {
-        timeline.push({
-          id: "funding-warning",
-          title: "Collateral funding needs attention",
-          detail:
-            fundingError instanceof RainApiError && fundingError.detail
-              ? fundingError.detail
-              : "Rain rejected the configured collateral contract. Continuing in case the account is already funded.",
-          status: "warning",
-        });
-      }
+      timeline.push({
+        id: "collateral",
+        title: "Existing Rain collateral selected",
+        detail: "Using the account's provisioned sandbox capacity without adding new funds.",
+        status: "complete",
+      });
 
       const card = await createScopedCard({
         amountCents: selected.amountCents,
@@ -129,7 +113,7 @@ export async function POST(request: Request) {
         providerId: settlement.transactionId,
       });
 
-      rain = { funding, card, declined, authorization, settlement };
+      rain = { card, declined, authorization, settlement };
     } else {
       timeline.push(
         {
