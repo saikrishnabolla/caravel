@@ -41,7 +41,7 @@ export function getMonadProviderAddress(
   return address;
 }
 
-export async function purchaseDeliveryVerification(
+export async function purchaseMissionReadinessPacket(
   origin: string,
 ): Promise<MonadX402Receipt> {
   const account = privateKeyToAccount(getMonadBuyerPrivateKey());
@@ -63,7 +63,7 @@ export async function purchaseDeliveryVerification(
     ),
   );
 
-  const resource = new URL("/api/x402/verification", origin).toString();
+  const resource = new URL("/api/x402/mission-readiness", origin).toString();
   const paymentFetch = wrapFetchWithPayment(fetch, client);
   const response = await paymentFetch(resource, { cache: "no-store" });
   const responseBody = await response.text();

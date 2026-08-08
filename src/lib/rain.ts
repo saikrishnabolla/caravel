@@ -30,6 +30,28 @@ type ScopedCardResult = {
   status: string;
 };
 
+type PaymentAccount = {
+  id: string;
+  nickname: string;
+  type: "externalFiatAccount";
+};
+
+type PaymentRoute = {
+  id: string;
+  status: string;
+  source: { currency: string; rail: string };
+  destination: {
+    currency: string;
+    rail: string;
+    address?: { type: string; id?: string; address?: string };
+  };
+};
+
+type PaymentRouteList = {
+  paymentRoutes?: PaymentRoute[];
+  automations?: PaymentRoute[];
+};
+
 export class RainApiError extends Error {
   constructor(
     message: string,
@@ -205,4 +227,179 @@ export async function settleAuthorization(transactionId: string, amountCents: nu
     { method: "POST", body: JSON.stringify({ amount: amountCents }) },
     idempotencyHeaders(),
   );
+}
+
+export async function getTreasurySandboxStatus() {
+  const [accounts, routes] = await Promise.all([
+    rainRequest<PaymentAccount[]>("/payment-accounts"),
+    rainRequest<PaymentRouteList>("/payment-routes"),
+  ]);
+  const paymentRoutes = routes.paymentRoutes ?? routes.automations ?? [];
+  return {
+    paymentAccounts: accounts.length,
+    paymentRoutes: paymentRoutes.length,
+    onramps: paymentRoutes.filter(route => route.source.currency === "usd").length,
+    offramps: paymentRoutes.filter(route => route.destination.currency === "usd").length,
+  };
+}
+
+async function ensureDemoPaymentAccount() {
+  const accounts = await rainRequest<PaymentAccount[]>("/payment-accounts");
+  const existing = accounts.find(account => account.nickname === "Raingentic Demo Treasury");
+  if (existing) return existing;
+
+  const config = getRainConfig();
+  return rainRequest<PaymentAccount>("/payment-accounts", {
+    method: "POST",
+    body: JSON.stringify({
+      type: "externalFiatAccount",
+      nickname: "Raingentic Demo Treasury",
+      externalFiatAccount: {
+        beneficiaryType: "business",
+        beneficiaryBusinessName: "Raingentic Demo Operations",
+        currency: "usd",
+        rail: "ach",
+        thirdParty: false,
+        beneficiaryAddress: {
+          addressLine1: "123 Sandbox Avenue",
+          city: "New York",
+          region: "NY",
+          postalCode: "10001",
+          countryCode: "US",
+        },
+        bankName: "Rain Sandbox Bank",
+        bankAddress: {
+          addressLine1: "456 Demo Bank Street",
+          city: "New York",
+          region: "NY",
+          postalCode: "10001",
+          countryCode: "US",
+        },
+        accountNumber: "000012345678",
+        routingNumber: "021000021",
+        bankAccountType: "checking",
+      },
+      userId: config.userId,
+    }),
+  }, idempotencyHeaders());
+}
+
+async function ensureDemoRoutes(paymentAccountId: string, destinationAddress: string) {
+  const config = getRainConfig();
+  const response = await rainRequest<PaymentRouteList>("/payment-routes");
+  const routes = response.paymentRoutes ?? response.automations ?? [];
+
+  let onramp = routes.find(route =>
+    route.source.currency === "usd" &&
+    route.source.rail === "ach" &&
+    route.destination.currency === "rusd" &&
+    route.destination.rail === "base" &&
+    route.destination.address?.address?.toLowerCase() === destinationAddress.toLowerCase(),
+  );
+  if (!onramp) {
+    onramp = await rainRequest<PaymentRoute>("/payment-routes", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: config.userId,
+        source: { currency: "usd", rail: "ach" },
+        destination: {
+          currency: "rusd",
+          rail: "base",
+          address: { type: "onchain", address: destinationAddress },
+        },
+      }),
+    }, idempotencyHeaders());
+  }
+
+  let offramp = routes.find(route =>
+    route.source.currency === "rusd" &&
+    route.source.rail === "base" &&
+    route.destination.currency === "usd" &&
+    route.destination.rail === "ach" &&
+    route.destination.address?.id === paymentAccountId,
+  );
+  if (!offramp) {
+    offramp = await rainRequest<PaymentRoute>("/payment-routes", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: config.userId,
+        source: { currency: "rusd", rail: "base" },
+        destination: {
+          currency: "usd",
+          rail: "ach",
+          address: { type: "paymentAccount", id: paymentAccountId },
+        },
+        refundAddress: destinationAddress,
+      }),
+    }, idempotencyHeaders());
+  }
+
+  return { onramp, offramp };
+}
+
+async function simulatePaymentRoute(paymentRouteId: string, amount: string) {
+  return rainRequest<{
+    success?: boolean;
+    simulationId?: string;
+    flow?: "usd_onramp" | "usd_offramp";
+    status?: "accepted";
+  }>("/simulate/payment-routes", {
+    method: "POST",
+    body: JSON.stringify({ paymentRouteId, amount }),
+  }, idempotencyHeaders());
+}
+
+async function attemptPaymentRouteSimulation(paymentRouteId: string, amount: string) {
+  try {
+    const result = await simulatePaymentRoute(paymentRouteId, amount);
+    return {
+      simulationId: result.simulationId ?? paymentRouteId,
+      status: result.status ?? (result.success ? "accepted" : "submitted"),
+      note: result.success ? "Rain accepted the sandbox transfer simulation." : undefined,
+    };
+  } catch (error) {
+    if (error instanceof RainApiError) {
+      return {
+        simulationId: paymentRouteId,
+        status: "route-active",
+        note: error.detail ?? "The route exists, but this tenant cannot replay the deposit simulation.",
+      };
+    }
+    throw error;
+  }
+}
+
+export async function runTreasurySandboxDemo(destinationAddress: string) {
+  if (!/^0x[0-9a-fA-F]{40}$/.test(destinationAddress)) {
+    throw new Error("A valid EVM destination address is required for the treasury demo");
+  }
+
+  const account = await ensureDemoPaymentAccount();
+  const { onramp, offramp } = await ensureDemoRoutes(account.id, destinationAddress);
+  const amount = "100.00";
+  const [onrampSimulation, offrampSimulation] = await Promise.all([
+    attemptPaymentRouteSimulation(onramp.id, amount),
+    attemptPaymentRouteSimulation(offramp.id, amount),
+  ]);
+
+  return {
+    mode: "sandbox" as const,
+    amount,
+    account: { id: account.id, nickname: account.nickname },
+    onramp: {
+      routeId: onramp.id,
+      route: "USD ACH → RUSD on Base",
+      simulationId: onrampSimulation.simulationId,
+      status: onrampSimulation.status,
+      note: onrampSimulation.note,
+    },
+    offramp: {
+      routeId: offramp.id,
+      route: "RUSD on Base → USD ACH",
+      simulationId: offrampSimulation.simulationId,
+      status: offrampSimulation.status,
+      note: offrampSimulation.note,
+    },
+    limitation: "Rain caps sandbox route simulations at $100 and only simulates its RUSD test token. Monad is not supported by these routes, so no direct Monad-to-bank conversion is claimed.",
+  };
 }

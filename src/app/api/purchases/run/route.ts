@@ -1,20 +1,14 @@
+import { authorizeCard, createScopedCard, RainApiError, settleAuthorization } from "@/lib/rain";
 import {
-  authorizeCard,
-  createScopedCard,
-  RainApiError,
-  settleAuthorization,
-} from "@/lib/rain";
-import {
+  buildNegotiation,
+  getVendorQuotes,
   mandateSchema,
   selectQuote,
   successfulDelivery,
-  vendorQuotes,
   verifyDelivery,
 } from "@/lib/purchasing";
 import { planPurchase } from "@/lib/agent";
-import { purchaseDeliveryVerification } from "@/lib/monad";
-
-const approvedVendorIds = new Set(["clay-workflow", "apollo-export"]);
+import { purchaseMissionReadinessPacket } from "@/lib/monad";
 
 type TimelineItem = {
   id: string;
@@ -30,53 +24,52 @@ export async function POST(request: Request) {
     const mandate = mandateSchema.parse(body.mandate);
     const liveRain = body.liveRain === true;
     const approved = body.approved === true;
-    const { decisions, selected } = selectQuote(vendorQuotes, mandate);
+    const negotiation = buildNegotiation(mandate);
+    const { decisions, selected } = selectQuote(getVendorQuotes(mandate), mandate);
 
     if (!selected) {
-      return Response.json(
-        { error: "No provider satisfies the purchasing mandate", decisions },
-        { status: 422 },
-      );
+      return Response.json({ error: "No provider satisfies the purchasing mandate", decisions, negotiation }, { status: 422 });
     }
 
     const agent = await planPurchase(mandate);
-    const approvalRequired = !approvedVendorIds.has(selected.id);
-
     const timeline: TimelineItem[] = [
       {
         id: "agent",
-        title:
-          agent.source === "openai-agent"
-            ? "AI agent prepared the purchase"
-            : "Deterministic agent prepared the purchase",
+        title: agent.source === "openai-agent" ? "AI buyer prepared the mandate" : "Deterministic buyer prepared the mandate",
         detail: agent.summary,
         status: "complete",
       },
       {
-        id: "mandate",
-        title: "Mandate approved",
-        detail: `Budget and delivery rules converted into enforceable policy.`,
+        id: "discovery",
+        title: "Seller agent discovered",
+        detail: "MissionClear published a machine-readable agent card and negotiation skill.",
+        status: "complete",
+        providerId: negotiation.offerId,
+      },
+      {
+        id: "negotiation",
+        title: "Buyer and seller negotiated",
+        detail: `${negotiation.discounts.join(" and ")} reduced the offer to $${(negotiation.finalAmountCents / 100).toFixed(2)}.`,
         status: "complete",
       },
       {
-        id: "selection",
-        title: `${selected.provider} selected`,
-        detail: `Lowest-priced offer satisfying every business requirement.`,
+        id: "policy",
+        title: "Business mandate enforced",
+        detail: "Budget, per-mission cost, quantity, and readiness coverage all passed deterministic checks.",
         status: "complete",
-        providerId: selected.id,
       },
     ];
 
-    if (approvalRequired && liveRain && !approved) {
+    if (liveRain && !approved) {
       timeline.push({
         id: "approval",
         title: "Human approval required",
-        detail: `${selected.provider} is not in the business's existing Clay and Apollo vendor set. No payment has been attempted.`,
+        detail: `${selected.provider} is a new seller. No Rain or Monad payment has been attempted.`,
         status: "warning",
       });
-
       return Response.json({
         mandate,
+        negotiation,
         decisions,
         selected,
         timeline,
@@ -85,7 +78,7 @@ export async function POST(request: Request) {
         approval: {
           provider: selected.provider,
           amountCents: selected.amountCents,
-          reason: "New vendor outside the approved Clay and Apollo set",
+          reason: "New agent seller outside the approved provider set",
         },
         delivery: null,
         rain: null,
@@ -93,47 +86,49 @@ export async function POST(request: Request) {
       });
     }
 
-    if (approvalRequired) {
-      timeline.push({
-        id: "approval",
-        title: approved ? "Human approved the new vendor" : "Approval would be required",
-        detail: approved
-          ? `${selected.provider} was approved for this specific mandate and amount.`
-          : `${selected.provider} is outside the existing Clay and Apollo vendor set. Preview mode continues without spending.`,
-        status: approved ? "complete" : "warning",
-      });
-    }
+    timeline.push({
+      id: "approval",
+      title: approved ? "Human approved the negotiated agreement" : "Human approval would be required",
+      detail: approved
+        ? `Approval is bound to ${selected.provider}, the negotiated package, and the exact maximum amount.`
+        : "Preview mode continues without moving sandbox or testnet funds.",
+      status: approved ? "complete" : "warning",
+    });
 
-    let rain;
+    let monad = null;
+    let rain = null;
     if (liveRain) {
+      monad = await purchaseMissionReadinessPacket(new URL(request.url).origin);
       timeline.push({
-        id: "collateral",
-        title: "Existing Rain collateral selected",
-        detail: "Using the account's provisioned sandbox capacity without adding new funds.",
-        status: "complete",
+        id: "monad",
+        title: "Customer agent paid the seller",
+        detail: `${monad.amount} ${monad.asset} settled through x402 on ${monad.network}; the facilitator paid gas.`,
+        status: "verified",
+        providerId: monad.transactionHash,
       });
 
+      const upstreamProcurementCents = Math.round(selected.amountCents * 0.32);
       const card = await createScopedCard({
-        amountCents: selected.amountCents,
+        amountCents: upstreamProcurementCents,
         allowedMccs: [selected.merchantCategoryCode],
       });
       timeline.push({
         id: "card",
-        title: `Scoped Rain card •••• ${card.last4}`,
-        detail: `Limited to the selected amount, MCC ${selected.merchantCategoryCode}, and one hour.`,
+        title: `Fulfillment card created •••• ${card.last4}`,
+        detail: `Rain limited upstream procurement to $${(upstreamProcurementCents / 100).toFixed(2)}, MCC ${selected.merchantCategoryCode}, and one hour.`,
         status: "complete",
         providerId: card.id,
       });
 
       const declined = await authorizeCard({
         cardId: card.id,
-        amountCents: selected.amountCents,
+        amountCents: upstreamProcurementCents,
         merchantName: "Unapproved Dining Merchant",
         merchantCategoryCode: "5814",
       });
       timeline.push({
         id: "decline",
-        title: "Invalid purchase blocked",
+        title: "Invalid upstream purchase blocked",
         detail: declined.declinedReason
           ? `Rain declined the mismatched merchant: ${declined.declinedReason}.`
           : "Rain declined the merchant because its category was not permitted.",
@@ -143,49 +138,39 @@ export async function POST(request: Request) {
 
       const authorization = await authorizeCard({
         cardId: card.id,
-        amountCents: selected.amountCents,
-        merchantName: selected.provider,
+        amountCents: upstreamProcurementCents,
+        merchantName: "AeroData Compliance Cloud",
         merchantCategoryCode: selected.merchantCategoryCode,
       });
       timeline.push({
         id: "authorization",
-        title: "Approved purchase authorized",
-        detail: `${selected.provider} passed Rain's amount and merchant controls.`,
+        title: "Traditional data provider authorized",
+        detail: "The airspace, weather, mapping, and compliance supplier passed Rain's amount and MCC controls.",
         status: "complete",
         providerId: authorization.transactionId,
       });
 
-      const settlement = await settleAuthorization(
-        authorization.transactionId,
-        selected.amountCents,
-      );
+      const settlement = await settleAuthorization(authorization.transactionId, upstreamProcurementCents);
       timeline.push({
         id: "settlement",
-        title: "Payment settled",
-        detail: "The approved authorization became a posted Rain transaction.",
+        title: "Upstream fulfillment payment settled",
+        detail: "The approved Rain authorization became a posted sandbox transaction.",
         status: "complete",
         providerId: settlement.transactionId,
       });
-
-      rain = { card, declined, authorization, settlement };
+      rain = { upstreamProcurementCents, card, declined, authorization, settlement };
     } else {
       timeline.push(
         {
-          id: "card-preview",
-          title: "Scoped card policy prepared",
-          detail: `Would allow ${selected.provider}, MCC ${selected.merchantCategoryCode}, for the selected amount only.`,
+          id: "monad-preview",
+          title: "Monad x402 sale ready",
+          detail: "Live mode accepts a test USDC payment for the mission-readiness packet.",
           status: "complete",
         },
         {
-          id: "decline-preview",
-          title: "Invalid purchase blocked",
-          detail: "Demo mode shows the expected MCC policy decline without moving sandbox state.",
-          status: "declined",
-        },
-        {
-          id: "settlement-preview",
-          title: "Approved payment ready",
-          detail: "Switch on Live Rain to create, authorize, and settle the sandbox card.",
+          id: "rain-preview",
+          title: "Rain fulfillment policy ready",
+          detail: "Live mode creates a restricted card for traditional upstream data providers.",
           status: "complete",
         },
       );
@@ -194,32 +179,14 @@ export async function POST(request: Request) {
     const delivery = verifyDelivery(successfulDelivery, mandate);
     timeline.push({
       id: "delivery",
-      title: delivery.passed ? "Delivery verified" : "Delivery failed verification",
-      detail: `${delivery.deliveredRecords} records received; ${Math.round(delivery.measuredQualityRate * 100)}% measured quality.`,
+      title: delivery.passed ? "Mission-readiness packet verified" : "Packet failed verification",
+      detail: `${delivery.missionsPrepared} missions prepared with ${Math.round(delivery.measuredReadinessRate * 100)}% readiness coverage.`,
       status: "verified",
     });
 
-    let monad = null;
-    if (liveRain) {
-      monad = await purchaseDeliveryVerification(new URL(request.url).origin);
-      timeline.push({
-        id: "monad",
-        title: "Monad x402 payment settled",
-        detail: `${monad.amount} ${monad.asset} purchased the delivery-quality report on ${monad.network}. The facilitator paid the gas.`,
-        status: "verified",
-        providerId: monad.transactionHash,
-      });
-    } else {
-      timeline.push({
-        id: "monad-preview",
-        title: "Monad x402 payment ready",
-        detail: "Live mode will settle 0.001 test USDC for the delivery-quality report without requiring MON for gas.",
-        status: "complete",
-      });
-    }
-
     return Response.json({
       mandate,
+      negotiation,
       decisions,
       selected,
       timeline,
@@ -232,11 +199,6 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     const detail = error instanceof RainApiError ? error.detail : undefined;
-    return Response.json(
-      {
-        error: detail ?? (error instanceof Error ? error.message : "Purchase workflow failed"),
-      },
-      { status: 500 },
-    );
+    return Response.json({ error: detail ?? (error instanceof Error ? error.message : "Commerce workflow failed") }, { status: 500 });
   }
 }

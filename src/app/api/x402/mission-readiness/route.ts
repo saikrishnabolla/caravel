@@ -17,9 +17,7 @@ let protectedHandler: ProtectedHandler | undefined;
 
 function getProtectedHandler(): ProtectedHandler {
   if (protectedHandler) return protectedHandler;
-
   const providerAddress = getMonadProviderAddress();
-
   const facilitatorClient = new HTTPFacilitatorClient({ url: MONAD_FACILITATOR_URL });
   const server = new x402ResourceServer(facilitatorClient);
   const scheme = new ExactEvmScheme();
@@ -33,29 +31,26 @@ function getProtectedHandler(): ProtectedHandler {
   });
   server.register(network, scheme);
 
-  const handler = async () =>
-    NextResponse.json({
-      report: "delivery-quality-report.json",
-      deliveredRecords: 100,
-      measuredQualityRate: 0.94,
-      verified: true,
-    });
+  const handler = async () => NextResponse.json({
+    packet: "agricultural-mission-readiness.json",
+    missionsPrepared: 100,
+    airspaceChecks: 100,
+    weatherChecks: 100,
+    complianceChecks: 96,
+    measuredReadinessRate: 0.96,
+    disclaimer: "This packet supports operational readiness and does not guarantee FAA authorization.",
+  });
 
-  protectedHandler = withX402(
-    handler,
-    {
-      accepts: {
-        scheme: "exact",
-        price: `$${X402_VERIFICATION_PRICE}`,
-        network,
-        payTo: providerAddress,
-      },
-      description: "Delivery quality verification report",
-      mimeType: "application/json",
+  protectedHandler = withX402(handler, {
+    accepts: {
+      scheme: "exact",
+      price: `$${X402_VERIFICATION_PRICE}`,
+      network,
+      payTo: providerAddress,
     },
-    server,
-  );
-
+    description: "Agricultural drone mission-readiness packet",
+    mimeType: "application/json",
+  }, server);
   return protectedHandler;
 }
 

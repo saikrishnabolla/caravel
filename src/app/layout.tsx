@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Raingentic — Purchase Control Plane",
-  description: "Policy-controlled purchasing across Rain cards and Monad payments.",
+  title: "Raingentic — Agent Commerce Control Plane",
+  description: "Agent negotiation, controlled Rain fulfillment, and Monad x402 settlement.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

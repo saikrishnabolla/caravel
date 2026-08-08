@@ -17,18 +17,19 @@ describe("agent commerce fallback", () => {
     delete process.env.OPENAI_API_KEY;
     delete process.env.openai_key;
     const plan = await planPurchase({
-      objective: "Purchase verified GTM contacts for a Canadian campaign.",
-      budgetCents: 5000,
-      maxUnitCostCents: 40,
-      minimumRecords: 100,
-      minimumQualityRate: 0.9,
+      objective: "Purchase agricultural mission-readiness packets for a seasonal operation.",
+      budgetCents: 150_000,
+      maxUnitCostCents: 1_500,
+      minimumMissions: 100,
+      minimumReadinessRate: 0.9,
     });
 
     expect(plan.source).toBe("deterministic-fallback");
-    expect(plan.selectedProviderId).toBe("deepline");
-    expect(plan.primaryPaymentRail).toBe("rain_card");
-    expect(plan.summary).toContain("$32.00 total");
-    expect(plan.summary).toContain("$0.32 per record");
+    expect(plan.selectedProviderId).toBe("missionclear-agent");
+    expect(plan.customerPaymentRail).toBe("monad_x402");
+    expect(plan.fulfillmentPaymentRail).toBe("rain_card");
+    expect(plan.summary).toContain("$1,450.00 total");
+    expect(plan.summary).toContain("$14.50 per mission");
   });
 
   it("rejects missing Monad buyer credentials without spending funds", () => {
