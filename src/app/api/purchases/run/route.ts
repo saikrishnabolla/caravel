@@ -1,14 +1,12 @@
 import { authorizeCard, createScopedCard, RainApiError, settleAuthorization } from "@/lib/rain";
 import {
-  buildNegotiation,
-  getVendorQuotes,
   mandateSchema,
-  selectQuote,
   successfulDelivery,
   verifyDelivery,
 } from "@/lib/purchasing";
 import { planPurchase } from "@/lib/agent";
 import { purchaseMissionReadinessPacket } from "@/lib/monad";
+import { negotiateThroughA2A } from "@/lib/a2a-client";
 
 type TimelineItem = {
   id: string;
@@ -24,8 +22,9 @@ export async function POST(request: Request) {
     const mandate = mandateSchema.parse(body.mandate);
     const liveRain = body.liveRain === true;
     const approved = body.approved === true;
-    const negotiation = buildNegotiation(mandate);
-    const { decisions, selected } = selectQuote(getVendorQuotes(mandate), mandate);
+    const origin = new URL(request.url).origin;
+    const a2a = await negotiateThroughA2A(origin, mandate);
+    const { negotiation, decisions, selected } = a2a;
 
     if (!selected) {
       return Response.json({ error: "No provider satisfies the purchasing mandate", decisions, negotiation }, { status: 422 });
@@ -41,10 +40,10 @@ export async function POST(request: Request) {
       },
       {
         id: "discovery",
-        title: "Seller agent discovered",
-        detail: "MissionClear published a machine-readable agent card and negotiation skill.",
+        title: "A2A seller agent discovered",
+        detail: `The buyer fetched an official A2A ${a2a.protocolVersion} Agent Card and selected its negotiation skill.`,
         status: "complete",
-        providerId: negotiation.offerId,
+        providerId: a2a.taskId,
       },
       {
         id: "negotiation",
@@ -69,6 +68,7 @@ export async function POST(request: Request) {
       });
       return Response.json({
         mandate,
+        a2a: { protocolVersion: a2a.protocolVersion, taskId: a2a.taskId, contextId: a2a.contextId },
         negotiation,
         decisions,
         selected,
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
     let monad = null;
     let rain = null;
     if (liveRain) {
-      monad = await purchaseMissionReadinessPacket(new URL(request.url).origin);
+      monad = await purchaseMissionReadinessPacket(origin);
       timeline.push({
         id: "monad",
         title: "Customer agent paid the seller",
@@ -186,6 +186,7 @@ export async function POST(request: Request) {
 
     return Response.json({
       mandate,
+      a2a: { protocolVersion: a2a.protocolVersion, taskId: a2a.taskId, contextId: a2a.contextId },
       negotiation,
       decisions,
       selected,

@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { formatUsd, type Negotiation, type QuoteDecision } from "@/lib/purchasing";
 
 type WorkflowResult = {
+  a2a: { protocolVersion: string; taskId: string; contextId: string };
   decisions: QuoteDecision[];
   selected: QuoteDecision;
   negotiation: Negotiation;
@@ -120,7 +121,7 @@ export function PurchasingConsole() {
       <header className="topbar">
         <div className="brand"><span className="brand-mark">R</span><span>Raingentic</span></div>
         <div className="rail-statuses">
-          <span className="status-pill connected"><i /> A2A seller ready</span>
+          <span className="status-pill connected"><i /> A2A v1.0 ready</span>
           <span className={`status-pill ${rainStatus}`}><i /> Rain {rainStatus}</span>
           <span className="status-pill connected"><i /> Monad x402 ready</span>
         </div>
@@ -171,7 +172,7 @@ export function PurchasingConsole() {
         </form>
 
         <section className="panel quote-panel">
-          <div className="panel-heading"><div><span className="step-number">02</span><h2>Agent negotiation</h2></div><span className="label">A2A-READY</span></div>
+          <div className="panel-heading"><div><span className="step-number">02</span><h2>Agent negotiation</h2></div><span className="label">A2A v{result?.a2a.protocolVersion ?? "1.0"}</span></div>
           {!result ? <div className="empty-state"><span>↔</span><p>The buyer and seller will negotiate volume and seasonal pricing within deterministic rules.</p></div> : (
             <div className="quote-list">
               <div className="agent-note"><span>{result.agent.source === "openai-agent" ? "OPENAI BUYER" : "DETERMINISTIC BUYER"}</span><p>{result.agent.summary}</p></div>

@@ -6,6 +6,7 @@ import {
   successfulDelivery,
   verifyDelivery,
 } from "./purchasing";
+import { createMissionClearAgentCard } from "./a2a";
 
 const mandate = {
   objective: "Purchase agricultural mission-readiness packets for a seasonal operation.",
@@ -16,6 +17,15 @@ const mandate = {
 };
 
 describe("mission commerce policy", () => {
+  it("publishes an official A2A v1.0 JSON-RPC interface", () => {
+    const card = createMissionClearAgentCard("https://example.com");
+    expect(card.supportedInterfaces[0]).toMatchObject({
+      url: "https://example.com/api/a2a",
+      protocolBinding: "JSONRPC",
+      protocolVersion: "1.0",
+    });
+  });
+
   it("negotiates a volume package inside the buyer mandate", () => {
     const negotiation = buildNegotiation(mandate);
     expect(negotiation.finalAmountCents).toBe(145_000);

@@ -1,6 +1,6 @@
 # Raingentic
 
-An agent-commerce control plane that negotiates agricultural mission-readiness services, pauses for human approval, accepts a real Monad Testnet x402 payment, fulfills through a scoped Rain sandbox card, verifies delivery, and simulates Rain USD↔USDC treasury routes.
+An agent-commerce control plane that negotiates agricultural mission-readiness services over the official A2A v1.0 protocol, pauses for human approval, accepts a real Monad Testnet x402 payment, fulfills through a scoped Rain sandbox card, verifies delivery, and simulates Rain USD↔stablecoin treasury routes.
 
 ## Run locally
 
