@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   type Mandate,
   type QuoteDecision,
+  formatUsd,
   selectQuote,
   vendorQuotes,
 } from "./purchasing";
@@ -19,13 +20,17 @@ export type PurchasingAgentPlan = z.infer<typeof agentPlanSchema> & {
   source: "openai-agent" | "deterministic-fallback";
 };
 
+function safeSummary(selected: QuoteDecision) {
+  return `${selected.provider} satisfies the budget, unit-price, quantity, and quality requirements at ${formatUsd(selected.amountCents)} total and ${formatUsd(selected.unitCostCents)} per record. Use a scoped Rain card for the vendor purchase and Monad x402 for delivery verification.`;
+}
+
 function deterministicPlan(decisions: QuoteDecision[]): PurchasingAgentPlan {
   const selected = decisions.find((quote) => quote.eligible);
   if (!selected) throw new Error("No provider satisfies the purchasing mandate");
 
   return {
     selectedProviderId: selected.id,
-    summary: `${selected.provider} is the only offer that satisfies budget, unit-price, quantity, and quality requirements. Use a scoped Rain card for the vendor purchase and a simulated Monad x402 payment for delivery verification.`,
+    summary: safeSummary(selected),
     rejectedProviderIds: decisions
       .filter((quote) => !quote.eligible)
       .map((quote) => quote.id),
@@ -38,8 +43,10 @@ function deterministicPlan(decisions: QuoteDecision[]): PurchasingAgentPlan {
 export async function planPurchase(mandate: Mandate): Promise<PurchasingAgentPlan> {
   const { decisions } = selectQuote(vendorQuotes, mandate);
   const fallback = deterministicPlan(decisions);
+  const openAIKey = process.env.OPENAI_API_KEY ?? process.env.openai_key;
 
-  if (!process.env.OPENAI_API_KEY) return fallback;
+  if (!openAIKey) return fallback;
+  if (!process.env.OPENAI_API_KEY) process.env.OPENAI_API_KEY = openAIKey;
 
   const listOffers = tool({
     name: "list_vendor_offers",
@@ -86,7 +93,11 @@ export async function planPurchase(mandate: Mandate): Promise<PurchasingAgentPla
     );
     if (!output || !selectedDecision) return fallback;
 
-    return { ...output, source: "openai-agent" };
+    return {
+      ...output,
+      summary: safeSummary(selectedDecision),
+      source: "openai-agent",
+    };
   } catch {
     return fallback;
   }

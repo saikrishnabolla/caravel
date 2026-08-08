@@ -11,7 +11,7 @@ pnpm dev
 
 The application reads Rain sandbox credentials from `.env` or `.env.local`. Both uppercase names and the lowercase names supplied in the hackathon credential file are supported.
 
-When `OPENAI_API_KEY` is configured, the server uses the official OpenAI Agents SDK to prepare the purchasing plan. Without a key, the same tool boundary runs through a deterministic fallback so the demo remains reliable.
+When `OPENAI_API_KEY` or `openai_key` is configured, the server uses the official OpenAI Agents SDK to prepare the purchasing plan. Without a key, the same tool boundary runs through a deterministic fallback so the demo remains reliable.
 
 Monad/x402 is currently an explicit test simulation. No real USDC is used.
 
