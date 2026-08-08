@@ -11,6 +11,10 @@ import {
   vendorQuotes,
   verifyDelivery,
 } from "@/lib/purchasing";
+import { planPurchase } from "@/lib/agent";
+import { simulateMonadX402Purchase } from "@/lib/monad";
+
+const approvedVendorIds = new Set(["clay-workflow", "apollo-export"]);
 
 type TimelineItem = {
   id: string;
@@ -25,6 +29,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const mandate = mandateSchema.parse(body.mandate);
     const liveRain = body.liveRain === true;
+    const approved = body.approved === true;
     const { decisions, selected } = selectQuote(vendorQuotes, mandate);
 
     if (!selected) {
@@ -34,7 +39,19 @@ export async function POST(request: Request) {
       );
     }
 
+    const agent = await planPurchase(mandate);
+    const approvalRequired = !approvedVendorIds.has(selected.id);
+
     const timeline: TimelineItem[] = [
+      {
+        id: "agent",
+        title:
+          agent.source === "openai-agent"
+            ? "AI agent prepared the purchase"
+            : "Deterministic agent prepared the purchase",
+        detail: agent.summary,
+        status: "complete",
+      },
       {
         id: "mandate",
         title: "Mandate approved",
@@ -49,6 +66,43 @@ export async function POST(request: Request) {
         providerId: selected.id,
       },
     ];
+
+    if (approvalRequired && liveRain && !approved) {
+      timeline.push({
+        id: "approval",
+        title: "Human approval required",
+        detail: `${selected.provider} is not in the business's existing Clay and Apollo vendor set. No payment has been attempted.`,
+        status: "warning",
+      });
+
+      return Response.json({
+        mandate,
+        decisions,
+        selected,
+        timeline,
+        agent,
+        requiresApproval: true,
+        approval: {
+          provider: selected.provider,
+          amountCents: selected.amountCents,
+          reason: "New vendor outside the approved Clay and Apollo set",
+        },
+        delivery: null,
+        rain: null,
+        monad: null,
+      });
+    }
+
+    if (approvalRequired) {
+      timeline.push({
+        id: "approval",
+        title: approved ? "Human approved the new vendor" : "Approval would be required",
+        detail: approved
+          ? `${selected.provider} was approved for this specific mandate and amount.`
+          : `${selected.provider} is outside the existing Clay and Apollo vendor set. Preview mode continues without spending.`,
+        status: approved ? "complete" : "warning",
+      });
+    }
 
     let rain;
     if (liveRain) {
@@ -145,7 +199,27 @@ export async function POST(request: Request) {
       status: "verified",
     });
 
-    return Response.json({ mandate, decisions, selected, timeline, delivery, rain });
+    const monad = simulateMonadX402Purchase();
+    timeline.push({
+      id: "monad",
+      title: "Monad x402 test payment simulated",
+      detail: `${monad.amount} ${monad.asset} purchased the delivery-quality report on ${monad.network}. No real funds were used.`,
+      status: "verified",
+      providerId: monad.receiptId,
+    });
+
+    return Response.json({
+      mandate,
+      decisions,
+      selected,
+      timeline,
+      delivery,
+      rain,
+      monad,
+      agent,
+      requiresApproval: false,
+      approval: null,
+    });
   } catch (error) {
     const detail = error instanceof RainApiError ? error.detail : undefined;
     return Response.json(

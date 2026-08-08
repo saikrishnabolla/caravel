@@ -60,9 +60,9 @@ export const vendorQuotes: VendorQuote[] = [
     merchantCategoryCode: "5734",
   },
   {
-    id: "quickleads",
-    provider: "QuickLeads Export",
-    description: "Low-cost contact export with limited verification",
+    id: "apollo-export",
+    provider: "Apollo Export",
+    description: "Existing account export with limited verification for this segment",
     amountCents: 1900,
     unitCostCents: 19,
     recordCount: 100,

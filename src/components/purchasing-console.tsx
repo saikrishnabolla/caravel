@@ -13,9 +13,25 @@ type WorkflowResult = {
     status: "complete" | "declined" | "verified" | "warning";
     providerId?: string;
   }>;
-  delivery: {
+  agent: {
+    source: "openai-agent" | "deterministic-fallback";
+    summary: string;
+  };
+  requiresApproval: boolean;
+  approval: null | {
+    provider: string;
+    amountCents: number;
+    reason: string;
+  };
+  delivery: null | {
     passed: boolean;
     checks: Array<{ label: string; passed: boolean; detail: string }>;
+  };
+  monad: null | {
+    mode: "simulation";
+    amount: string;
+    asset: string;
+    receiptId: string;
   };
 };
 
@@ -44,8 +60,7 @@ export function PurchasingConsole() {
       .catch(() => setRainStatus("offline"));
   }, []);
 
-  async function runWorkflow(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function executeWorkflow(approved = false) {
     setRunning(true);
     setError(null);
 
@@ -53,7 +68,7 @@ export function PurchasingConsole() {
       const response = await fetch("/api/purchases/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mandate, liveRain }),
+        body: JSON.stringify({ mandate, liveRain, approved }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Purchase workflow failed");
@@ -65,6 +80,11 @@ export function PurchasingConsole() {
     }
   }
 
+  function runWorkflow(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void executeWorkflow(false);
+  }
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -73,26 +93,25 @@ export function PurchasingConsole() {
           <span>Raingentic</span>
         </div>
         <div className="rail-statuses">
-          <span className={`status-pill ${rainStatus}`}>
-            <i /> Rain {rainStatus === "checking" ? "checking" : rainStatus}
-          </span>
-          <span className="status-pill planned"><i /> Monad next</span>
+          <span className="status-pill connected"><i /> Agent ready</span>
+          <span className={`status-pill ${rainStatus}`}><i /> Rain {rainStatus === "checking" ? "checking" : rainStatus}</span>
+          <span className="status-pill connected"><i /> Monad simulated</span>
         </div>
       </header>
 
       <section className="hero">
         <div>
-          <p className="eyebrow">PURCHASE CONTROL PLANE</p>
+          <p className="eyebrow">AGENT COMMERCE CONTROL PLANE</p>
           <h1>Give an agent a goal.<br />Keep control of the money.</h1>
           <p className="hero-copy">
-            One mandate connects vendor selection, payment policy, Rain card controls,
-            and proof that the business received what it purchased.
+            The agent compares vendors and proposes a purchase. Business policy,
+            human approval, Rain, and Monad decide whether money can move.
           </p>
         </div>
         <div className="hero-proof">
           <span>Current proof</span>
-          <strong>Rain card lifecycle</strong>
-          <small>Monad x402 follows after settlement works</small>
+          <strong>Agent → approval → payment</strong>
+          <small>Real Rain sandbox · simulated Monad x402</small>
         </div>
       </section>
 
@@ -105,62 +124,44 @@ export function PurchasingConsole() {
 
           <label>
             What should the agent purchase?
-            <textarea
-              value={mandate.objective}
-              onChange={(event) => setMandate({ ...mandate, objective: event.target.value })}
-              rows={4}
-            />
+            <textarea value={mandate.objective} onChange={(event) => setMandate({ ...mandate, objective: event.target.value })} rows={4} />
           </label>
 
           <div className="field-grid">
-            <label>
-              Total budget
-              <div className="input-prefix"><span>$</span><input type="number" value={mandate.budgetCents / 100} onChange={(event) => setMandate({ ...mandate, budgetCents: Number(event.target.value) * 100 })} /></div>
-            </label>
-            <label>
-              Max per record
-              <div className="input-prefix"><span>$</span><input type="number" step="0.01" value={mandate.maxUnitCostCents / 100} onChange={(event) => setMandate({ ...mandate, maxUnitCostCents: Number(event.target.value) * 100 })} /></div>
-            </label>
-            <label>
-              Minimum records
-              <input type="number" value={mandate.minimumRecords} onChange={(event) => setMandate({ ...mandate, minimumRecords: Number(event.target.value) })} />
-            </label>
-            <label>
-              Minimum quality
-              <div className="input-suffix"><input type="number" value={mandate.minimumQualityRate * 100} onChange={(event) => setMandate({ ...mandate, minimumQualityRate: Number(event.target.value) / 100 })} /><span>%</span></div>
-            </label>
+            <label>Total budget<div className="input-prefix"><span>$</span><input type="number" value={mandate.budgetCents / 100} onChange={(event) => setMandate({ ...mandate, budgetCents: Number(event.target.value) * 100 })} /></div></label>
+            <label>Max per record<div className="input-prefix"><span>$</span><input type="number" step="0.01" value={mandate.maxUnitCostCents / 100} onChange={(event) => setMandate({ ...mandate, maxUnitCostCents: Number(event.target.value) * 100 })} /></div></label>
+            <label>Minimum records<input type="number" value={mandate.minimumRecords} onChange={(event) => setMandate({ ...mandate, minimumRecords: Number(event.target.value) })} /></label>
+            <label>Minimum quality<div className="input-suffix"><input type="number" value={mandate.minimumQualityRate * 100} onChange={(event) => setMandate({ ...mandate, minimumQualityRate: Number(event.target.value) / 100 })} /><span>%</span></div></label>
           </div>
 
           <div className="rail-toggle">
-            <div>
-              <strong>Use live Rain sandbox</strong>
-              <span>Create a real scoped card and simulated transactions</span>
-            </div>
+            <div><strong>Use live Rain sandbox</strong><span>Create a real scoped card after human approval</span></div>
             <button type="button" role="switch" aria-checked={liveRain} className={liveRain ? "switch active" : "switch"} onClick={() => setLiveRain(!liveRain)}><span /></button>
           </div>
 
+          {result?.requiresApproval && result.approval && (
+            <div className="approval-card">
+              <span>HUMAN APPROVAL</span>
+              <strong>Approve {formatUsd(result.approval.amountCents)} for {result.approval.provider}?</strong>
+              <p>{result.approval.reason}. No payment has been attempted.</p>
+              <button type="button" onClick={() => void executeWorkflow(true)} disabled={running}>Approve and continue →</button>
+            </div>
+          )}
+
           {error && <p className="error-message">{error}</p>}
           <button className="primary-button" disabled={running || (liveRain && rainStatus !== "connected")}>
-            {running ? "Running purchase…" : liveRain ? "Run live Rain proof" : "Preview controlled purchase"}
-            <span>→</span>
+            {running ? "Agent is working…" : liveRain ? "Ask agent to purchase" : "Preview agent decision"}<span>→</span>
           </button>
         </form>
 
         <section className="panel quote-panel">
-          <div className="panel-heading">
-            <div><span className="step-number">02</span><h2>Provider decision</h2></div>
-            <span className="label">POLICY ENGINE</span>
-          </div>
-          {!result ? (
-            <div className="empty-state"><span>3</span><p>Run the mandate to compare three providers against deterministic rules.</p></div>
-          ) : (
+          <div className="panel-heading"><div><span className="step-number">02</span><h2>Agent decision</h2></div><span className="label">POLICY ENGINE</span></div>
+          {!result ? <div className="empty-state"><span>3</span><p>The agent will compare Clay, Apollo, and a machine-native provider.</p></div> : (
             <div className="quote-list">
+              <div className="agent-note"><span>{result.agent.source === "openai-agent" ? "OPENAI AGENT" : "DETERMINISTIC FALLBACK"}</span><p>{result.agent.summary}</p></div>
               {result.decisions.map((quote) => (
                 <article className={`quote ${quote.eligible ? "eligible" : "rejected"}`} key={quote.id}>
-                  <div className="quote-top">
-                    <div><strong>{quote.provider}</strong><span>{quote.description}</span></div>
-                    <b>{formatUsd(quote.amountCents)}</b>
-                  </div>
+                  <div className="quote-top"><div><strong>{quote.provider}</strong><span>{quote.description}</span></div><b>{formatUsd(quote.amountCents)}</b></div>
                   <div className="quote-metrics"><span>{formatUsd(quote.unitCostCents)}/record</span><span>{Math.round(quote.expectedQualityRate * 100)}% quality</span><span>MCC {quote.merchantCategoryCode}</span></div>
                   <p>{quote.eligible ? "✓ Meets every mandate rule" : `× ${quote.reasons.join(" · ")}`}</p>
                 </article>
@@ -170,13 +171,8 @@ export function PurchasingConsole() {
         </section>
 
         <section className="panel timeline-panel">
-          <div className="panel-heading">
-            <div><span className="step-number">03</span><h2>Evidence timeline</h2></div>
-            <span className="label">AUDIT RECEIPT</span>
-          </div>
-          {!result ? (
-            <div className="timeline-placeholder"><div /><div /><div /><div /></div>
-          ) : (
+          <div className="panel-heading"><div><span className="step-number">03</span><h2>Evidence timeline</h2></div><span className="label">AUDIT RECEIPT</span></div>
+          {!result ? <div className="timeline-placeholder"><div /><div /><div /><div /></div> : (
             <ol className="timeline">
               {result.timeline.map((item) => (
                 <li key={item.id} className={item.status}>
@@ -189,12 +185,12 @@ export function PurchasingConsole() {
         </section>
       </section>
 
-      {result && (
+      {result?.delivery && (
         <section className="receipt-bar">
           <div><span>SELECTED PROVIDER</span><strong>{result.selected.provider}</strong></div>
           <div><span>AUTHORIZED AMOUNT</span><strong>{formatUsd(result.selected.amountCents)}</strong></div>
           <div><span>DELIVERY</span><strong className={result.delivery.passed ? "pass" : "fail"}>{result.delivery.passed ? "Verified" : "Failed"}</strong></div>
-          <div><span>NEXT RAIL</span><strong>Monad x402</strong></div>
+          <div><span>MONAD X402</span><strong>{result.monad ? `${result.monad.amount} ${result.monad.asset} · simulated` : "Pending"}</strong></div>
         </section>
       )}
     </main>

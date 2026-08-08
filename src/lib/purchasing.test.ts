@@ -25,10 +25,10 @@ describe("purchasing policy", () => {
   it("explains why unsuitable providers were rejected", () => {
     const result = selectQuote(vendorQuotes, mandate);
     const clay = result.decisions.find((quote) => quote.id === "clay-workflow");
-    const quickLeads = result.decisions.find((quote) => quote.id === "quickleads");
+    const apollo = result.decisions.find((quote) => quote.id === "apollo-export");
 
     expect(clay?.reasons).toContain("Unit price exceeds the approved maximum");
-    expect(quickLeads?.reasons).toContain(
+    expect(apollo?.reasons).toContain(
       "Expected quality is below the required threshold",
     );
   });
