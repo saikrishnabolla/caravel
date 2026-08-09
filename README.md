@@ -1,8 +1,8 @@
-# Raingentic
+# Bound
 
-Raingentic is a business control plane for agent commerce. It lets companies connect what they already buy and sell, define the authority their agents receive, negotiate through A2A, authorize payment through AP2, and route each transaction through Monad x402, Rain, or a high-value escrow flow.
+Bound is a business control plane for agent commerce. A company connects the API, SaaS product, online catalog, or service it already sells, then defines how AI agents may price, negotiate, buy, pay, and verify delivery without rebuilding its existing commerce stack.
 
-An agent negotiates and buys a protected API through Monad, then autonomously procures upstream fulfillment through a policy-controlled Rain card.
+In the working demonstration, a customer agent negotiates and buys a protected API through Monad, while the seller's fulfillment agent procures upstream services through a policy-controlled Rain card.
 
 It does not replace a company’s API backend, Shopify store, billing system, inventory, or fulfillment. It makes those systems discoverable and safely usable by autonomous agents.
 
@@ -10,21 +10,21 @@ It does not replace a company’s API backend, Shopify store, billing system, in
 
 [![Rain: scoped cards and treasury](https://img.shields.io/badge/Rain-Scoped_cards_and_treasury-18181B)](https://www.rain.xyz/) [![Monad: x402 and escrow](https://img.shields.io/badge/Monad-x402_and_escrow-18181B)](https://www.monad.xyz/) [![A2A: agent negotiation](https://img.shields.io/badge/A2A-Agent_negotiation-18181B)](https://a2a-protocol.org/) [![AP2: payment authorization](https://img.shields.io/badge/AP2-Payment_authorization-18181B)](https://github.com/google-agentic-commerce/AP2) [![OpenAI: agent planning](https://img.shields.io/badge/OpenAI-Agent_planning-18181B)](https://openai.com/) [![Solidity: commerce escrow](https://img.shields.io/badge/Solidity-Commerce_escrow-18181B)](https://soliditylang.org/) [![Next.js: application](https://img.shields.io/badge/Next.js-Application-18181B)](https://nextjs.org/)
 
-Built for the Raingentic Commerce Hackathon NYC, co-hosted by Rain and the Monad Foundation.
+Bound was built for the Raingentic Commerce Hackathon NYC, co-hosted by Rain and the Monad Foundation. The deployed application and repository retain the Raingentic hackathon name.
 
 ## Hackathon track fit
 
 ### Best use of Rain
 
-An agent receives AP2-scoped permission, creates a controlled Rain card, demonstrates a policy-driven decline, completes an allowed procurement, and retrieves the settled transaction. The same application demonstrates Rain payment accounts, routes, and treasury simulations.
+A business can give an agent exact purchasing authority instead of unrestricted card access. The agent receives AP2-scoped permission, creates a controlled Rain card, demonstrates a policy-driven decline, completes an allowed procurement, and retrieves the settled transaction. The same application demonstrates Rain payment accounts, routes, and treasury simulations.
 
 ### General agentic commerce track
 
-Agents do more than recommend a purchase. They discover, negotiate, request approval, receive exact payment authority, move test or sandbox money, and verify delivery.
+Bound takes agents beyond recommendations. They discover products, negotiate within company rules, request approval, receive exact payment authority, move test or sandbox money, and verify delivery.
 
 ### Best implementation of Monad for an Agentic Commerce use case using Rain
 
-One governed workflow selects Monad x402 for small API purchases, Rain for traditional vendor procurement, and a Monad escrow contract for optional high-value commercial terms. Rain and Monad solve different parts of the same transaction system.
+One governed business workflow selects Monad x402 for small API purchases, Rain for traditional vendor procurement, and a Monad escrow contract for optional high-value commercial terms. Rain and Monad solve different parts of the same transaction system.
 
 ## The problem
 
@@ -38,7 +38,7 @@ Agents can find information and call tools, but businesses still need answers to
 - Should the agent use a stablecoin payment, a card, or escrow?
 - How does a company expose its existing products to other agents without rebuilding its commerce stack?
 
-Raingentic connects that complete chain.
+Bound connects that complete commercial chain while the business keeps its existing products and systems.
 
 ```text
 Business request
@@ -54,7 +54,7 @@ Business request
 
 ## What we built
 
-Raingentic supports both sides of a company’s agent-commerce operation.
+Bound supports both sides of a company’s agent-commerce operation: buying what the business needs and selling what it already offers.
 
 ### Buying
 
@@ -137,7 +137,7 @@ The central idea is not to force every purchase onto one payment rail. The produ
 | High-value equipment | AP2 and human approval | Rain deposit, existing checkout, or Monad escrow | Commercial terms and approval remain explicit |
 | Treasury movement | Company policy | Rain payment accounts and routes | Demonstrates stablecoin onramp and offramp workflows |
 
-Rain connects autonomous agents to the existing card and banking world. Monad gives agents a native settlement layer for APIs, data, and programmable commercial terms. Raingentic coordinates both.
+Rain connects autonomous agents to the existing card and banking world. Monad gives agents a native settlement layer for APIs, data, and programmable commercial terms. Bound coordinates both according to company policy.
 
 ```mermaid
 flowchart TD
@@ -158,7 +158,7 @@ flowchart TD
 
 The complete architecture includes company inputs, buying and selling agents, A2A negotiation, deterministic controls, human approval, AP2 authorization, Monad and Rain execution paths, delivery verification, and the live PreFlight evidence layer.
 
-[![Complete Raingentic architecture](./docs/architecture.svg)](./docs/architecture.svg)
+[![Complete Bound architecture](./docs/architecture.svg)](./docs/architecture.svg)
 
 [Open the editable Excalidraw source](./docs/architecture.excalidraw)
 
@@ -166,7 +166,7 @@ The compact system view is:
 
 ```mermaid
 flowchart TD
-    S[Existing business systems<br/>OpenAPI, stores, billing, internal APIs] --> R[Raingentic control plane]
+    S[Existing business systems<br/>OpenAPI, stores, billing, internal APIs] --> R[Bound control plane]
     R --> C[Catalog and pricing]
     R --> P[Budgets and deterministic policy]
     R --> B[Buying agent]
@@ -186,7 +186,7 @@ flowchart TD
 
 ## A2A negotiation
 
-Raingentic uses `@a2a-js/sdk` and the official A2A v1.0 protocol surface.
+Bound uses `@a2a-js/sdk` and the official A2A v1.0 protocol surface so another agent can discover what a business sells and negotiate without a custom integration.
 
 The seller publishes:
 
@@ -212,7 +212,7 @@ This is real A2A communication. For the controlled demonstration, the buyer and 
 
 Agreement is not permission to spend.
 
-After A2A negotiation and any required human approval, Raingentic uses Google’s official AP2 SDK to create and verify signed Checkout and Payment Mandates.
+After A2A negotiation and any required human approval, Bound uses Google’s official AP2 SDK to create and verify signed Checkout and Payment Mandates. The business can prove that an agent was authorized for this seller, product, amount, recipient, and payment method.
 
 The authorization locks down:
 
@@ -274,7 +274,7 @@ The working sandbox integration can:
 - Create, fetch, update, and delete payment routes
 - Simulate fiat-to-stablecoin onramp and stablecoin-to-fiat offramp flows
 
-Before card creation, Raingentic verifies the exact AP2 procurement authorization again. The AI never receives unrestricted payment authority.
+Before card creation, Bound verifies the exact AP2 procurement authorization again. The AI never receives unrestricted payment authority.
 
 Rain operations use sandbox funds. Treasury movements are simulations, not real bank transfers.
 
@@ -286,7 +286,7 @@ The selling demonstration uses a deployed aviation and drone-operations API:
 
 `https://preflight.saibolla.com/openapi.json`
 
-Raingentic imports all 18 operations and turns them into independently configurable products with prices, floors, negotiation policies, and payment assignments.
+Bound imports all 18 operations and turns them into independently configurable products with prices, floors, negotiation policies, and payment assignments. This demonstrates how an existing SaaS or API business can expose granular products to purchasing agents without changing its backend.
 
 The deployed service includes:
 
@@ -319,7 +319,7 @@ When a transaction exceeds company authority, the workflow pauses before payment
 
 Payment is not treated as completion.
 
-After execution, Raingentic checks that:
+After execution, Bound checks that:
 
 - The correct product was delivered
 - The requested quantity was delivered
@@ -359,7 +359,7 @@ The mission-readiness result used in the controlled walkthrough is synthetic. Th
 
 The honest claim is:
 
-> Raingentic connects A2A negotiation, deterministic company controls, human approval, official AP2 payment authorization, Monad x402 settlement, Rain-controlled procurement, and delivery verification into one functioning workflow. Counterparties and parts of the commercial data remain controlled demonstration fixtures.
+> Bound connects an existing business catalog to A2A negotiation, deterministic company controls, human approval, official AP2 payment authorization, Monad x402 settlement, Rain-controlled procurement, and delivery verification in one functioning workflow. Counterparties and parts of the commercial data remain controlled demonstration fixtures.
 
 ## Repository structure
 
@@ -408,6 +408,6 @@ The current test suite covers purchasing controls, A2A-driven planning behavior,
 
 ## License
 
-Raingentic is licensed under the [GNU Affero General Public License v3.0 only](LICENSE), identified by the SPDX expression `AGPL-3.0-only`.
+Bound is licensed under the [GNU Affero General Public License v3.0 only](LICENSE), identified by the SPDX expression `AGPL-3.0-only`.
 
-If you modify Raingentic and make the modified version available to users over a network, the AGPL requires you to offer those users the corresponding source code under the same license.
+If you modify Bound and make the modified version available to users over a network, the AGPL requires you to offer those users the corresponding source code under the same license.
