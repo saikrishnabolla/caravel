@@ -262,6 +262,8 @@ Before card creation, Raingentic verifies the exact AP2 procurement authorizatio
 
 Rain operations use sandbox funds. Treasury movements are simulations, not real bank transfers.
 
+The dashboard also includes a governed treasury strategy experiment covering operating reserves, allocation limits, human approval, provider eligibility, bridges, and leverage controls. It is a concept preview: investment providers are not connected and no funds, investments, bridges, or trades are executed.
+
 ## Live PreFlight product catalog
 
 The selling demonstration uses a deployed aviation and drone-operations API:
