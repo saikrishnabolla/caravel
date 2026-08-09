@@ -2,11 +2,29 @@
 
 Raingentic is a business control plane for agent commerce. It lets companies connect what they already buy and sell, define the authority their agents receive, negotiate through A2A, authorize payment through AP2, and route each transaction through Monad x402, Rain, or a high-value escrow flow.
 
+An agent negotiates and buys a protected API through Monad, then autonomously procures upstream fulfillment through a policy-controlled Rain card.
+
 It does not replace a company’s API backend, Shopify store, billing system, inventory, or fulfillment. It makes those systems discoverable and safely usable by autonomous agents.
 
 [Live application](https://raingentic.saibolla.com) · [Dashboard](https://raingentic.saibolla.com/dashboard) · [A2A Agent Card](https://raingentic.saibolla.com/.well-known/agent-card.json) · [PreFlight OpenAPI](https://preflight.saibolla.com/openapi.json) · [Monad contract](https://monadvision.com/address/0x2403498812e217ab86dd0e937e60fe09bfe73fb1)
 
+[![Rain: scoped cards and treasury](https://img.shields.io/badge/Rain-Scoped_cards_and_treasury-18181B)](https://www.rain.xyz/) [![Monad: x402 and escrow](https://img.shields.io/badge/Monad-x402_and_escrow-18181B)](https://www.monad.xyz/) [![A2A: agent negotiation](https://img.shields.io/badge/A2A-Agent_negotiation-18181B)](https://a2a-protocol.org/) [![AP2: payment authorization](https://img.shields.io/badge/AP2-Payment_authorization-18181B)](https://github.com/google-agentic-commerce/AP2) [![OpenAI: agent planning](https://img.shields.io/badge/OpenAI-Agent_planning-18181B)](https://openai.com/) [![Solidity: commerce escrow](https://img.shields.io/badge/Solidity-Commerce_escrow-18181B)](https://soliditylang.org/) [![Next.js: application](https://img.shields.io/badge/Next.js-Application-18181B)](https://nextjs.org/)
+
 Built for the Raingentic Commerce Hackathon NYC, co-hosted by Rain and the Monad Foundation.
+
+## Hackathon track fit
+
+### Best use of Rain
+
+An agent receives AP2-scoped permission, creates a controlled Rain card, demonstrates a policy-driven decline, completes an allowed procurement, and retrieves the settled transaction. The same application demonstrates Rain payment accounts, routes, and treasury simulations.
+
+### General agentic commerce track
+
+Agents do more than recommend a purchase. They discover, negotiate, request approval, receive exact payment authority, move test or sandbox money, and verify delivery.
+
+### Best implementation of Monad for an Agentic Commerce use case using Rain
+
+One governed workflow selects Monad x402 for small API purchases, Rain for traditional vendor procurement, and a Monad escrow contract for optional high-value commercial terms. Rain and Monad solve different parts of the same transaction system.
 
 ## The problem
 
@@ -67,6 +85,31 @@ A company can:
 - Keep Rain, existing checkout, invoice, or escrow flows for larger purchases
 - Publish a hosted, machine-readable agent-commerce contract
 
+## The buying-agent loop
+
+The model helps interpret the request and prepare a purchasing plan. Deterministic application code controls the budget, eligible providers, approval threshold, authorization, and payment execution.
+
+```mermaid
+flowchart TD
+    H[Human describes the outcome] --> B[Buyer agent creates a structured mandate]
+    B --> M[Budget, quantity, quality, and approval rules]
+    M --> D[Discover and compare configured providers]
+    D --> N[A2A seller negotiation]
+    N --> P{Within company policy?}
+    P -->|Yes| A[AP2 exact payment permission]
+    P -->|No| R{Human review}
+    R -->|Approve| A
+    R -->|Reject| S[Stop without moving money]
+    A --> X{Select the approved payment rail}
+    X -->|API or data| MX[Monad x402]
+    X -->|Traditional merchant| RC[Rain scoped card]
+    MX --> V[Verify delivery against the mandate]
+    RC --> V
+    V --> T[Authorization, payment, and delivery receipt]
+```
+
+For the controlled demonstration, provider offers are configured fixtures and the A2A buyer and seller run inside the application. The negotiation, policy enforcement, approval stop, AP2 authorization, and payment integrations are working components.
+
 ## Why Rain and Monad are both necessary
 
 The central idea is not to force every purchase onto one payment rail. The product and company policy select the correct rail.
@@ -80,7 +123,30 @@ The central idea is not to force every purchase onto one payment rail. The produ
 
 Rain connects autonomous agents to the existing card and banking world. Monad gives agents a native settlement layer for APIs, data, and programmable commercial terms. Raingentic coordinates both.
 
+```mermaid
+flowchart TD
+    P[One approved purchase] --> A[AP2 payment permission]
+    A --> M[Monad Testnet<br/>Agent-native settlement]
+    A --> R[Rain sandbox<br/>Existing merchant and treasury access]
+    M --> X[x402 API payment<br/>Pay per request and release the result]
+    M --> E[Solidity commerce escrow<br/>Record high-value commercial terms]
+    R --> C[Scoped virtual card<br/>Amount, MCC, and expiration controls]
+    R --> T[Payment accounts and routes<br/>Onramp and offramp simulations]
+    X --> V[Verified commercial outcome]
+    E --> V
+    C --> V
+    T --> V
+```
+
 ## End-to-end architecture
+
+The complete architecture includes company inputs, buying and selling agents, A2A negotiation, deterministic controls, human approval, AP2 authorization, Monad and Rain execution paths, delivery verification, and the live PreFlight evidence layer.
+
+[![Complete Raingentic architecture](./docs/architecture.svg)](./docs/architecture.svg)
+
+[Open the editable Excalidraw source](./docs/architecture.excalidraw)
+
+The compact system view is:
 
 ```mermaid
 flowchart TD
@@ -95,7 +161,7 @@ flowchart TD
     H --> A[AP2 payment authorization]
     A --> M[Monad x402<br/>API and data purchase]
     A --> RC[Rain scoped card<br/>Traditional vendor]
-    A --> X[Monad escrow or checkout<br/>High-value order]
+    A --> X[Monad Solidity escrow or checkout<br/>High-value order]
     M --> V[Delivery verification]
     RC --> V
     X --> V
@@ -245,32 +311,14 @@ After execution, Raingentic checks that:
 
 The mission-readiness result used in the controlled walkthrough is synthetic. The verification and policy enforcement code is real.
 
-## Hackathon track fit
-
-### Best use of Rain
-
-An agent receives AP2-scoped permission, creates a controlled Rain card, demonstrates a policy-driven decline, completes an allowed procurement, and retrieves the settled transaction. The same application demonstrates Rain payment accounts, routes, and treasury simulations.
-
-### General agentic commerce track
-
-Agents do more than recommend a purchase. They discover, negotiate, request approval, receive exact payment authority, move test or sandbox money, and verify delivery.
-
-### Best implementation of Monad using Rain
-
-One governed workflow selects Monad x402 for small API purchases, Rain for traditional vendor procurement, and a Monad escrow contract for optional high-value commercial terms. Rain and Monad solve different parts of the same transaction system.
-
 ## Three-minute demo
 
-1. Open the private PreFlight company workspace.
-2. Import the live PreFlight OpenAPI document and discover 18 priced operations.
-3. Publish the catalog, commerce policy, Agent Card reference, and hosted contract.
-4. Ask the buying agent to purchase mission-readiness coverage within a budget.
-5. Show A2A discovery, negotiation, rejected offers, and the selected agreement.
-6. Stop at the human approval checkpoint.
-7. Approve the transaction and create the exact AP2 mandate.
-8. Settle the customer API payment through Monad x402.
-9. Fulfill upstream procurement with a scoped Rain sandbox card.
-10. Verify delivery and show the final technical receipt.
+1. Import the live PreFlight OpenAPI document and publish its 18 priced operations.
+2. Ask the buying agent for mission-readiness coverage with a budget and approval threshold.
+3. Show A2A provider discovery, negotiation, rejected offers, and the selected agreement.
+4. Stop for human approval, then create the exact AP2 payment mandate.
+5. Pay for the API through Monad x402 and procure upstream fulfillment with a scoped Rain card.
+6. Verify delivery and show the final authorization, settlement, and delivery receipt.
 
 ## What is real and what is controlled
 
