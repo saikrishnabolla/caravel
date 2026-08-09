@@ -334,6 +334,7 @@ The mission-readiness result used in the controlled walkthrough is synthetic. Th
 | Rain payment accounts, routes, onramp, and offramp | Sandbox simulation |
 | PreFlight OpenAPI and 18 callable operations | Deployed |
 | Delivery verification | Working against controlled demo results |
+| Treasury strategy policy and provider routing | Concept preview; no investment accounts, bridging, or trading execution connected |
 | External unrelated A2A counterparty | Not yet tested |
 | Production Rain banking and cards | Requires production onboarding |
 | Mainnet stablecoin payments | Not enabled |
