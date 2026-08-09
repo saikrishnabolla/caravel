@@ -43,8 +43,8 @@ import {
 } from "@/components/commerce-doc-components";
 
 type World = "buying" | "selling";
-type BuyingPage = "dashboard" | "purchases" | "payment-methods" | "payment-requests" | "organization";
-type SellingPage = "dashboard" | "products" | "plans" | "analytics" | "payouts" | "organization";
+type BuyingPage = "dashboard" | "purchases" | "payment-methods" | "payment-requests" | "organization" | "treasury";
+type SellingPage = "dashboard" | "products" | "plans" | "analytics" | "payouts" | "organization" | "treasury";
 type Page = BuyingPage | SellingPage;
 
 type PlatformStatus = {
@@ -69,13 +69,13 @@ type ParsedBuyingMandate = {
 const buyingNavigationGroups = [
   { label: "Overview", items: [{ id: "dashboard" as const, label: "Dashboard", icon: Home }] },
   { label: "Buying", items: [{ id: "purchases" as const, label: "Purchases", icon: ShoppingBag },{ id: "payment-requests" as const, label: "Approvals", icon: ReceiptText },{ id: "payment-methods" as const, label: "Payments", icon: CreditCard }] },
-  { label: "Company", items: [{ id: "organization" as const, label: "Organization", icon: Building2 }] },
+  { label: "Company", items: [{ id: "organization" as const, label: "Organization", icon: Building2 },{ id: "treasury" as const, label: "Treasury", icon: WalletCards }] },
 ];
 
 const sellingNavigationGroups = [
   { label: "Overview", items: [{ id: "dashboard" as const, label: "Dashboard", icon: Home }] },
   { label: "Selling", items: [{ id: "products" as const, label: "Products", icon: Package },{ id: "plans" as const, label: "Plans and pricing", icon: BadgeDollarSign },{ id: "analytics" as const, label: "Analytics", icon: Activity },{ id: "payouts" as const, label: "Payouts", icon: Landmark }] },
-  { label: "Company", items: [{ id: "organization" as const, label: "Organization", icon: Building2 }] },
+  { label: "Company", items: [{ id: "organization" as const, label: "Organization", icon: Building2 },{ id: "treasury" as const, label: "Treasury", icon: WalletCards }] },
 ];
 
 const pageTitles: Record<string, string> = {
@@ -84,6 +84,7 @@ const pageTitles: Record<string, string> = {
   "payment-methods": "Payments",
   "payment-requests": "Approvals",
   organization: "Organization",
+  treasury: "Treasury",
   products: "Products",
   plans: "Plans and pricing",
   analytics: "Analytics",
@@ -224,10 +225,10 @@ export function CommerceDashboard({ initialDemoPrompt = false }: { initialDemoPr
     {mobileNav && <button type="button" aria-label="Close navigation" className="fixed inset-0 z-30 bg-black/30 lg:hidden" onClick={() => setMobileNav(false)} />}
 
     <div className="relative z-10 lg:pl-[17.5rem]">
-      <header className="sticky top-0 z-20 flex h-[4.5rem] items-center justify-between border-b border-border bg-background/75 px-4 backdrop-blur-2xl md:px-8"><div className="flex items-center gap-3"><Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation" onClick={() => setMobileNav(true)}><Menu /></Button><p className="text-sm font-medium text-muted-foreground">{world === "buying" ? "Buying" : "Selling"}</p><ChevronRight className="size-4 text-muted-foreground" /><p className="text-sm font-medium text-foreground">{demoMode ? "Prepared demo" : pageTitles[page]}</p></div><div className="flex items-center gap-2 sm:gap-3">{demoDataLoaded ? <Button size="sm" variant="ghost" className="hidden sm:inline-flex" onClick={() => setDemoDataDialog(true)}><Check className="text-primary" />Demo data loaded</Button> : catalogPublished ? <Button size="sm" variant="ghost" className="hidden sm:inline-flex" title={publicationUrl} onClick={() => { switchWorld("selling"); requestAnimationFrame(() => navigate("products")); }}><Check className="text-primary" />Catalog published</Button> : <Button size="sm" variant="outline" title="Populate this workspace with sample products, purchases, approvals, payment methods, and transactions." onClick={() => setDemoDataDialog(true)}><Database />Load demo data</Button>}{demoMode ? <Button size="sm" variant="outline" onClick={() => setDemoMode(false)}>Exit demo</Button> : <Button size="sm" disabled={!demoDataLoaded && !catalogPublished} title={demoDataLoaded || catalogPublished ? "Run the prepared commerce walkthrough" : "Import and publish a catalog or load demo data first"} onClick={() => setDemoMode(true)}><Play />Run demo</Button>}</div></header>
+      <header className="sticky top-0 z-20 flex h-[4.5rem] items-center justify-between border-b border-border bg-background/75 px-4 backdrop-blur-2xl md:px-8"><div className="flex items-center gap-3"><Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation" onClick={() => setMobileNav(true)}><Menu /></Button><p className="text-sm font-medium text-muted-foreground">{page === "organization" || page === "treasury" ? "Company" : world === "buying" ? "Buying" : "Selling"}</p><ChevronRight className="size-4 text-muted-foreground" /><p className="text-sm font-medium text-foreground">{demoMode ? "Prepared demo" : pageTitles[page]}</p></div><div className="flex items-center gap-2 sm:gap-3">{demoDataLoaded ? <Button size="sm" variant="ghost" className="hidden sm:inline-flex" onClick={() => setDemoDataDialog(true)}><Check className="text-primary" />Demo data loaded</Button> : catalogPublished ? <Button size="sm" variant="ghost" className="hidden sm:inline-flex" title={publicationUrl} onClick={() => { switchWorld("selling"); requestAnimationFrame(() => navigate("products")); }}><Check className="text-primary" />Catalog published</Button> : <Button size="sm" variant="outline" title="Populate this workspace with sample products, purchases, approvals, payment methods, and transactions." onClick={() => setDemoDataDialog(true)}><Database />Load demo data</Button>}{demoMode ? <Button size="sm" variant="outline" onClick={() => setDemoMode(false)}>Exit demo</Button> : <Button size="sm" disabled={!demoDataLoaded && !catalogPublished} title={demoDataLoaded || catalogPublished ? "Run the prepared commerce walkthrough" : "Import and publish a catalog or load demo data first"} onClick={() => setDemoMode(true)}><Play />Run demo</Button>}</div></header>
 
       <main className="mx-auto max-w-[88rem] p-5 md:p-8 lg:p-10">
-        {demoMode ? <PresentationMode /> : page === "organization" ? <Organization company={company} setCompany={setCompany} saved={saved} setSaved={setSaved} readiness={readiness} /> : !demoDataLoaded ? world === "selling" && page === "products" ? <CatalogSetup onLoadDemo={() => setDemoDataDialog(true)} onPublished={url => { setCatalogPublished(true); setPublicationUrl(url); }} /> : <EmptyWorkspacePage world={world} page={page} navigate={navigate} switchWorld={switchWorld} /> : <>
+        {demoMode ? <PresentationMode /> : page === "organization" ? <Organization company={company} setCompany={setCompany} saved={saved} setSaved={setSaved} readiness={readiness} /> : page === "treasury" ? <Treasury /> : !demoDataLoaded ? world === "selling" && page === "products" ? <CatalogSetup onLoadDemo={() => setDemoDataDialog(true)} onPublished={url => { setCatalogPublished(true); setPublicationUrl(url); }} /> : <EmptyWorkspacePage world={world} page={page} navigate={navigate} switchWorld={switchWorld} /> : <>
           {world === "buying" && page === "dashboard" && <BuyingDashboard navigate={navigate} readiness={readiness} />}
           {world === "buying" && page === "purchases" && <BuyingPurchases creating={creatingPurchase} setCreating={setCreatingPurchase} />}
           {world === "buying" && page === "payment-methods" && <BuyingPaymentMethods />}
@@ -340,6 +341,66 @@ function SellingPlans({ selected, setSelected, saved, setSaved }: { selected: st
 
 function SellingAnalytics() {
   return <Section title="Events and analytics" description="Understand who is buying, which products agents use, and how revenue settles."><Card><CardHeader><CardTitle>Performance</CardTitle><CardDescription>Sample metrics for the video and live demonstration.</CardDescription></CardHeader><CardContent className="grid divide-y border-t p-0 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4"><Metric label="Revenue" value="$7,494" change="+49.9%" /><Metric label="API assessments" value="1,317" change="+14.5%" /><Metric label="Average purchase" value="$56.77" change="+6.2%" /><Metric label="Refund rate" value="0.8%" /></CardContent></Card><Card className="mt-5"><CardHeader><CardTitle>Recent customer activity</CardTitle></CardHeader><CardContent className="space-y-3">{[["FarmFleet operations agent","PreFlight Operations API","100 assessments","Monad x402"],["Agronomy operations team","Mission Readiness Report","24 reports","Business invoice"],["Enterprise procurement agent","DJI Matrice 4E Surveying Kit","1 order","Rain card"]].map(([buyer,product,usage,payment]) => <div key={buyer} className="grid gap-3 border-b py-3 last:border-0 md:grid-cols-4"><p className="font-medium">{buyer}</p><p>{product}</p><p>{usage}</p><p className="text-muted-foreground">{payment}</p></div>)}</CardContent></Card></Section>;
+}
+
+function Treasury() {
+  const [selectedStrategy, setSelectedStrategy] = useState<"cash" | "markets" | "trading">("cash");
+  const [reserve, setReserve] = useState("75000");
+  const [allocationLimit, setAllocationLimit] = useState("20");
+  const [approvalRequired, setApprovalRequired] = useState(true);
+  const [externalBridges, setExternalBridges] = useState(false);
+  const [leveragedProducts, setLeveragedProducts] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const strategies = [
+    { id: "cash" as const, title: "Cash management", providers: "Ondo, Securitize, Superstate", description: "Tokenized Treasury and short-duration cash products for balances not needed immediately.", status: "Provider review", risk: "Lower risk", url: "https://ondo.finance" },
+    { id: "markets" as const, title: "Tokenized markets", providers: "Ondo Stocks, Dinari, Backed", description: "Tokenized stocks and ETFs, including broad-market exposure where the company is eligible.", status: "Eligibility required", risk: "Market risk", url: "https://dinari.com" },
+    { id: "trading" as const, title: "Trading and hedging", providers: "Hyperliquid", description: "Spot and perpetual markets for approved hedging or trading strategies. Leverage remains disabled by default.", status: "Disabled", risk: "High risk", url: "https://app.hyperliquid.xyz/trade" },
+  ];
+  const selected = strategies.find(strategy => strategy.id === selectedStrategy) ?? strategies[0];
+
+  return <Section title="Treasury" description="Define what the company may do with stablecoin or cash balances that are not required for immediate operations.">
+    <div className="mb-5 flex flex-wrap items-center gap-2"><Badge variant="secondary">Concept preview</Badge><Badge variant="outline">No funds move from this page</Badge><Badge variant="outline">Provider eligibility required</Badge></div>
+
+    <Card>
+      <CardHeader><div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"><div><CardTitle>Treasury policy</CardTitle><CardDescription className="mt-2 max-w-3xl">The company keeps an operating reserve, limits how much capital may leave approved accounts, and requires a human decision before an external provider receives funds.</CardDescription></div><Button onClick={() => setSaved(true)}>{saved ? <Check /> : <ShieldCheck />}{saved ? "Policy saved" : "Save policy preview"}</Button></div></CardHeader>
+      <CardContent className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+        <div className="space-y-5 rounded-xl border p-5">
+          <div className="space-y-2"><Label htmlFor="treasury-reserve">Minimum operating reserve</Label><div className="relative"><span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span><Input id="treasury-reserve" type="number" value={reserve} onChange={event => { setReserve(event.target.value); setSaved(false); }} className="pl-7" /></div><p className="text-sm leading-6 text-muted-foreground">Agents cannot allocate balances needed for payroll, vendors, cards, or normal operations.</p></div>
+          <div className="space-y-2"><Label htmlFor="treasury-allocation">Maximum treasury allocation</Label><div className="relative"><Input id="treasury-allocation" type="number" min="0" max="100" value={allocationLimit} onChange={event => { setAllocationLimit(event.target.value); setSaved(false); }} className="pr-9" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span></div><p className="text-sm leading-6 text-muted-foreground">Maximum share of eligible excess capital that a treasury agent may propose allocating.</p></div>
+        </div>
+        <div className="divide-y rounded-xl border">
+          <div className="flex items-center justify-between gap-5 p-5"><div><Label htmlFor="treasury-approval" className="text-base">Require human approval</Label><p className="mt-1 text-sm leading-6 text-muted-foreground">Every investment, bridge, redemption, or trading action stops for review.</p></div><Switch id="treasury-approval" checked={approvalRequired} onCheckedChange={value => { setApprovalRequired(value); setSaved(false); }} /></div>
+          <div className="flex items-center justify-between gap-5 p-5"><div><Label htmlFor="treasury-bridges" className="text-base">Allow external bridges</Label><p className="mt-1 text-sm leading-6 text-muted-foreground">Required when an approved provider or asset is not available on the source network.</p></div><Switch id="treasury-bridges" checked={externalBridges} onCheckedChange={value => { setExternalBridges(value); setSaved(false); }} /></div>
+          <div className="flex items-center justify-between gap-5 p-5"><div><Label htmlFor="treasury-leverage" className="text-base">Allow leveraged products</Label><p className="mt-1 text-sm leading-6 text-muted-foreground">Disabled by default. Hyperliquid perpetual positions cannot be proposed while this is off.</p></div><Switch id="treasury-leverage" checked={leveragedProducts} onCheckedChange={value => { setLeveragedProducts(value); setSaved(false); }} /></div>
+        </div>
+      </CardContent>
+    </Card>
+
+    <div className="mt-5 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+      <Card>
+        <CardHeader><CardTitle>Approved strategy connections</CardTitle><CardDescription>Select a strategy to preview the required provider and execution path. None of these providers is connected yet.</CardDescription></CardHeader>
+        <CardContent className="space-y-3">{strategies.map(strategy => <button type="button" key={strategy.id} onClick={() => setSelectedStrategy(strategy.id)} className={`w-full rounded-xl border p-5 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring ${selectedStrategy === strategy.id ? "border-primary/40 bg-primary/[0.045]" : "border-border hover:bg-white/[0.025]"}`}><div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div><div className="flex flex-wrap items-center gap-2"><p className="font-semibold">{strategy.title}</p><Badge variant="outline">{strategy.risk}</Badge></div><p className="mt-2 text-sm font-medium text-foreground/85">{strategy.providers}</p><p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">{strategy.description}</p></div><Badge variant={strategy.id === "cash" ? "secondary" : "outline"}>{strategy.status}</Badge></div></button>)}</CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><div className="flex items-start justify-between gap-4"><div><CardTitle>{selected.title}</CardTitle><CardDescription className="mt-2">Illustrative routing plan</CardDescription></div><Badge variant="outline">Not connected</Badge></div></CardHeader>
+        <CardContent>
+          <div className="space-y-1">{[
+            ["1", "Funding source", "Rain account or approved stablecoin wallet"],
+            ["2", "Company policy", `$${Number(reserve || 0).toLocaleString()} reserve and ${allocationLimit || "0"}% allocation cap`],
+            ["3", "Eligibility", `Verify company access to ${selected.providers}`],
+            ["4", "Human decision", approvalRequired ? "Required before execution" : "Policy currently allows automatic execution"],
+            ["5", "Network route", externalBridges ? "Approved bridge may be used" : "External bridges are blocked"],
+            ["6", "Execution", selectedStrategy === "trading" && !leveragedProducts ? "Spot only; leveraged products blocked" : "Execute only the approved mandate"],
+          ].map(([step,title,detail]) => <div key={step} className="grid grid-cols-[2rem_1fr] gap-3 border-b py-4 last:border-0"><div className="flex size-7 items-center justify-center rounded-full bg-secondary text-sm font-medium text-primary">{step}</div><div><p className="font-medium">{title}</p><p className="mt-1 text-sm leading-6 text-muted-foreground">{detail}</p></div></div>)}</div>
+          <Button asChild variant="outline" className="mt-5 w-full"><a href={selected.url} target="_blank" rel="noreferrer">Review provider<ArrowRight /></a></Button>
+        </CardContent>
+      </Card>
+    </div>
+
+    <div className="mt-5 rounded-xl border border-border bg-black/15 p-5"><p className="font-medium">Demonstration boundary</p><p className="mt-2 text-sm leading-6 text-muted-foreground">Raingentic currently demonstrates the policy and routing design only. It does not connect investment accounts, assess legal eligibility, provide investment advice, bridge funds, or execute trades. Monad appears only when it actually authorizes, records, or settles part of a route; providers operating on other networks remain external integrations.</p></div>
+  </Section>;
 }
 
 function Organization({ company, setCompany, saved, setSaved, readiness }: { company: { name: string; website: string; approvalThreshold: string }; setCompany: (value: { name: string; website: string; approvalThreshold: string }) => void; saved: boolean; setSaved: (value: boolean) => void; readiness: Record<string, boolean> }) {
