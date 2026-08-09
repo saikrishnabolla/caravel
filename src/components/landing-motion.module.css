@@ -17,6 +17,55 @@
   animation: statusEnter 850ms cubic-bezier(.16, 1, .3, 1) forwards;
 }
 
+.businessStage {
+  opacity: 1;
+}
+
+.controlStage {
+  opacity: 1;
+}
+
+.flowLine {
+  position: relative;
+  min-height: 1.25rem;
+}
+
+.flowLine::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: hsl(180 5% 24%);
+}
+
+.flowLine::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 42%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(58 100% 65% / .85), transparent);
+  animation: lineTrace 12s ease-in-out infinite;
+}
+
+.flowLine svg {
+  position: relative;
+  z-index: 1;
+  background: #090e0e;
+}
+
+.verticalTrace {
+  background: linear-gradient(180deg, transparent, hsl(58 100% 65% / .85), transparent);
+  animation: verticalTrace 10s ease-in-out infinite;
+}
+
+.routeRow {
+  opacity: 1;
+}
+
 .flowCard {
   transition: border-color 500ms ease, background 500ms ease;
 }
@@ -38,10 +87,26 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes lineTrace {
+  0%, 12% { transform: translateX(-100%); opacity: 0; }
+  22% { opacity: 1; }
+  58% { opacity: 1; }
+  72%, 100% { transform: translateX(240%); opacity: 0; }
+}
+
+@keyframes verticalTrace {
+  0%, 14% { transform: translateY(-100%); opacity: 0; }
+  24% { opacity: 1; }
+  58% { opacity: 1; }
+  72%, 100% { transform: translateY(100%); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .heroWord, .heroVisual, .statusStep {
     animation: none !important;
     opacity: 1;
     transform: none;
   }
+  .flowLine::after { display: none; }
+  .verticalTrace { animation: none !important; }
 }

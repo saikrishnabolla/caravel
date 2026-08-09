@@ -27,7 +27,11 @@ export async function prepareCommerceSetup(request: string, catalog: unknown): P
   if (!process.env.OPENAI_API_KEY) process.env.OPENAI_API_KEY = key;
   const agent = new Agent({ name: "Raingentic business onboarding agent", model: process.env.OPENAI_AGENT_MODEL ?? "gpt-5.6", instructions: ["Prepare a conservative agent-commerce setup plan from the user's request and imported catalog.","Use Monad x402 for small API and data calls.","Use Rain cards for controlled traditional merchant payments.","Keep existing checkout when it remains responsible for tax, inventory, or fulfillment.","Require human review before publishing or moving money."].join(" "), outputType: setupPlanSchema });
   try {
-    const result = await run(agent, JSON.stringify({ request, catalog }));
+    const result = await Promise.race([
+      run(agent, JSON.stringify({ request, catalog })),
+      new Promise<null>(resolve => setTimeout(() => resolve(null), 6000)),
+    ]);
+    if (!result) return fallback;
     return result.finalOutput ? { ...result.finalOutput, source: "openai-agent" } : fallback;
   } catch { return fallback; }
 }

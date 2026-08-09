@@ -129,6 +129,8 @@ export function CommerceDashboard({ initialDemoPrompt = false }: { initialDemoPr
   const [mobileNav, setMobileNav] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
   const [demoDataLoaded, setDemoDataLoaded] = useState(false);
+  const [catalogPublished, setCatalogPublished] = useState(false);
+  const [publicationUrl, setPublicationUrl] = useState("");
   const [demoDataDialog, setDemoDataDialog] = useState(initialDemoPrompt);
   const [platform, setPlatform] = useState<PlatformStatus | null>(null);
   const [company, setCompany] = useState({ name: "PreFlight", website: "https://preflight.app", approvalThreshold: "500" });
@@ -144,8 +146,10 @@ export function CommerceDashboard({ initialDemoPrompt = false }: { initialDemoPr
       try {
         const stored = window.localStorage.getItem("raingentic-preflight-workspace");
         if (stored) {
-          const workspace = JSON.parse(stored) as { demoDataLoaded?: boolean; company?: typeof company; selectedPlan?: string };
+          const workspace = JSON.parse(stored) as { demoDataLoaded?: boolean; catalogPublished?: boolean; publicationUrl?: string; company?: typeof company; selectedPlan?: string };
           if (typeof workspace.demoDataLoaded === "boolean") setDemoDataLoaded(workspace.demoDataLoaded);
+          if (typeof workspace.catalogPublished === "boolean") setCatalogPublished(workspace.catalogPublished);
+          if (workspace.publicationUrl) setPublicationUrl(workspace.publicationUrl);
           if (workspace.company) setCompany(workspace.company);
           if (workspace.selectedPlan) setSelectedPlan(workspace.selectedPlan);
         }
@@ -160,8 +164,8 @@ export function CommerceDashboard({ initialDemoPrompt = false }: { initialDemoPr
 
   useEffect(() => {
     if (!workspaceLoaded) return;
-    window.localStorage.setItem("raingentic-preflight-workspace", JSON.stringify({ demoDataLoaded, company, selectedPlan }));
-  }, [company, demoDataLoaded, selectedPlan, workspaceLoaded]);
+    window.localStorage.setItem("raingentic-preflight-workspace", JSON.stringify({ demoDataLoaded, catalogPublished, publicationUrl, company, selectedPlan }));
+  }, [catalogPublished, company, demoDataLoaded, publicationUrl, selectedPlan, workspaceLoaded]);
 
   const readiness = useMemo(() => ({
     rain: Boolean(platform?.rain.configured),
@@ -220,10 +224,10 @@ export function CommerceDashboard({ initialDemoPrompt = false }: { initialDemoPr
     {mobileNav && <button type="button" aria-label="Close navigation" className="fixed inset-0 z-30 bg-black/30 lg:hidden" onClick={() => setMobileNav(false)} />}
 
     <div className="relative z-10 lg:pl-[17.5rem]">
-      <header className="sticky top-0 z-20 flex h-[4.5rem] items-center justify-between border-b border-border bg-background/75 px-4 backdrop-blur-2xl md:px-8"><div className="flex items-center gap-3"><Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation" onClick={() => setMobileNav(true)}><Menu /></Button><p className="text-sm font-medium text-muted-foreground">{world === "buying" ? "Buying" : "Selling"}</p><ChevronRight className="size-4 text-muted-foreground" /><p className="text-sm font-medium text-foreground">{demoMode ? "Prepared demo" : pageTitles[page]}</p></div><div className="flex items-center gap-2 sm:gap-3">{demoDataLoaded ? <Button size="sm" variant="ghost" className="hidden sm:inline-flex" onClick={() => setDemoDataDialog(true)}><Check className="text-primary" />Demo data loaded</Button> : <Button size="sm" variant="outline" title="Populate this workspace with sample products, purchases, approvals, payment methods, and transactions." onClick={() => setDemoDataDialog(true)}><Database />Load demo data</Button>}{demoMode ? <Button size="sm" variant="outline" onClick={() => setDemoMode(false)}>Exit demo</Button> : <Button size="sm" disabled={!demoDataLoaded} title={demoDataLoaded ? "Run the prepared commerce walkthrough" : "Load demo data to enable the prepared walkthrough"} onClick={() => setDemoMode(true)}><Play />Run demo</Button>}</div></header>
+      <header className="sticky top-0 z-20 flex h-[4.5rem] items-center justify-between border-b border-border bg-background/75 px-4 backdrop-blur-2xl md:px-8"><div className="flex items-center gap-3"><Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation" onClick={() => setMobileNav(true)}><Menu /></Button><p className="text-sm font-medium text-muted-foreground">{world === "buying" ? "Buying" : "Selling"}</p><ChevronRight className="size-4 text-muted-foreground" /><p className="text-sm font-medium text-foreground">{demoMode ? "Prepared demo" : pageTitles[page]}</p></div><div className="flex items-center gap-2 sm:gap-3">{demoDataLoaded ? <Button size="sm" variant="ghost" className="hidden sm:inline-flex" onClick={() => setDemoDataDialog(true)}><Check className="text-primary" />Demo data loaded</Button> : catalogPublished ? <Button size="sm" variant="ghost" className="hidden sm:inline-flex" title={publicationUrl} onClick={() => { switchWorld("selling"); requestAnimationFrame(() => navigate("products")); }}><Check className="text-primary" />Catalog published</Button> : <Button size="sm" variant="outline" title="Populate this workspace with sample products, purchases, approvals, payment methods, and transactions." onClick={() => setDemoDataDialog(true)}><Database />Load demo data</Button>}{demoMode ? <Button size="sm" variant="outline" onClick={() => setDemoMode(false)}>Exit demo</Button> : <Button size="sm" disabled={!demoDataLoaded && !catalogPublished} title={demoDataLoaded || catalogPublished ? "Run the prepared commerce walkthrough" : "Import and publish a catalog or load demo data first"} onClick={() => setDemoMode(true)}><Play />Run demo</Button>}</div></header>
 
       <main className="mx-auto max-w-[88rem] p-5 md:p-8 lg:p-10">
-        {demoMode ? <PresentationMode /> : page === "organization" ? <Organization company={company} setCompany={setCompany} saved={saved} setSaved={setSaved} readiness={readiness} /> : !demoDataLoaded ? world === "selling" && page === "products" ? <CatalogSetup onLoadDemo={() => setDemoDataDialog(true)} /> : <EmptyWorkspacePage world={world} page={page} navigate={navigate} switchWorld={switchWorld} /> : <>
+        {demoMode ? <PresentationMode /> : page === "organization" ? <Organization company={company} setCompany={setCompany} saved={saved} setSaved={setSaved} readiness={readiness} /> : !demoDataLoaded ? world === "selling" && page === "products" ? <CatalogSetup onLoadDemo={() => setDemoDataDialog(true)} onPublished={url => { setCatalogPublished(true); setPublicationUrl(url); }} /> : <EmptyWorkspacePage world={world} page={page} navigate={navigate} switchWorld={switchWorld} /> : <>
           {world === "buying" && page === "dashboard" && <BuyingDashboard navigate={navigate} readiness={readiness} />}
           {world === "buying" && page === "purchases" && <BuyingPurchases creating={creatingPurchase} setCreating={setCreatingPurchase} />}
           {world === "buying" && page === "payment-methods" && <BuyingPaymentMethods />}
