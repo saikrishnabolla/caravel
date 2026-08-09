@@ -360,7 +360,7 @@ function Treasury() {
   const selected = strategies.find(strategy => strategy.id === selectedStrategy) ?? strategies[0];
 
   return <Section title="Treasury" description="Define what the company may do with stablecoin or cash balances that are not required for immediate operations.">
-    <div className="mb-5 flex flex-wrap items-center gap-2"><Badge variant="secondary">Concept preview</Badge><Badge variant="outline">No funds move from this page</Badge><Badge variant="outline">Provider eligibility required</Badge></div>
+    <div className="mb-5 border-l-2 border-primary/60 pl-4"><p className="text-sm font-medium">Concept preview</p><p className="mt-1 text-sm leading-6 text-muted-foreground">No funds move from this page. Provider accounts and company eligibility must be verified before execution.</p></div>
 
     <Card>
       <CardHeader><div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"><div><CardTitle>Treasury policy</CardTitle><CardDescription className="mt-2 max-w-3xl">The company keeps an operating reserve, limits how much capital may leave approved accounts, and requires a human decision before an external provider receives funds.</CardDescription></div><Button onClick={() => setSaved(true)}>{saved ? <Check /> : <ShieldCheck />}{saved ? "Policy saved" : "Save policy preview"}</Button></div></CardHeader>
