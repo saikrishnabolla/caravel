@@ -495,22 +495,25 @@
 <text x="2128" y="1154" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
 <tspan x="2128" dy="0">A2A + AP2 + settlement + delivery</tspan>
 </text>
-<path class="arrow" d="M2015 700 L2015 825 L430 825 L430 885" stroke="#6D3AE8" stroke-width="3"/>
-<text x="450" y="814" font-size="12" fill="#6D3AE8" font-weight="650" text-anchor="start">
-<tspan x="450" dy="0">API / data</tspan>
+<path d="M430 805 L2015 805" fill="none" stroke="#98A2B3" stroke-width="2" stroke-linecap="round"/>
+<path d="M2015 700 L2015 805" fill="none" stroke="#172033" stroke-width="3" stroke-linecap="round"/>
+<path class="arrow" d="M430 805 L430 885" stroke="#6D3AE8" stroke-width="3"/>
+<text x="445" y="794" font-size="12" fill="#6D3AE8" font-weight="650" text-anchor="start">
+<tspan x="445" dy="0">API or data</tspan>
 </text>
-<path class="arrow" d="M2015 700 L2015 805 L1165 805 L1165 885" stroke="#0277A8" stroke-width="3"/>
+<path class="arrow" d="M1165 805 L1165 885" stroke="#0277A8" stroke-width="3"/>
 <text x="1180" y="794" font-size="12" fill="#0277A8" font-weight="650" text-anchor="start">
-<tspan x="1180" dy="0">traditional merchant</tspan>
+<tspan x="1180" dy="0">Traditional merchant</tspan>
 </text>
-<path class="arrow dash" d="M2015 700 L2015 885" stroke="#6D3AE8" stroke-width="3"/>
-<text x="2028" y="810" font-size="12" fill="#6D3AE8" font-weight="650" text-anchor="start">
-<tspan x="2028" dy="0">high-value</tspan>
-<tspan x="2028" dy="15.36">optional</tspan>
+<path class="arrow dash" d="M1812 805 L1812 885" stroke="#6D3AE8" stroke-width="3"/>
+<text x="1827" y="785" font-size="12" fill="#6D3AE8" font-weight="650" text-anchor="start">
+<tspan x="1827" dy="0">Optional high-value terms</tspan>
 </text>
-<path class="arrow" d="M755 1165 L770 1165 L770 1210 L2070 1210 L2070 1035 L2085 1035" stroke="#6D3AE8" stroke-width="2"/>
-<path class="arrow" d="M1540 1165 L1560 1165 L1560 1210 L2070 1210" stroke="#0277A8" stroke-width="2"/>
+<path d="M770 1210 L2070 1210" fill="none" stroke="#98A2B3" stroke-width="2" stroke-linecap="round"/>
+<path class="arrow" d="M755 1165 L770 1165 L770 1210" stroke="#6D3AE8" stroke-width="2"/>
+<path class="arrow" d="M1540 1165 L1560 1165 L1560 1210" stroke="#0277A8" stroke-width="2"/>
 <path class="arrow" d="M2050 1165 L2070 1165 L2070 1210" stroke="#6D3AE8" stroke-width="2"/>
+<path class="arrow" d="M2070 1210 L2070 1035 L2085 1035" stroke="#067647" stroke-width="3"/>
 <path class="arrow" d="M2287 1065 L2287 1090" stroke="#067647" stroke-width="3"/>
 <rect class="zone" x="70" y="1300" width="1545" height="320" rx="18" fill="#EAFBF8" stroke="#087E71" stroke-width="2"/>
 <text x="92" y="1338" font-size="20" fill="#087E71" font-weight="750" text-anchor="start">
