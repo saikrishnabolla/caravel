@@ -30,8 +30,14 @@ export async function POST(request: Request) {
     if (source === "openapi") {
       const response = await fetch(input, { cache: "no-store", signal: AbortSignal.timeout(10000) });
       if (!response.ok) throw new Error(`OpenAPI source returned ${response.status}`);
-      const document = await response.json() as { info?: { title?: string }; paths?: Record<string, Record<string, { summary?: string; operationId?: string; description?: string; "x-raingentic-price"?: { amount?: string; currency?: string; unit?: string }; "x-raingentic-payment"?: unknown }>> };
-      const operations = Object.entries(document.paths ?? {}).flatMap(([path, methods]) => Object.entries(methods).filter(([method]) => ["get","post","put","patch","delete"].includes(method.toLowerCase())).map(([method, operation]) => ({ method: method.toUpperCase(), path, name: operation.summary ?? operation.operationId ?? path, description: operation.description ?? "", price: operation["x-raingentic-price"] ?? null, payment: operation["x-raingentic-payment"] ?? null })));
+      const document = await response.json() as { info?: { title?: string }; paths?: Record<string, Record<string, { summary?: string; operationId?: string; description?: string; "x-raingentic-price"?: { amount?: string; currency?: string; unit?: string }; "x-raingentic-payment"?: unknown; "x-raingentic-evidence-status"?: string }>> };
+      const preflightEvidenceStatus = (path: string) => {
+        if (["/api/preflight/weather/conditions", "/api/preflight/gnss/integrity", "/api/preflight/airspace/authorization-requirements"].includes(path)) return "derived";
+        if (["/api/preflight/airspace/laanc-facility-maps", "/api/preflight/mission/readiness"].includes(path)) return "simulated";
+        if (path.startsWith("/api/preflight/")) return "live";
+        return null;
+      };
+      const operations = Object.entries(document.paths ?? {}).flatMap(([path, methods]) => Object.entries(methods).filter(([method]) => ["get","post","put","patch","delete"].includes(method.toLowerCase())).map(([method, operation]) => ({ method: method.toUpperCase(), path, name: operation.summary ?? operation.operationId ?? path, description: operation.description ?? "", price: operation["x-raingentic-price"] ?? null, payment: operation["x-raingentic-payment"] ?? null, evidenceStatus: operation["x-raingentic-evidence-status"] ?? preflightEvidenceStatus(path) })));
       if (operations.length === 0) throw new Error("No API operations were found");
       return Response.json({ source: "openapi", title: document.info?.title ?? input.hostname, location: input.toString(), operations });
     }
