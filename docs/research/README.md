@@ -19,6 +19,7 @@ Research compiled on August 7, 2026 for the Rain × Monad agentic commerce hacka
 - [Rain offerings consolidated](12-rain-offerings-consolidated.md) — plain-English summary of Rain, its agent controls, payment rails, sandbox, limitations, and role in the project
 - [Monad offerings consolidated](13-monad-offerings-consolidated.md) — plain-English summary of Monad, x402, MPP, identity, finality, programmability, yield infrastructure, and role in the project
 - [Official starter-kit findings and build decision](14-official-starter-kit-build-decision.md) — sponsor resources, prior art, credential handling, final project scope, and eight-hour execution plan
+- [A2A and AP2 in our demo](15-a2a-ap2-demo-explanation.md) — how communication, authorization, Monad x402, and Rain work across the selling and fulfillment flows
 
 ## Working thesis
 

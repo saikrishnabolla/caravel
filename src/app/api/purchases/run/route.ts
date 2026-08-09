@@ -7,6 +7,7 @@ import {
 import { planPurchase } from "@/lib/agent";
 import { purchaseMissionReadinessPacket } from "@/lib/monad";
 import { negotiateThroughA2A } from "@/lib/a2a-client";
+import { createOfficialAp2Authorization, verifyOfficialAp2Authorization } from "@/lib/ap2";
 
 type TimelineItem = {
   id: string;
@@ -97,8 +98,32 @@ export async function POST(request: Request) {
 
     let monad = null;
     let rain = null;
+    let ap2 = null;
     if (liveRain) {
-      monad = await purchaseMissionReadinessPacket(origin);
+      const saleAuthorization = await createOfficialAp2Authorization({
+        buyerId: "preflight-customer",
+        agentId: "preflight-purchasing-agent",
+        merchantId: "missionclear-agent",
+        merchantName: selected.provider,
+        merchantWebsite: origin,
+        sku: "mission-readiness-verification",
+        title: "Mission-readiness verification resource",
+        quantity: 1,
+        amountCents: 1,
+        maximumCents: 1,
+        currency: "USD",
+        paymentInstrument: "x402-usdc",
+        paymentDescription: "Monad Testnet USDC through x402",
+      });
+      timeline.push({
+        id: "ap2-sale",
+        title: "Official AP2 sale authorization verified",
+        detail: "The buyer's open and closed Payment Mandates and the merchant-signed Checkout Mandate authorize the exact $0.01 x402 test settlement.",
+        status: "verified",
+        providerId: saleAuthorization.authorizationId,
+      });
+
+      monad = await purchaseMissionReadinessPacket(origin, saleAuthorization.authorizationId);
       timeline.push({
         id: "monad",
         title: "Customer agent paid the seller",
@@ -108,13 +133,47 @@ export async function POST(request: Request) {
       });
 
       const upstreamProcurementCents = Math.round(selected.amountCents * 0.32);
+      const procurementAuthorization = await createOfficialAp2Authorization({
+        buyerId: "missionclear-fulfillment",
+        agentId: "missionclear-fulfillment-agent",
+        merchantId: "aerodata-compliance-cloud",
+        merchantName: "AeroData Compliance Cloud",
+        merchantWebsite: "https://example.com/aerodata",
+        sku: "upstream-readiness-data",
+        title: "Airspace, weather, mapping, and compliance data",
+        quantity: 1,
+        amountCents: upstreamProcurementCents,
+        maximumCents: upstreamProcurementCents,
+        currency: "USD",
+        paymentInstrument: "rain-card",
+        paymentDescription: "Rain scoped virtual card",
+      });
+      timeline.push({
+        id: "ap2-procurement",
+        title: "Official AP2 procurement authorization verified",
+        detail: `MissionClear's fulfillment agent is authorized to spend exactly $${(upstreamProcurementCents / 100).toFixed(2)} with AeroData using a Rain card.`,
+        status: "verified",
+        providerId: procurementAuthorization.authorizationId,
+      });
+
+      const verifiedProcurement = await verifyOfficialAp2Authorization(
+        procurementAuthorization.authorizationId,
+      );
+      if (
+        verifiedProcurement.merchantId !== "aerodata-compliance-cloud" ||
+        verifiedProcurement.paymentInstrument !== "rain-card" ||
+        verifiedProcurement.amountCents !== upstreamProcurementCents
+      ) {
+        throw new Error("AP2 mandate does not authorize this Rain procurement");
+      }
+
       const card = await createScopedCard({
         amountCents: upstreamProcurementCents,
         allowedMccs: [selected.merchantCategoryCode],
       });
       timeline.push({
         id: "card",
-        title: `Fulfillment card created •••• ${card.last4}`,
+        title: `Fulfillment card ending in ${card.last4} created`,
         detail: `Rain limited upstream procurement to $${(upstreamProcurementCents / 100).toFixed(2)}, MCC ${selected.merchantCategoryCode}, and one hour.`,
         status: "complete",
         providerId: card.id,
@@ -159,6 +218,7 @@ export async function POST(request: Request) {
         providerId: settlement.transactionId,
       });
       rain = { upstreamProcurementCents, card, declined, authorization, settlement };
+      ap2 = { sale: saleAuthorization, procurement: procurementAuthorization };
     } else {
       timeline.push(
         {
@@ -194,6 +254,7 @@ export async function POST(request: Request) {
       delivery,
       rain,
       monad,
+      ap2,
       agent,
       requiresApproval: false,
       approval: null,

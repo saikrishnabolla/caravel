@@ -8,7 +8,7 @@ export const MONAD_RPC_URL = "https://testnet-rpc.monad.xyz";
 export const MONAD_USDC_ADDRESS = "0x534b2f3A21130d7a60830c2Df862319e593943A3";
 export const MONAD_FACILITATOR_URL = "https://x402-facilitator.molandak.org";
 export const MONAD_EXPLORER_URL = "https://monadvision.com";
-export const X402_VERIFICATION_PRICE = "0.001";
+export const X402_VERIFICATION_PRICE = "0.01";
 
 export type MonadX402Receipt = {
   mode: "testnet";
@@ -43,6 +43,7 @@ export function getMonadProviderAddress(
 
 export async function purchaseMissionReadinessPacket(
   origin: string,
+  ap2AuthorizationId: string,
 ): Promise<MonadX402Receipt> {
   const account = privateKeyToAccount(getMonadBuyerPrivateKey());
   const providerAddress = getMonadProviderAddress();
@@ -58,14 +59,17 @@ export async function purchaseMissionReadinessPacket(
         requirement.scheme === "exact" &&
         requirement.network === MONAD_NETWORK &&
         requirement.asset.toLowerCase() === MONAD_USDC_ADDRESS.toLowerCase() &&
-        requirement.amount === "1000" &&
+        requirement.amount === "10000" &&
         requirement.payTo.toLowerCase() === providerAddress.toLowerCase(),
     ),
   );
 
   const resource = new URL("/api/x402/mission-readiness", origin).toString();
   const paymentFetch = wrapFetchWithPayment(fetch, client);
-  const response = await paymentFetch(resource, { cache: "no-store" });
+  const response = await paymentFetch(resource, {
+    cache: "no-store",
+    headers: { "X-AP2-Authorization-ID": ap2AuthorizationId },
+  });
   const responseBody = await response.text();
 
   if (!response.ok) {

@@ -6,8 +6,11 @@ An agent-commerce control plane that negotiates agricultural mission-readiness s
 
 ```bash
 pnpm install
+uv sync --project services/ap2
 pnpm dev
 ```
+
+The AP2 authorization layer uses Google's official AP2 Python SDK. It creates and verifies the open and closed Checkout and Payment Mandate chains used for the Monad x402 sale and the Rain card procurement authorization.
 
 The application reads Rain sandbox credentials from `.env` or `.env.local`. Both uppercase names and the lowercase names supplied in the hackathon credential file are supported.
 
