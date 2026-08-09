@@ -1,552 +1,648 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1220" viewBox="0 0 1800 1220" role="img" aria-labelledby="title desc">
-<title id="title">Raingentic governed agent commerce architecture</title><desc id="desc">Complete architecture showing company inputs, A2A buyer and seller negotiation, deterministic policy and human approval, AP2 authorization, Monad x402 and Solidity escrow, Rain cards and treasury, delivery verification, and live PreFlight evidence.</desc>
-<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#101828" flood-opacity=".08"/></filter><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="context-stroke"/></marker><style>text{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.title{font-weight:700}.small{font-size:13px}.body{font-size:13px}.zone{filter:url(#shadow)}.connector{fill:none;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrow)}.dashed{stroke-dasharray:8 7}</style></defs>
-<rect width="1800" height="1220" fill="#F8FAFC"/>
-<text x="40" y="60" font-size="34" fill="#172033" font-weight="750" text-anchor="start">
-<tspan x="40" dy="0">Raingentic: governed agent commerce architecture</tspan>
+<svg xmlns="http://www.w3.org/2000/svg" width="2600" height="1680" viewBox="0 0 2600 1680" role="img" aria-labelledby="title desc">
+<title id="title">Raingentic commerce system architecture</title><desc id="desc">Complete seller setup, buyer negotiation, A2A, AP2, Monad x402, Rain controlled cards, Solidity escrow, evidence provenance, delivery verification, and treasury experiments.</desc>
+<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#101828" flood-opacity=".075"/></filter><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="context-stroke"/></marker><marker id="arrStart" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto"><path d="M9 0L9 6L0 3z" fill="context-stroke"/></marker><style>text{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.zone{filter:url(#shadow)}.arrow{fill:none;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arr)}.both{marker-start:url(#arrStart)}.dash{stroke-dasharray:9 8}</style></defs>
+<rect class="" x="0" y="0" width="2600" height="1680" rx="0" fill="#FBFCFE" stroke="#FBFCFE" stroke-width="0"/>
+<text x="48" y="66" font-size="36" fill="#172033" font-weight="800" text-anchor="start">
+<tspan x="48" dy="0">Raingentic commerce system</tspan>
 </text>
-<text x="40" y="94" font-size="18" fill="#667085" font-weight="400" text-anchor="start">
-<tspan x="40" dy="0">A2A negotiation + AP2 authorization + Monad settlement + Rain-controlled procurement</tspan>
+<text x="48" y="108" font-size="18" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="48" dy="0">From existing business systems to negotiated, authorized, settled, and verified agent transactions</tspan>
 </text>
-<rect class="" x="1235" y="55" width="118" height="32" rx="8" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="1294" y="76" font-size="12" fill="#059669" font-weight="700" text-anchor="middle">
-<tspan x="1294" dy="0">WORKING</tspan>
+<rect class="" x="1800" y="51" width="135" height="30" rx="8" fill="#ECFDF3" stroke="#067647" stroke-width="1"/>
+<text x="1867.5" y="72" font-size="10" fill="#067647" font-weight="750" text-anchor="middle">
+<tspan x="1867.5" dy="0">WORKING</tspan>
 </text>
-<rect class="" x="1365" y="55" width="118" height="32" rx="8" fill="#F0EAFF" stroke="#7C3AED" stroke-width="1"/>
-<text x="1424" y="76" font-size="12" fill="#7C3AED" font-weight="700" text-anchor="middle">
-<tspan x="1424" dy="0">TESTNET</tspan>
+<rect class="" x="1945" y="51" width="135" height="30" rx="8" fill="#F1ECFF" stroke="#6D3AE8" stroke-width="1"/>
+<text x="2012.5" y="72" font-size="10" fill="#6D3AE8" font-weight="750" text-anchor="middle">
+<tspan x="2012.5" dy="0">TESTNET</tspan>
 </text>
-<rect class="" x="1495" y="55" width="118" height="32" rx="8" fill="#E7F8FF" stroke="#0284C7" stroke-width="1"/>
-<text x="1554" y="76" font-size="12" fill="#0284C7" font-weight="700" text-anchor="middle">
-<tspan x="1554" dy="0">SANDBOX</tspan>
+<rect class="" x="2090" y="51" width="135" height="30" rx="8" fill="#E8F7FF" stroke="#0277A8" stroke-width="1"/>
+<text x="2157.5" y="72" font-size="10" fill="#0277A8" font-weight="750" text-anchor="middle">
+<tspan x="2157.5" dy="0">SANDBOX</tspan>
 </text>
-<rect class="" x="1625" y="55" width="118" height="32" rx="8" fill="#FFF1F2" stroke="#E11D48" stroke-width="1"/>
-<text x="1684" y="76" font-size="12" fill="#E11D48" font-weight="700" text-anchor="middle">
-<tspan x="1684" dy="0">CONTROLLED</tspan>
+<rect class="" x="2235" y="51" width="135" height="30" rx="8" fill="#FFF1F3" stroke="#C01048" stroke-width="1"/>
+<text x="2302.5" y="72" font-size="10" fill="#C01048" font-weight="750" text-anchor="middle">
+<tspan x="2302.5" dy="0">CONTROLLED</tspan>
 </text>
-<rect class="zone" x="40" y="140" width="310" height="700" rx="18" fill="#F2F4F7" stroke="#64748B" stroke-width="2"/>
-<text x="60" y="176" font-size="18" fill="#64748B" font-weight="750" text-anchor="start">
-<tspan x="60" dy="0">1  COMPANY INPUTS</tspan>
+<rect class="" x="2380" y="51" width="135" height="30" rx="8" fill="#FFF8E8" stroke="#B54708" stroke-width="1"/>
+<text x="2447.5" y="72" font-size="10" fill="#B54708" font-weight="750" text-anchor="middle">
+<tspan x="2447.5" dy="0">EXPERIMENT</tspan>
 </text>
-<text x="60" y="206" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
-<tspan x="60" dy="0">Connect what the business already has</tspan>
+<rect class="" x="38" y="145" width="2524" height="1120" rx="16" fill="none" stroke="#CBD5E1" stroke-width="2"/>
+<text x="58" y="178" font-size="14" fill="#475467" font-weight="750" text-anchor="start">
+<tspan x="58" dy="0">CORE WORKING DEMONSTRATION</tspan>
 </text>
-<rect class="zone" x="390" y="140" width="500" height="700" rx="18" fill="#EAF2FF" stroke="#3B82F6" stroke-width="2"/>
-<text x="410" y="176" font-size="18" fill="#3B82F6" font-weight="750" text-anchor="start">
-<tspan x="410" dy="0">2  AGENT CONTROL PLANE</tspan>
+<rect class="zone" x="70" y="205" width="2460" height="250" rx="18" fill="#EEF4FF" stroke="#2563EB" stroke-width="2"/>
+<text x="92" y="243" font-size="20" fill="#2563EB" font-weight="750" text-anchor="start">
+<tspan x="92" dy="0">SELLER SETUP</tspan>
 </text>
-<text x="410" y="206" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
-<tspan x="410" dy="0">AI proposes. Deterministic code authorizes.</tspan>
+<text x="92" y="273" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="92" dy="0">Turn existing products and APIs into a governed, agent-readable storefront</tspan>
 </text>
-<rect class="zone" x="930" y="140" width="480" height="700" rx="18" fill="#F8F7FF" stroke="#64748B" stroke-width="2"/>
-<text x="950" y="176" font-size="18" fill="#64748B" font-weight="750" text-anchor="start">
-<tspan x="950" dy="0">3  PAYMENT EXECUTION</tspan>
+<rect class="" x="2395" y="222" width="110" height="28" rx="8" fill="#ECFDF3" stroke="#067647" stroke-width="1"/>
+<text x="2450" y="241" font-size="10" fill="#067647" font-weight="750" text-anchor="middle">
+<tspan x="2450" dy="0">WORKING</tspan>
 </text>
-<text x="950" y="206" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
-<tspan x="950" dy="0">Choose the rail approved for the purchase</tspan>
+<rect class="zone" x="70" y="485" width="2460" height="310" rx="18" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2"/>
+<text x="92" y="523" font-size="20" fill="#7C3AED" font-weight="750" text-anchor="start">
+<tspan x="92" dy="0">BUY, NEGOTIATE, AND AUTHORIZE</tspan>
 </text>
-<rect class="zone" x="1450" y="140" width="310" height="700" rx="18" fill="#EAFBF1" stroke="#059669" stroke-width="2"/>
-<text x="1470" y="176" font-size="18" fill="#059669" font-weight="750" text-anchor="start">
-<tspan x="1470" dy="0">4  VERIFIED OUTCOME</tspan>
+<text x="92" y="553" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="92" dy="0">The model can propose and negotiate; deterministic code and people control authority</tspan>
 </text>
-<text x="1470" y="206" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
-<tspan x="1470" dy="0">Payment is not completion</tspan>
+<rect class="" x="2395" y="502" width="110" height="28" rx="8" fill="#ECFDF3" stroke="#067647" stroke-width="1"/>
+<text x="2450" y="521" font-size="10" fill="#067647" font-weight="750" text-anchor="middle">
+<tspan x="2450" dy="0">WORKING</tspan>
 </text>
-<rect class="zone" x="40" y="885" width="1720" height="285" rx="18" fill="#ECFDFB" stroke="#0F766E" stroke-width="2"/>
-<text x="60" y="921" font-size="18" fill="#0F766E" font-weight="750" text-anchor="start">
-<tspan x="60" dy="0">5  LIVE EVIDENCE AND PRODUCT LAYER</tspan>
+<rect class="zone" x="70" y="825" width="2460" height="410" rx="18" fill="#F2F4F7" stroke="#64748B" stroke-width="2"/>
+<text x="92" y="863" font-size="20" fill="#64748B" font-weight="750" text-anchor="start">
+<tspan x="92" dy="0">EXECUTE, DELIVER, AND PROVE</tspan>
 </text>
-<text x="60" y="951" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
-<tspan x="60" dy="0">Every response preserves live, derived, cached, or simulated status</tspan>
+<text x="92" y="893" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="92" dy="0">AP2 selects an approved rail. Payment and delivery evidence remain bound to the mandate</tspan>
 </text>
-<rect class="" x="410" y="155" width="460" height="38" rx="9" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1"/>
-<text x="640" y="180" font-size="13" fill="#3B82F6" font-weight="650" text-anchor="middle">
-<tspan x="640" dy="0">CONTROL BOUNDARY  •  The model cannot authorize or move money</tspan>
+<rect class="" x="2395" y="842" width="110" height="28" rx="8" fill="#ECFDF3" stroke="#067647" stroke-width="1"/>
+<text x="2450" y="861" font-size="10" fill="#067647" font-weight="750" text-anchor="middle">
+<tspan x="2450" dy="0">WORKING</tspan>
 </text>
-<rect class="" x="965" y="155" width="410" height="38" rx="9" fill="#FFFFFF" stroke="#64748B" stroke-width="1"/>
-<text x="1170" y="180" font-size="13" fill="#172033" font-weight="650" text-anchor="middle">
-<tspan x="1170" dy="0">AP2 binds the agreement to the exact permitted payment</tspan>
+<rect class="" x="105" y="275" width="270" height="125" rx="13" fill="#FFFFFF" stroke="#475467" stroke-width="2"/>
+<ellipse cx="135" cy="305" rx="16" ry="16" fill="#475467" stroke="#475467" stroke-width="1"/>
+<text x="135" y="311" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="135" dy="0">1</tspan>
 </text>
-<rect class="" x="70" y="225" width="250" height="88" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
-<text x="86" y="255" font-size="17" fill="#64748B" font-weight="700" text-anchor="start">
-<tspan x="86" dy="0">Business request</tspan>
+<text x="163" y="309" font-size="17" fill="#475467" font-weight="700" text-anchor="start">
+<tspan x="163" dy="0">Existing business systems</tspan>
 </text>
-<text x="86" y="283" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">Natural-language objective</tspan>
+<text x="123" y="339" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="123" dy="0">OpenAPI · Shopify/public catalog</tspan>
 </text>
-<text x="86" y="302" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">Budget · quantity · quality · approvals</tspan>
+<text x="123" y="359" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="123" dy="0">Billing · inventory · fulfillment</tspan>
 </text>
-<rect class="" x="246" y="235" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="277" y="250" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="277" dy="0">WORKING</tspan>
+<rect class="" x="425" y="275" width="270" height="125" rx="13" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+<ellipse cx="455" cy="305" rx="16" ry="16" fill="#2563EB" stroke="#2563EB" stroke-width="1"/>
+<text x="455" y="311" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="455" dy="0">2</tspan>
 </text>
-<rect class="" x="70" y="345" width="250" height="104" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
-<text x="86" y="375" font-size="17" fill="#64748B" font-weight="700" text-anchor="start">
-<tspan x="86" dy="0">Existing systems</tspan>
+<text x="483" y="309" font-size="17" fill="#2563EB" font-weight="700" text-anchor="start">
+<tspan x="483" dy="0">Setup agent</tspan>
 </text>
-<text x="86" y="403" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">OpenAPI · Shopify/public catalog</tspan>
+<text x="443" y="339" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="443" dy="0">Natural-language configuration</tspan>
 </text>
-<text x="86" y="422" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">Billing · inventory · fulfillment</tspan>
+<text x="443" y="359" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="443" dy="0">OpenAI Agents SDK + fallback</tspan>
 </text>
-<rect class="" x="246" y="355" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="277" y="370" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="277" dy="0">WORKING</tspan>
+<rect class="" x="745" y="275" width="300" height="125" rx="13" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+<ellipse cx="775" cy="305" rx="16" ry="16" fill="#2563EB" stroke="#2563EB" stroke-width="1"/>
+<text x="775" y="311" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="775" dy="0">3</tspan>
 </text>
-<rect class="" x="70" y="485" width="250" height="92" rx="12" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2"/>
-<text x="86" y="515" font-size="17" fill="#3B82F6" font-weight="700" text-anchor="start">
-<tspan x="86" dy="0">Setup and planning agent</tspan>
+<text x="803" y="309" font-size="17" fill="#2563EB" font-weight="700" text-anchor="start">
+<tspan x="803" dy="0">Catalog and policy</tspan>
 </text>
-<text x="86" y="543" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">OpenAI Agents SDK</tspan>
+<text x="763" y="339" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="763" dy="0">Per-operation pricing · floors</tspan>
 </text>
-<text x="86" y="562" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">Deterministic fallback</tspan>
+<text x="763" y="359" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="763" dy="0">Discounts · approvals · payment rail</tspan>
 </text>
-<rect class="" x="246" y="495" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="277" y="510" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="277" dy="0">WORKING</tspan>
+<rect class="" x="1095" y="275" width="330" height="125" rx="13" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+<ellipse cx="1125" cy="305" rx="16" ry="16" fill="#2563EB" stroke="#2563EB" stroke-width="1"/>
+<text x="1125" y="311" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="1125" dy="0">4</tspan>
 </text>
-<rect class="" x="70" y="615" width="250" height="102" rx="12" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2"/>
-<text x="86" y="645" font-size="17" fill="#3B82F6" font-weight="700" text-anchor="start">
-<tspan x="86" dy="0">Catalog and policy</tspan>
+<text x="1153" y="309" font-size="17" fill="#2563EB" font-weight="700" text-anchor="start">
+<tspan x="1153" dy="0">Seller agent</tspan>
 </text>
-<text x="86" y="673" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">Per-operation pricing · floors</tspan>
+<text x="1113" y="339" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1113" dy="0">Official A2A 1.0 Agent Card</tspan>
 </text>
-<text x="86" y="692" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">Discount rules · payment assignment</tspan>
+<text x="1113" y="359" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1113" dy="0">JSON-RPC · streaming tasks/artifacts</tspan>
 </text>
-<rect class="" x="246" y="625" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="277" y="640" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="277" dy="0">WORKING</tspan>
+<rect class="" x="1475" y="275" width="330" height="125" rx="13" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+<ellipse cx="1505" cy="305" rx="16" ry="16" fill="#2563EB" stroke="#2563EB" stroke-width="1"/>
+<text x="1505" y="311" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="1505" dy="0">5</tspan>
 </text>
-<rect class="" x="70" y="750" width="250" height="64" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
-<text x="86" y="780" font-size="17" fill="#64748B" font-weight="700" text-anchor="start">
-<tspan x="86" dy="0">Private configuration</tspan>
+<text x="1533" y="309" font-size="17" fill="#2563EB" font-weight="700" text-anchor="start">
+<tspan x="1533" dy="0">Published commerce surface</tspan>
 </text>
-<text x="86" y="808" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">Rain · Monad · OpenAI credentials</tspan>
+<text x="1493" y="339" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1493" dy="0">Catalog + hosted commerce contract</tspan>
 </text>
-<rect class="" x="246" y="760" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="277" y="775" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="277" dy="0">WORKING</tspan>
+<text x="1493" y="359" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1493" dy="0">Protected API and discovery URLs</tspan>
 </text>
-<rect class="" x="420" y="225" width="205" height="104" rx="12" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2"/>
-<text x="436" y="255" font-size="17" fill="#3B82F6" font-weight="700" text-anchor="start">
-<tspan x="436" dy="0">Buyer agent</tspan>
+<rect class="" x="1855" y="275" width="635" height="125" rx="13" fill="#FFFFFF" stroke="#2563EB" stroke-width="2"/>
+<text x="1873" y="309" font-size="17" fill="#2563EB" font-weight="700" text-anchor="start">
+<tspan x="1873" dy="0">What becomes sellable</tspan>
 </text>
-<text x="436" y="283" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="436" dy="0">Turns intent into a mandate</tspan>
+<text x="1873" y="339" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1873" dy="0">18 PreFlight API operations · data products · software</tspan>
 </text>
-<text x="436" y="302" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="436" dy="0">Discovers and compares offers</tspan>
+<text x="1873" y="359" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1873" dy="0">Traditional services · subscriptions · high-value equipment</tspan>
 </text>
-<rect class="" x="551" y="235" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="582" y="250" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="582" dy="0">WORKING</tspan>
+<rect class="" x="2385" y="287" width="90" height="24" rx="7" fill="#ECFDF3" stroke="#067647" stroke-width="1"/>
+<text x="2430" y="304" font-size="9" fill="#067647" font-weight="750" text-anchor="middle">
+<tspan x="2430" dy="0">WORKING</tspan>
 </text>
-<rect class="" x="655" y="225" width="205" height="104" rx="12" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2"/>
-<text x="671" y="255" font-size="17" fill="#3B82F6" font-weight="700" text-anchor="start">
-<tspan x="671" dy="0">Seller agent</tspan>
+<path class="arrow" d="M375 337 L425 337" stroke="#2563EB" stroke-width="3"/>
+<path class="arrow" d="M695 337 L745 337" stroke="#2563EB" stroke-width="3"/>
+<path class="arrow" d="M1045 337 L1095 337" stroke="#2563EB" stroke-width="3"/>
+<path class="arrow" d="M1425 337 L1475 337" stroke="#2563EB" stroke-width="3"/>
+<path class="arrow" d="M1805 337 L1855 337" stroke="#2563EB" stroke-width="3"/>
+<rect class="" x="105" y="570" width="220" height="130" rx="13" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+<ellipse cx="135" cy="600" rx="16" ry="16" fill="#7C3AED" stroke="#7C3AED" stroke-width="1"/>
+<text x="135" y="606" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="135" dy="0">1</tspan>
 </text>
-<text x="671" y="283" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="671" dy="0">Publishes Agent Card</tspan>
+<text x="163" y="604" font-size="17" fill="#7C3AED" font-weight="700" text-anchor="start">
+<tspan x="163" dy="0">Business request</tspan>
 </text>
-<text x="671" y="302" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="671" dy="0">Negotiates price and terms</tspan>
+<text x="123" y="634" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="123" dy="0">“Buy 100 readiness reports”</tspan>
 </text>
-<rect class="" x="786" y="235" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="817" y="250" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="817" dy="0">WORKING</tspan>
+<text x="123" y="654" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="123" dy="0">Budget ≤ $1,500</tspan>
 </text>
-<text x="640" y="265" font-size="13" fill="#3B82F6" font-weight="700" text-anchor="middle">
-<tspan x="640" dy="0">A2A 1.0</tspan>
+<rect class="" x="360" y="570" width="220" height="130" rx="13" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+<ellipse cx="390" cy="600" rx="16" ry="16" fill="#7C3AED" stroke="#7C3AED" stroke-width="1"/>
+<text x="390" y="606" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="390" dy="0">2</tspan>
 </text>
-<text x="640" y="283" font-size="12" fill="#667085" font-weight="500" text-anchor="middle">
-<tspan x="640" dy="0">JSON-RPC</tspan>
+<text x="418" y="604" font-size="17" fill="#7C3AED" font-weight="700" text-anchor="start">
+<tspan x="418" dy="0">Buyer agent</tspan>
 </text>
-<rect class="" x="475" y="375" width="330" height="92" rx="12" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
-<text x="491" y="405" font-size="17" fill="#D97706" font-weight="700" text-anchor="start">
-<tspan x="491" dy="0">Deterministic policy engine</tspan>
+<text x="378" y="634" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="378" dy="0">Creates structured mandate</tspan>
 </text>
-<text x="491" y="433" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="491" dy="0">Budget · unit price · quantity · quality</tspan>
+<text x="378" y="654" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="378" dy="0">Quantity · quality · approval</tspan>
 </text>
-<text x="491" y="452" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="491" dy="0">Provider · product · payment method</tspan>
+<rect class="" x="615" y="570" width="230" height="130" rx="13" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+<ellipse cx="645" cy="600" rx="16" ry="16" fill="#7C3AED" stroke="#7C3AED" stroke-width="1"/>
+<text x="645" y="606" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="645" dy="0">3</tspan>
 </text>
-<rect class="" x="731" y="385" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="762" y="400" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="762" dy="0">WORKING</tspan>
+<text x="673" y="604" font-size="17" fill="#7C3AED" font-weight="700" text-anchor="start">
+<tspan x="673" dy="0">Provider discovery</tspan>
 </text>
-<rect class="" x="475" y="505" width="330" height="86" rx="12" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
-<text x="491" y="535" font-size="17" fill="#D97706" font-weight="700" text-anchor="start">
-<tspan x="491" dy="0">Human approval checkpoint</tspan>
+<text x="633" y="634" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="633" dy="0">Configured sellers and offers</tspan>
 </text>
-<text x="491" y="563" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="491" dy="0">Pause before payment when authority is exceeded</tspan>
+<text x="633" y="654" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="633" dy="0">Reputation · price · freshness</tspan>
 </text>
-<text x="491" y="582" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="491" dy="0">Reject stops the workflow without moving money</tspan>
+<rect class="" x="880" y="570" width="230" height="130" rx="13" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
+<ellipse cx="910" cy="600" rx="16" ry="16" fill="#7C3AED" stroke="#7C3AED" stroke-width="1"/>
+<text x="910" y="606" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="910" dy="0">4</tspan>
 </text>
-<rect class="" x="731" y="515" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="762" y="530" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="762" dy="0">WORKING</tspan>
+<text x="938" y="604" font-size="17" fill="#7C3AED" font-weight="700" text-anchor="start">
+<tspan x="938" dy="0">A2A negotiation</tspan>
 </text>
-<rect class="" x="475" y="630" width="330" height="82" rx="12" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
-<text x="491" y="660" font-size="17" fill="#D97706" font-weight="700" text-anchor="start">
-<tspan x="491" dy="0">Official AP2 authorization</tspan>
+<text x="898" y="634" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="898" dy="0">Offers · counteroffers · rejection</tspan>
 </text>
-<text x="491" y="688" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="491" dy="0">Signed checkout and payment mandates</tspan>
+<text x="898" y="654" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="898" dy="0">Structured final agreement</tspan>
 </text>
-<text x="491" y="707" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="491" dy="0">Exact buyer · seller · product · amount · recipient</tspan>
+<path d="M1232.5 560L1320 635L1232.5 710L1145 635Z" fill="#FFF7D6" stroke="#C76B00" stroke-width="2"/>
+<text x="1232" y="610" font-size="17" fill="#C76B00" font-weight="750" text-anchor="middle">
+<tspan x="1232" dy="0">Company</tspan>
+<tspan x="1232" dy="21.76">policy</tspan>
 </text>
-<rect class="" x="731" y="640" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="762" y="655" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="762" dy="0">WORKING</tspan>
+<text x="1232" y="662" font-size="11" fill="#172033" font-weight="500" text-anchor="middle">
+<tspan x="1232" dy="0">Budget · price</tspan>
+<tspan x="1232" dy="14.08">quantity · quality</tspan>
 </text>
-<rect class="" x="475" y="750" width="330" height="62" rx="12" fill="#FFFFFF" stroke="#172033" stroke-width="2"/>
-<text x="491" y="780" font-size="17" fill="#172033" font-weight="700" text-anchor="start">
-<tspan x="491" dy="0">Payment rail router</tspan>
+<rect class="" x="1355" y="570" width="230" height="130" rx="13" fill="#FFFFFF" stroke="#C76B00" stroke-width="2"/>
+<ellipse cx="1385" cy="600" rx="16" ry="16" fill="#C76B00" stroke="#C76B00" stroke-width="1"/>
+<text x="1385" y="606" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="1385" dy="0">6</tspan>
 </text>
-<text x="491" y="808" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="491" dy="0">Monad x402 · Rain card · escrow/checkout</tspan>
+<text x="1413" y="604" font-size="17" fill="#C76B00" font-weight="700" text-anchor="start">
+<tspan x="1413" dy="0">Human checkpoint</tspan>
 </text>
-<rect class="" x="731" y="760" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="762" y="775" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="762" dy="0">WORKING</tspan>
+<text x="1373" y="634" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1373" dy="0">New seller or above threshold</tspan>
 </text>
-<rect class="" x="955" y="210" width="210" height="600" rx="16" fill="#F0EAFF" stroke="#7C3AED" stroke-width="2"/>
-<text x="1060" y="250" font-size="20" fill="#7C3AED" font-weight="800" text-anchor="middle">
-<tspan x="1060" dy="0">MONAD</tspan>
+<text x="1373" y="654" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1373" dy="0">Approve or stop; no money moves</tspan>
 </text>
-<text x="1060" y="275" font-size="13" fill="#667085" font-weight="400" text-anchor="middle">
-<tspan x="1060" dy="0">Agent-native settlement</tspan>
+<rect class="" x="1620" y="570" width="245" height="130" rx="13" fill="#FFFFFF" stroke="#C76B00" stroke-width="2"/>
+<ellipse cx="1650" cy="600" rx="16" ry="16" fill="#C76B00" stroke="#C76B00" stroke-width="1"/>
+<text x="1650" y="606" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="1650" dy="0">7</tspan>
 </text>
-<rect class="" x="975" y="305" width="170" height="76" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
-<text x="991" y="335" font-size="17" fill="#7C3AED" font-weight="700" text-anchor="start">
-<tspan x="991" dy="0">x402 protected API</tspan>
+<text x="1678" y="604" font-size="17" fill="#C76B00" font-weight="700" text-anchor="start">
+<tspan x="1678" dy="0">Official AP2</tspan>
 </text>
-<text x="991" y="363" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="991" dy="0">HTTP 402 payment gate</tspan>
+<text x="1638" y="634" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1638" dy="0">Signed checkout/payment mandate</tspan>
 </text>
-<text x="991" y="382" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="991" dy="0">AP2 authorization binding</tspan>
+<text x="1638" y="654" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1638" dy="0">Exact parties · product · amount</tspan>
 </text>
-<rect class="" x="1071" y="315" width="62" height="22" rx="7" fill="#F0EAFF" stroke="#7C3AED" stroke-width="1"/>
-<text x="1102" y="330" font-size="9" fill="#7C3AED" font-weight="750" text-anchor="middle">
-<tspan x="1102" dy="0">TESTNET</tspan>
+<rect class="" x="1900" y="570" width="230" height="130" rx="13" fill="#FFFFFF" stroke="#172033" stroke-width="2"/>
+<ellipse cx="1930" cy="600" rx="16" ry="16" fill="#172033" stroke="#172033" stroke-width="1"/>
+<text x="1930" y="606" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="1930" dy="0">8</tspan>
 </text>
-<rect class="" x="975" y="410" width="170" height="72" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
-<text x="991" y="440" font-size="17" fill="#7C3AED" font-weight="700" text-anchor="start">
-<tspan x="991" dy="0">x402 facilitator</tspan>
+<text x="1958" y="604" font-size="17" fill="#172033" font-weight="700" text-anchor="start">
+<tspan x="1958" dy="0">Rail router</tspan>
 </text>
-<text x="991" y="468" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="991" dy="0">Verify and settle payment</tspan>
+<text x="1918" y="634" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1918" dy="0">x402 · Rain card · escrow</tspan>
 </text>
-<rect class="" x="1071" y="420" width="62" height="22" rx="7" fill="#F0EAFF" stroke="#7C3AED" stroke-width="1"/>
-<text x="1102" y="435" font-size="9" fill="#7C3AED" font-weight="750" text-anchor="middle">
-<tspan x="1102" dy="0">TESTNET</tspan>
+<text x="1918" y="654" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1918" dy="0">Only the approved instrument</tspan>
 </text>
-<rect class="" x="975" y="510" width="170" height="74" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
-<text x="991" y="540" font-size="17" fill="#7C3AED" font-weight="700" text-anchor="start">
-<tspan x="991" dy="0">Testnet USDC</tspan>
+<rect class="" x="2170" y="570" width="320" height="130" rx="13" fill="#FFFFFF" stroke="#C76B00" stroke-width="2"/>
+<text x="2188" y="604" font-size="17" fill="#C76B00" font-weight="700" text-anchor="start">
+<tspan x="2188" dy="0">Bound authorization</tspan>
 </text>
-<text x="991" y="568" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="991" dy="0">Buyer → seller settlement</tspan>
+<text x="2188" y="634" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="2188" dy="0">Wrong recipient · changed amount</tspan>
 </text>
-<text x="991" y="587" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="991" dy="0">Response header verified</tspan>
+<text x="2188" y="654" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="2188" dy="0">Expired or over-budget mandates fail</tspan>
 </text>
-<rect class="" x="1071" y="520" width="62" height="22" rx="7" fill="#F0EAFF" stroke="#7C3AED" stroke-width="1"/>
-<text x="1102" y="535" font-size="9" fill="#7C3AED" font-weight="750" text-anchor="middle">
-<tspan x="1102" dy="0">TESTNET</tspan>
+<rect class="" x="2385" y="582" width="90" height="24" rx="7" fill="#ECFDF3" stroke="#067647" stroke-width="1"/>
+<text x="2430" y="599" font-size="9" fill="#067647" font-weight="750" text-anchor="middle">
+<tspan x="2430" dy="0">WORKING</tspan>
 </text>
-<rect class="" x="975" y="620" width="170" height="150" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2"/>
-<text x="991" y="650" font-size="17" fill="#7C3AED" font-weight="700" text-anchor="start">
-<tspan x="991" dy="0">Solidity commerce escrow</tspan>
+<path class="arrow" d="M325 635 L360 635" stroke="#7C3AED" stroke-width="3"/>
+<path class="arrow" d="M580 635 L615 635" stroke="#7C3AED" stroke-width="3"/>
+<path class="arrow" d="M845 635 L880 635" stroke="#7C3AED" stroke-width="3"/>
+<path class="arrow" d="M1110 635 L1145 635" stroke="#C76B00" stroke-width="3"/>
+<path class="arrow" d="M1320 635 L1355 635" stroke="#C76B00" stroke-width="3"/>
+<path class="arrow" d="M1585 635 L1620 635" stroke="#C76B00" stroke-width="3"/>
+<path class="arrow" d="M1865 635 L1900 635" stroke="#172033" stroke-width="3"/>
+<path class="arrow" d="M2130 635 L2170 635" stroke="#C76B00" stroke-width="3"/>
+<path class="arrow dash both" d="M995 570 L995 470 L1260 470 L1260 430" stroke="#2563EB" stroke-width="2"/>
+<text x="1040" y="462" font-size="12" fill="#2563EB" font-weight="650" text-anchor="start">
+<tspan x="1040" dy="0">Official A2A seller endpoint</tspan>
 </text>
-<text x="991" y="678" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="991" dy="0">High-value optional path</tspan>
+<rect class="" x="615" y="710" width="495" height="68" rx="8" fill="#F2F4F7" stroke="#475467" stroke-width="2"/>
+<text x="633" y="738" font-size="15" fill="#475467" font-weight="750" text-anchor="start">
+<tspan x="633" dy="0">OPTIONAL DISCOVERY EXTENSION</tspan>
 </text>
-<text x="991" y="697" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="991" dy="0">Buyer · merchant · USDC</tspan>
+<text x="633" y="764" font-size="12" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="633" dy="0">Open-web research can use Tavily; it is not required for the controlled demo.</tspan>
 </text>
-<text x="991" y="716" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="991" dy="0">Deposit · expiry · terms hash</tspan>
+<rect class="zone" x="105" y="885" width="650" height="300" rx="18" fill="#F1ECFF" stroke="#6D3AE8" stroke-width="2"/>
+<text x="127" y="923" font-size="20" fill="#6D3AE8" font-weight="750" text-anchor="start">
+<tspan x="127" dy="0">MONAD x402</tspan>
 </text>
-<text x="991" y="735" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="991" dy="0">Fund · release · refund · cancel</tspan>
+<text x="127" y="953" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="127" dy="0">Machine-native API and data settlement</tspan>
 </text>
-<rect class="" x="1071" y="630" width="62" height="22" rx="7" fill="#F0EAFF" stroke="#7C3AED" stroke-width="1"/>
-<text x="1102" y="645" font-size="9" fill="#7C3AED" font-weight="750" text-anchor="middle">
-<tspan x="1102" dy="0">TESTNET</tspan>
+<rect class="" x="620" y="902" width="110" height="28" rx="8" fill="#F1ECFF" stroke="#6D3AE8" stroke-width="1"/>
+<text x="675" y="921" font-size="10" fill="#6D3AE8" font-weight="750" text-anchor="middle">
+<tspan x="675" dy="0">TESTNET</tspan>
 </text>
-<rect class="" x="1180" y="210" width="205" height="600" rx="16" fill="#E7F8FF" stroke="#0284C7" stroke-width="2"/>
-<text x="1282" y="250" font-size="20" fill="#0284C7" font-weight="800" text-anchor="middle">
-<tspan x="1282" dy="0">RAIN</tspan>
+<rect class="" x="130" y="955" width="180" height="105" rx="13" fill="#FFFFFF" stroke="#6D3AE8" stroke-width="2"/>
+<ellipse cx="160" cy="985" rx="16" ry="16" fill="#6D3AE8" stroke="#6D3AE8" stroke-width="1"/>
+<text x="160" y="991" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="160" dy="0">A</tspan>
 </text>
-<text x="1282" y="275" font-size="13" fill="#667085" font-weight="400" text-anchor="middle">
-<tspan x="1282" dy="0">Cards and treasury</tspan>
+<text x="188" y="989" font-size="16" fill="#6D3AE8" font-weight="700" text-anchor="start">
+<tspan x="188" dy="0">Protected API</tspan>
 </text>
-<rect class="" x="1200" y="305" width="165" height="70" rx="12" fill="#FFFFFF" stroke="#0284C7" stroke-width="2"/>
-<text x="1216" y="335" font-size="17" fill="#0284C7" font-weight="700" text-anchor="start">
-<tspan x="1216" dy="0">AP2 re-verification</tspan>
+<text x="148" y="1019" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="148" dy="0">Returns HTTP 402</tspan>
 </text>
-<text x="1216" y="363" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1216" dy="0">Check authority again</tspan>
+<text x="148" y="1039" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="148" dy="0">Verifies AP2 ID</tspan>
 </text>
-<text x="1216" y="382" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1216" dy="0">before card creation</tspan>
+<rect class="" x="340" y="955" width="180" height="105" rx="13" fill="#FFFFFF" stroke="#6D3AE8" stroke-width="2"/>
+<ellipse cx="370" cy="985" rx="16" ry="16" fill="#6D3AE8" stroke="#6D3AE8" stroke-width="1"/>
+<text x="370" y="991" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="370" dy="0">B</tspan>
 </text>
-<rect class="" x="1291" y="315" width="62" height="22" rx="7" fill="#E7F8FF" stroke="#0284C7" stroke-width="1"/>
-<text x="1322" y="330" font-size="9" fill="#0284C7" font-weight="750" text-anchor="middle">
-<tspan x="1322" dy="0">SANDBOX</tspan>
+<text x="398" y="989" font-size="16" fill="#6D3AE8" font-weight="700" text-anchor="start">
+<tspan x="398" dy="0">Facilitator</tspan>
 </text>
-<rect class="" x="1200" y="405" width="165" height="94" rx="12" fill="#FFFFFF" stroke="#0284C7" stroke-width="2"/>
-<text x="1216" y="435" font-size="17" fill="#0284C7" font-weight="700" text-anchor="start">
-<tspan x="1216" dy="0">Scoped virtual card</tspan>
+<text x="358" y="1019" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="358" dy="0">Verifies payment</tspan>
 </text>
-<text x="1216" y="463" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1216" dy="0">Exact limit · MCC restriction</tspan>
+<text x="358" y="1039" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="358" dy="0">Settles test USDC</tspan>
 </text>
-<text x="1216" y="482" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1216" dy="0">Expiration · controlled merchant</tspan>
+<rect class="" x="550" y="955" width="180" height="105" rx="13" fill="#FFFFFF" stroke="#6D3AE8" stroke-width="2"/>
+<ellipse cx="580" cy="985" rx="16" ry="16" fill="#6D3AE8" stroke="#6D3AE8" stroke-width="1"/>
+<text x="580" y="991" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="580" dy="0">C</tspan>
 </text>
-<rect class="" x="1291" y="415" width="62" height="22" rx="7" fill="#E7F8FF" stroke="#0284C7" stroke-width="1"/>
-<text x="1322" y="430" font-size="9" fill="#0284C7" font-weight="750" text-anchor="middle">
-<tspan x="1322" dy="0">SANDBOX</tspan>
+<text x="608" y="989" font-size="16" fill="#6D3AE8" font-weight="700" text-anchor="start">
+<tspan x="608" dy="0">Result release</tspan>
 </text>
-<rect class="" x="1200" y="530" width="165" height="112" rx="12" fill="#FFFFFF" stroke="#0284C7" stroke-width="2"/>
-<text x="1216" y="560" font-size="17" fill="#0284C7" font-weight="700" text-anchor="start">
-<tspan x="1216" dy="0">Transaction lifecycle</tspan>
+<text x="568" y="1019" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="568" dy="0">Checks settlement header</tspan>
 </text>
-<text x="1216" y="588" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1216" dy="0">Decline mismatch</tspan>
+<text x="568" y="1039" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="568" dy="0">Returns protected evidence</tspan>
 </text>
-<text x="1216" y="607" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1216" dy="0">Authorize · settle</tspan>
+<path class="arrow" d="M310 1007 L340 1007" stroke="#6D3AE8" stroke-width="3"/>
+<path class="arrow" d="M520 1007 L550 1007" stroke="#6D3AE8" stroke-width="3"/>
+<rect class="" x="130" y="1080" width="600" height="115" rx="8" fill="#FFFFFF" stroke="#6D3AE8" stroke-width="2"/>
+<text x="148" y="1112" font-size="15" fill="#6D3AE8" font-weight="750" text-anchor="start">
+<tspan x="148" dy="0">WHY MONAD IS MATERIAL</tspan>
 </text>
-<text x="1216" y="626" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1216" dy="0">Reverse · refund · fetch</tspan>
+<text x="148" y="1140" font-size="12" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="148" dy="0">The chain is in the actual machine-purchase path, not an unrelated contract.</tspan>
 </text>
-<rect class="" x="1291" y="540" width="62" height="22" rx="7" fill="#E7F8FF" stroke="#0284C7" stroke-width="1"/>
-<text x="1322" y="555" font-size="9" fill="#0284C7" font-weight="750" text-anchor="middle">
-<tspan x="1322" dy="0">SANDBOX</tspan>
+<text x="148" y="1159" font-size="12" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="148" dy="0">Buyer/seller wallets · test USDC · x402 client/server · settlement verification</tspan>
 </text>
-<rect class="" x="1200" y="675" width="165" height="95" rx="12" fill="#FFFFFF" stroke="#0284C7" stroke-width="2"/>
-<text x="1216" y="705" font-size="17" fill="#0284C7" font-weight="700" text-anchor="start">
-<tspan x="1216" dy="0">Treasury resources</tspan>
+<rect class="zone" x="790" y="885" width="750" height="300" rx="18" fill="#E8F7FF" stroke="#0277A8" stroke-width="2"/>
+<text x="812" y="923" font-size="20" fill="#0277A8" font-weight="750" text-anchor="start">
+<tspan x="812" dy="0">RAIN CONTROLLED PROCUREMENT</tspan>
 </text>
-<text x="1216" y="733" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1216" dy="0">Payment accounts/routes CRUD</tspan>
+<text x="812" y="953" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="812" dy="0">Reach traditional merchants with bounded card authority</tspan>
 </text>
-<text x="1216" y="752" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1216" dy="0">Onramp/offramp simulations</tspan>
+<rect class="" x="1405" y="902" width="110" height="28" rx="8" fill="#E8F7FF" stroke="#0277A8" stroke-width="1"/>
+<text x="1460" y="921" font-size="10" fill="#0277A8" font-weight="750" text-anchor="middle">
+<tspan x="1460" dy="0">SANDBOX</tspan>
 </text>
-<rect class="" x="1291" y="685" width="62" height="22" rx="7" fill="#E7F8FF" stroke="#0284C7" stroke-width="1"/>
-<text x="1322" y="700" font-size="9" fill="#0284C7" font-weight="750" text-anchor="middle">
-<tspan x="1322" dy="0">SANDBOX</tspan>
+<rect class="" x="815" y="955" width="205" height="105" rx="13" fill="#FFFFFF" stroke="#0277A8" stroke-width="2"/>
+<ellipse cx="845" cy="985" rx="16" ry="16" fill="#0277A8" stroke="#0277A8" stroke-width="1"/>
+<text x="845" y="991" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="845" dy="0">A</tspan>
 </text>
-<rect class="" x="1480" y="225" width="250" height="94" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
-<text x="1496" y="255" font-size="17" fill="#059669" font-weight="700" text-anchor="start">
-<tspan x="1496" dy="0">Protected API result</tspan>
+<text x="873" y="989" font-size="16" fill="#0277A8" font-weight="700" text-anchor="start">
+<tspan x="873" dy="0">AP2 re-check</tspan>
 </text>
-<text x="1496" y="283" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">Released only after verified</tspan>
+<text x="833" y="1019" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="833" dy="0">Verify exact procurement</tspan>
 </text>
-<text x="1496" y="302" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">Monad x402 settlement</tspan>
+<text x="833" y="1039" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="833" dy="0">before card creation</tspan>
 </text>
-<rect class="" x="1656" y="235" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="1687" y="250" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="1687" dy="0">WORKING</tspan>
+<rect class="" x="1045" y="955" width="210" height="105" rx="13" fill="#FFFFFF" stroke="#0277A8" stroke-width="2"/>
+<ellipse cx="1075" cy="985" rx="16" ry="16" fill="#0277A8" stroke="#0277A8" stroke-width="1"/>
+<text x="1075" y="991" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="1075" dy="0">B</tspan>
 </text>
-<rect class="" x="1480" y="355" width="250" height="108" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
-<text x="1496" y="385" font-size="17" fill="#059669" font-weight="700" text-anchor="start">
-<tspan x="1496" dy="0">Upstream procurement</tspan>
+<text x="1103" y="989" font-size="16" fill="#0277A8" font-weight="700" text-anchor="start">
+<tspan x="1103" dy="0">Scoped card</tspan>
 </text>
-<text x="1496" y="413" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">Traditional vendor paid using Rain</tspan>
+<text x="1063" y="1019" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1063" dy="0">Exact limit · MCC · expiry</tspan>
 </text>
-<text x="1496" y="432" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">High-value terms may use escrow</tspan>
+<text x="1063" y="1039" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1063" dy="0">Controlled merchant</tspan>
 </text>
-<text x="1496" y="451" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">No unrestricted agent card</tspan>
+<rect class="" x="1280" y="955" width="235" height="105" rx="13" fill="#FFFFFF" stroke="#0277A8" stroke-width="2"/>
+<ellipse cx="1310" cy="985" rx="16" ry="16" fill="#0277A8" stroke="#0277A8" stroke-width="1"/>
+<text x="1310" y="991" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="1310" dy="0">C</tspan>
 </text>
-<rect class="" x="1656" y="365" width="62" height="22" rx="7" fill="#E7F8FF" stroke="#0284C7" stroke-width="1"/>
-<text x="1687" y="380" font-size="9" fill="#0284C7" font-weight="750" text-anchor="middle">
-<tspan x="1687" dy="0">SANDBOX</tspan>
+<text x="1338" y="989" font-size="15" fill="#0277A8" font-weight="700" text-anchor="start">
+<tspan x="1338" dy="0">Transaction lifecycle</tspan>
 </text>
-<rect class="" x="1480" y="505" width="250" height="112" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
-<text x="1496" y="535" font-size="17" fill="#059669" font-weight="700" text-anchor="start">
-<tspan x="1496" dy="0">Delivery verification</tspan>
+<text x="1298" y="1019" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1298" dy="0">Decline · authorize · settle</tspan>
 </text>
-<text x="1496" y="563" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">Correct product and quantity</tspan>
+<text x="1298" y="1039" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1298" dy="0">Fetch · reverse · refund</tspan>
 </text>
-<text x="1496" y="582" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">Quality and readiness threshold</tspan>
+<path class="arrow" d="M1020 1007 L1045 1007" stroke="#0277A8" stroke-width="3"/>
+<path class="arrow" d="M1255 1007 L1280 1007" stroke="#0277A8" stroke-width="3"/>
+<rect class="" x="815" y="1080" width="700" height="115" rx="8" fill="#FFFFFF" stroke="#0277A8" stroke-width="2"/>
+<text x="833" y="1112" font-size="15" fill="#0277A8" font-weight="750" text-anchor="start">
+<tspan x="833" dy="0">ADDITIONAL RAIN SURFACE</tspan>
 </text>
-<text x="1496" y="601" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">Same authorized transaction</tspan>
+<text x="833" y="1140" font-size="12" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="833" dy="0">Payment account and route CRUD</tspan>
 </text>
-<rect class="" x="1656" y="515" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="1687" y="530" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="1687" dy="0">WORKING</tspan>
+<text x="833" y="1159" font-size="12" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="833" dy="0">Fiat ↔ RUSD simulations stay labeled sandbox, not bank transfers</tspan>
 </text>
-<rect class="" x="1480" y="665" width="250" height="116" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2"/>
-<text x="1496" y="695" font-size="17" fill="#059669" font-weight="700" text-anchor="start">
-<tspan x="1496" dy="0">Technical receipt</tspan>
+<rect class="zone" x="1575" y="885" width="475" height="300" rx="18" fill="#F1ECFF" stroke="#6D3AE8" stroke-width="2"/>
+<text x="1597" y="923" font-size="20" fill="#6D3AE8" font-weight="750" text-anchor="start">
+<tspan x="1597" dy="0">MONAD SOLIDITY ESCROW</tspan>
 </text>
-<text x="1496" y="723" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">A2A agreement · AP2 mandate</tspan>
+<text x="1597" y="953" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="1597" dy="0">Optional high-value commercial terms</tspan>
 </text>
-<text x="1496" y="742" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">Monad/Rain settlement evidence</tspan>
+<rect class="" x="1915" y="902" width="110" height="28" rx="8" fill="#F1ECFF" stroke="#6D3AE8" stroke-width="1"/>
+<text x="1970" y="921" font-size="10" fill="#6D3AE8" font-weight="750" text-anchor="middle">
+<tspan x="1970" dy="0">TESTNET</tspan>
 </text>
-<text x="1496" y="761" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1496" dy="0">Delivery and policy decision</tspan>
+<rect class="" x="1600" y="955" width="425" height="150" rx="13" fill="#FFFFFF" stroke="#6D3AE8" stroke-width="2"/>
+<text x="1618" y="989" font-size="17" fill="#6D3AE8" font-weight="700" text-anchor="start">
+<tspan x="1618" dy="0">$28,900 equipment example</tspan>
 </text>
-<rect class="" x="1656" y="675" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="1687" y="690" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="1687" dy="0">WORKING</tspan>
+<text x="1618" y="1019" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1618" dy="0">Buyer · merchant · USDC amount · deposit</tspan>
 </text>
-<rect class="" x="70" y="960" width="320" height="160" rx="12" fill="#FFFFFF" stroke="#0F766E" stroke-width="2"/>
-<text x="86" y="990" font-size="17" fill="#0F766E" font-weight="700" text-anchor="start">
-<tspan x="86" dy="0">PreFlight product catalog</tspan>
+<text x="1618" y="1039" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1618" dy="0">Expiration · commercial-terms hash</tspan>
 </text>
-<text x="86" y="1018" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">18 independently priced API operations</tspan>
+<text x="1618" y="1059" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1618" dy="0">Fund · release · refund · cancellation</tspan>
 </text>
-<text x="86" y="1037" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">13 live · 3 derived · 2 simulated</tspan>
+<rect class="" x="1920" y="967" width="90" height="24" rx="7" fill="#F1ECFF" stroke="#6D3AE8" stroke-width="1"/>
+<text x="1965" y="984" font-size="9" fill="#6D3AE8" font-weight="750" text-anchor="middle">
+<tspan x="1965" dy="0">TESTNET</tspan>
 </text>
-<text x="86" y="1056" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">Imported from deployed OpenAPI document</tspan>
+<rect class="" x="1600" y="1125" width="425" height="70" rx="8" fill="#FFFFFF" stroke="#6D3AE8" stroke-width="2"/>
+<text x="1618" y="1157" font-size="15" fill="#6D3AE8" font-weight="750" text-anchor="start">
+<tspan x="1618" dy="0">OPTIONAL PATH</tspan>
 </text>
-<text x="86" y="1075" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="86" dy="0">Published for agent discovery</tspan>
+<text x="1618" y="1185" font-size="12" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1618" dy="0">Not required for x402 or ordinary Rain card purchases.</tspan>
 </text>
-<rect class="" x="316" y="970" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="347" y="985" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="347" dy="0">WORKING</tspan>
+<rect class="zone" x="2085" y="885" width="405" height="300" rx="18" fill="#ECFDF3" stroke="#067647" stroke-width="2"/>
+<text x="2107" y="923" font-size="20" fill="#067647" font-weight="750" text-anchor="start">
+<tspan x="2107" dy="0">VERIFY AND RECEIPT</tspan>
 </text>
-<rect class="" x="425" y="960" width="605" height="160" rx="12" fill="#FFFFFF" stroke="#0F766E" stroke-width="2"/>
-<text x="441" y="990" font-size="17" fill="#0F766E" font-weight="700" text-anchor="start">
-<tspan x="441" dy="0">Live public evidence</tspan>
+<text x="2107" y="953" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="2107" dy="0">Payment is not completion</tspan>
 </text>
-<text x="441" y="1018" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="441" dy="0">AviationWeather.gov: METAR · TAF · PIREP · SIGMET</tspan>
+<rect class="" x="2355" y="902" width="110" height="28" rx="8" fill="#ECFDF3" stroke="#067647" stroke-width="1"/>
+<text x="2410" y="921" font-size="10" fill="#067647" font-weight="750" text-anchor="middle">
+<tspan x="2410" dy="0">WORKING</tspan>
 </text>
-<text x="441" y="1037" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="441" dy="0">FAA: airspace · TFR/FDC NOTAM · airports · obstacles</tspan>
+<rect class="" x="2110" y="955" width="355" height="110" rx="13" fill="#FFFFFF" stroke="#067647" stroke-width="2"/>
+<ellipse cx="2140" cy="985" rx="16" ry="16" fill="#067647" stroke="#067647" stroke-width="1"/>
+<text x="2140" y="991" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="2140" dy="0">9</tspan>
 </text>
-<text x="441" y="1056" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="441" dy="0">Open-Meteo winds · USGS terrain · ADSB.lol traffic</tspan>
+<text x="2168" y="989" font-size="17" fill="#067647" font-weight="700" text-anchor="start">
+<tspan x="2168" dy="0">Delivery verification</tspan>
 </text>
-<text x="441" y="1075" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="441" dy="0">NOAA SWPC GNSS risk · Sunrise-Sunset daylight</tspan>
+<text x="2128" y="1019" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="2128" dy="0">Correct product · quantity · quality</tspan>
 </text>
-<rect class="" x="956" y="970" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="987" y="985" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="987" dy="0">WORKING</tspan>
+<text x="2128" y="1039" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="2128" dy="0">Same mandate and transaction</tspan>
 </text>
-<rect class="" x="1065" y="960" width="305" height="160" rx="12" fill="#FFFFFF" stroke="#0F766E" stroke-width="2"/>
-<text x="1081" y="990" font-size="17" fill="#0F766E" font-weight="700" text-anchor="start">
-<tspan x="1081" dy="0">Derived products</tspan>
+<rect class="" x="2110" y="1090" width="355" height="90" rx="13" fill="#FFFFFF" stroke="#067647" stroke-width="2"/>
+<ellipse cx="2140" cy="1120" rx="16" ry="16" fill="#067647" stroke="#067647" stroke-width="1"/>
+<text x="2140" y="1126" font-size="13" fill="#FFFFFF" font-weight="750" text-anchor="middle">
+<tspan x="2140" dy="0">10</tspan>
 </text>
-<text x="1081" y="1018" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1081" dy="0">Surface flight category</tspan>
+<text x="2168" y="1124" font-size="17" fill="#067647" font-weight="700" text-anchor="start">
+<tspan x="2168" dy="0">Technical receipt</tspan>
 </text>
-<text x="1081" y="1037" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1081" dy="0">GNSS space-weather risk</tspan>
+<text x="2128" y="1154" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="2128" dy="0">A2A + AP2 + settlement + delivery</tspan>
 </text>
-<text x="1081" y="1056" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1081" dy="0">Authorization requirements</tspan>
+<path d="M430 805 L2015 805" fill="none" stroke="#98A2B3" stroke-width="2" stroke-linecap="round"/>
+<path d="M2015 700 L2015 805" fill="none" stroke="#172033" stroke-width="3" stroke-linecap="round"/>
+<path class="arrow" d="M430 805 L430 885" stroke="#6D3AE8" stroke-width="3"/>
+<text x="445" y="794" font-size="12" fill="#6D3AE8" font-weight="650" text-anchor="start">
+<tspan x="445" dy="0">API or data</tspan>
 </text>
-<text x="1081" y="1075" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1081" dy="0">Calculated from labeled live evidence</tspan>
+<path class="arrow" d="M1165 805 L1165 885" stroke="#0277A8" stroke-width="3"/>
+<text x="1180" y="794" font-size="12" fill="#0277A8" font-weight="650" text-anchor="start">
+<tspan x="1180" dy="0">Traditional merchant</tspan>
 </text>
-<rect class="" x="1296" y="970" width="62" height="22" rx="7" fill="#EAFBF1" stroke="#059669" stroke-width="1"/>
-<text x="1327" y="985" font-size="9" fill="#059669" font-weight="750" text-anchor="middle">
-<tspan x="1327" dy="0">WORKING</tspan>
+<path class="arrow dash" d="M1812 805 L1812 885" stroke="#6D3AE8" stroke-width="3"/>
+<text x="1827" y="785" font-size="12" fill="#6D3AE8" font-weight="650" text-anchor="start">
+<tspan x="1827" dy="0">Optional high-value terms</tspan>
 </text>
-<rect class="" x="1405" y="960" width="325" height="160" rx="12" fill="#FFFFFF" stroke="#E11D48" stroke-width="2"/>
-<text x="1421" y="990" font-size="17" fill="#E11D48" font-weight="700" text-anchor="start">
-<tspan x="1421" dy="0">Explicit controlled fixtures</tspan>
+<path d="M770 1210 L2070 1210" fill="none" stroke="#98A2B3" stroke-width="2" stroke-linecap="round"/>
+<path class="arrow" d="M755 1165 L770 1165 L770 1210" stroke="#6D3AE8" stroke-width="2"/>
+<path class="arrow" d="M1540 1165 L1560 1165 L1560 1210" stroke="#0277A8" stroke-width="2"/>
+<path class="arrow" d="M2050 1165 L2070 1165 L2070 1210" stroke="#6D3AE8" stroke-width="2"/>
+<path class="arrow" d="M2070 1210 L2070 1035 L2085 1035" stroke="#067647" stroke-width="3"/>
+<path class="arrow" d="M2287 1065 L2287 1090" stroke="#067647" stroke-width="3"/>
+<rect class="zone" x="70" y="1300" width="1545" height="320" rx="18" fill="#EAFBF8" stroke="#087E71" stroke-width="2"/>
+<text x="92" y="1338" font-size="20" fill="#087E71" font-weight="750" text-anchor="start">
+<tspan x="92" dy="0">EVIDENCE AND PRODUCT TRUTH</tspan>
 </text>
-<text x="1421" y="1018" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1421" dy="0">LAANC facility-map limits</tspan>
+<text x="92" y="1368" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="92" dy="0">Inputs and responses retain explicit provenance instead of pretending every field is live</tspan>
 </text>
-<text x="1421" y="1037" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1421" dy="0">Mission-readiness score</tspan>
+<rect class="" x="1480" y="1317" width="110" height="28" rx="8" fill="#ECFDF3" stroke="#067647" stroke-width="1"/>
+<text x="1535" y="1336" font-size="10" fill="#067647" font-weight="750" text-anchor="middle">
+<tspan x="1535" dy="0">WORKING</tspan>
 </text>
-<text x="1421" y="1056" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1421" dy="0">Provider offers for the walkthrough</tspan>
+<rect class="" x="105" y="1380" width="610" height="175" rx="13" fill="#FFFFFF" stroke="#087E71" stroke-width="2"/>
+<text x="123" y="1414" font-size="17" fill="#087E71" font-weight="700" text-anchor="start">
+<tspan x="123" dy="0">Live public sources</tspan>
 </text>
-<text x="1421" y="1075" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
-<tspan x="1421" dy="0">Never presented as live production data</tspan>
+<text x="123" y="1444" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="123" dy="0">AviationWeather.gov: METAR · TAF · PIREP · SIGMET</tspan>
 </text>
-<rect class="" x="1656" y="970" width="62" height="22" rx="7" fill="#FFF1F2" stroke="#E11D48" stroke-width="1"/>
-<text x="1687" y="985" font-size="9" fill="#E11D48" font-weight="750" text-anchor="middle">
-<tspan x="1687" dy="0">CONTROL</tspan>
+<text x="123" y="1464" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="123" dy="0">FAA: airspace · TFR/FDC NOTAM · airports · obstacles</tspan>
 </text>
-<path class="connector" d="M 320 269 L 420 269" stroke="#3B82F6" stroke-width="3"/>
-<text x="365" y="252" font-size="12" fill="#3B82F6" font-weight="650" text-anchor="middle">
-<tspan x="365" dy="0">intent</tspan>
+<text x="123" y="1484" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="123" dy="0">Open-Meteo · USGS 3DEP · ADSB.lol · NOAA SWPC</tspan>
 </text>
-<path class="connector" d="M 195 449 L 195 485" stroke="#98A2B3" stroke-width="2"/>
-<path class="connector" d="M 195 577 L 195 615" stroke="#98A2B3" stroke-width="2"/>
-<path class="connector dashed" d="M 320 666 L 655 312" stroke="#3B82F6" stroke-width="2"/>
-<text x="388" y="593" font-size="12" fill="#3B82F6" font-weight="650" text-anchor="start">
-<tspan x="388" dy="0">priced products</tspan>
+<text x="123" y="1504" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="123" dy="0">Sunrise-Sunset.org daylight</tspan>
 </text>
-<path class="connector" d="M 625 276 L 655 276" stroke="#3B82F6" stroke-width="3"/>
-<path class="connector" d="M 655 290 L 625 290" stroke="#3B82F6" stroke-width="3"/>
-<path class="connector" d="M 522 329 L 560 375" stroke="#D97706" stroke-width="2"/>
-<path class="connector" d="M 757 329 L 720 375" stroke="#D97706" stroke-width="2"/>
-<path class="connector" d="M 640 467 L 640 505" stroke="#D97706" stroke-width="3"/>
-<text x="651" y="488" font-size="12" fill="#D97706" font-weight="650" text-anchor="start">
-<tspan x="651" dy="0">threshold</tspan>
+<rect class="" x="610" y="1392" width="90" height="24" rx="7" fill="#ECFDF3" stroke="#067647" stroke-width="1"/>
+<text x="655" y="1409" font-size="9" fill="#067647" font-weight="750" text-anchor="middle">
+<tspan x="655" dy="0">WORKING</tspan>
 </text>
-<path class="connector" d="M 640 591 L 640 630" stroke="#D97706" stroke-width="3"/>
-<path class="connector" d="M 640 712 L 640 750" stroke="#172033" stroke-width="3"/>
-<path class="connector" d="M 805 781 L 975 343" stroke="#7C3AED" stroke-width="3"/>
-<text x="838" y="590" font-size="12" fill="#7C3AED" font-weight="650" text-anchor="start">
-<tspan x="838" dy="0">API / data</tspan>
+<rect class="" x="750" y="1380" width="400" height="175" rx="13" fill="#FFFFFF" stroke="#087E71" stroke-width="2"/>
+<text x="768" y="1414" font-size="17" fill="#087E71" font-weight="700" text-anchor="start">
+<tspan x="768" dy="0">PreFlight OpenAPI</tspan>
 </text>
-<path class="connector" d="M 805 781 L 1200 340" stroke="#0284C7" stroke-width="3"/>
-<text x="1050" y="746" font-size="12" fill="#0284C7" font-weight="650" text-anchor="start">
-<tspan x="1050" dy="0">merchant / treasury</tspan>
+<text x="768" y="1444" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="768" dy="0">18 callable operations</tspan>
 </text>
-<path class="connector" d="M 1060 381 L 1060 410" stroke="#7C3AED" stroke-width="2"/>
-<path class="connector" d="M 1060 482 L 1060 510" stroke="#7C3AED" stroke-width="2"/>
-<path class="connector" d="M 1060 584 L 1060 620" stroke="#7C3AED" stroke-width="2"/>
-<path class="connector" d="M 1145 547 L 1480 272" stroke="#7C3AED" stroke-width="3"/>
-<path class="connector dashed" d="M 1145 695 L 1480 409" stroke="#7C3AED" stroke-width="2"/>
-<path class="connector" d="M 1282 375 L 1282 405" stroke="#0284C7" stroke-width="2"/>
-<path class="connector" d="M 1282 499 L 1282 530" stroke="#0284C7" stroke-width="2"/>
-<path class="connector" d="M 1365 586 L 1480 409" stroke="#0284C7" stroke-width="3"/>
-<path class="connector" d="M 1605 319 L 1605 505" stroke="#059669" stroke-width="3"/>
-<path class="connector" d="M 1605 463 L 1605 505" stroke="#059669" stroke-width="3"/>
-<path class="connector" d="M 1605 617 L 1605 665" stroke="#059669" stroke-width="3"/>
-<path class="connector dashed" d="M 425 1040 L 390 1040" stroke="#0F766E" stroke-width="2"/>
-<path class="connector dashed" d="M 1030 1040 L 390 1040" stroke="#0F766E" stroke-width="2"/>
-<path class="connector dashed" d="M 1065 1040 L 390 1040" stroke="#0F766E" stroke-width="2"/>
-<path class="connector dashed" d="M 1405 1040 L 390 1040" stroke="#E11D48" stroke-width="2"/>
-<path class="connector dashed" d="M 230 960 L 655 329" stroke="#0F766E" stroke-width="2"/>
-<text x="420" y="905" font-size="12" fill="#0F766E" font-weight="650" text-anchor="start">
-<tspan x="420" dy="0">catalog feeds seller</tspan>
+<text x="768" y="1464" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="768" dy="0">13 live · 3 derived · 2 simulated</tspan>
 </text>
-<path class="connector dashed" d="M 390 1010 L 1480 272" stroke="#0F766E" stroke-width="2"/>
-<text x="780" y="930" font-size="12" fill="#0F766E" font-weight="650" text-anchor="start">
-<tspan x="780" dy="0">purchased evidence response</tspan>
+<text x="768" y="1484" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="768" dy="0">Labels: live · cached · derived · simulated</tspan>
+</text>
+<text x="768" y="1504" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="768" dy="0">Every operation can be priced independently</tspan>
+</text>
+<rect class="" x="1045" y="1392" width="90" height="24" rx="7" fill="#ECFDF3" stroke="#067647" stroke-width="1"/>
+<text x="1090" y="1409" font-size="9" fill="#067647" font-weight="750" text-anchor="middle">
+<tspan x="1090" dy="0">WORKING</tspan>
+</text>
+<rect class="" x="1185" y="1380" width="395" height="175" rx="13" fill="#FFFFFF" stroke="#C01048" stroke-width="2"/>
+<text x="1203" y="1414" font-size="17" fill="#C01048" font-weight="700" text-anchor="start">
+<tspan x="1203" dy="0">Controlled boundaries</tspan>
+</text>
+<text x="1203" y="1444" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1203" dy="0">LAANC facility-map limits</tspan>
+</text>
+<text x="1203" y="1464" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1203" dy="0">Mission-readiness scoring</tspan>
+</text>
+<text x="1203" y="1484" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1203" dy="0">Provider offers for the walkthrough</tspan>
+</text>
+<text x="1203" y="1504" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1203" dy="0">Full FAA NOTAM needs authorized access</tspan>
+</text>
+<rect class="" x="1475" y="1392" width="90" height="24" rx="7" fill="#FFF1F3" stroke="#C01048" stroke-width="1"/>
+<text x="1520" y="1409" font-size="9" fill="#C01048" font-weight="750" text-anchor="middle">
+<tspan x="1520" dy="0">CONTROLLED</tspan>
+</text>
+<path class="arrow" d="M715 1467 L750 1467" stroke="#087E71" stroke-width="3"/>
+<path class="arrow dash" d="M1150 1467 L1185 1467" stroke="#C01048" stroke-width="2"/>
+<rect class="zone" x="1650" y="1300" width="880" height="320" rx="18" fill="#FFF8E8" stroke="#B54708" stroke-width="2"/>
+<text x="1672" y="1338" font-size="20" fill="#B54708" font-weight="750" text-anchor="start">
+<tspan x="1672" dy="0">TREASURY EXPERIMENTS</tspan>
+</text>
+<text x="1672" y="1368" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="1672" dy="0">Visible product direction, separated from the core transaction proof</tspan>
+</text>
+<rect class="" x="2395" y="1317" width="110" height="28" rx="8" fill="#FFF8E8" stroke="#B54708" stroke-width="1"/>
+<text x="2450" y="1336" font-size="10" fill="#B54708" font-weight="750" text-anchor="middle">
+<tspan x="2450" dy="0">EXPERIMENT</tspan>
+</text>
+<rect class="" x="1685" y="1380" width="390" height="175" rx="13" fill="#FFFFFF" stroke="#0277A8" stroke-width="2"/>
+<text x="1703" y="1414" font-size="17" fill="#0277A8" font-weight="700" text-anchor="start">
+<tspan x="1703" dy="0">Rain treasury sandbox</tspan>
+</text>
+<text x="1703" y="1444" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1703" dy="0">Payment accounts and route lifecycle</tspan>
+</text>
+<text x="1703" y="1464" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1703" dy="0">Simulated USD ↔ RUSD movement</tspan>
+</text>
+<text x="1703" y="1484" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1703" dy="0">Sandbox maximum: $100</tspan>
+</text>
+<text x="1703" y="1504" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="1703" dy="0">No real bank transfer</tspan>
+</text>
+<rect class="" x="1970" y="1392" width="90" height="24" rx="7" fill="#E8F7FF" stroke="#0277A8" stroke-width="1"/>
+<text x="2015" y="1409" font-size="9" fill="#0277A8" font-weight="750" text-anchor="middle">
+<tspan x="2015" dy="0">SANDBOX</tspan>
+</text>
+<rect class="" x="2110" y="1380" width="385" height="175" rx="13" fill="#FFFFFF" stroke="#B54708" stroke-width="2"/>
+<text x="2128" y="1414" font-size="17" fill="#B54708" font-weight="700" text-anchor="start">
+<tspan x="2128" dy="0">Governed strategy preview</tspan>
+</text>
+<text x="2128" y="1444" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="2128" dy="0">Reserve · allocation cap · human approval</tspan>
+</text>
+<text x="2128" y="1464" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="2128" dy="0">Ondo · Securitize · Superstate · Dinari · Hyperliquid</tspan>
+</text>
+<text x="2128" y="1484" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="2128" dy="0">No providers connected; no funds move</tspan>
+</text>
+<text x="2128" y="1504" font-size="13" fill="#172033" font-weight="400" text-anchor="start">
+<tspan x="2128" dy="0">No eligibility decision or investment advice</tspan>
+</text>
+<rect class="" x="2390" y="1392" width="90" height="24" rx="7" fill="#FFF8E8" stroke="#B54708" stroke-width="1"/>
+<text x="2435" y="1409" font-size="9" fill="#B54708" font-weight="750" text-anchor="middle">
+<tspan x="2435" dy="0">EXPERIMENT</tspan>
+</text>
+<text x="70" y="1652" font-size="13" fill="#667085" font-weight="400" text-anchor="start">
+<tspan x="70" dy="0">Solid lines = working transaction flow   ·   Dashed lines = optional, controlled, or non-core path</tspan>
+</text>
+<text x="2495" y="1652" font-size="13" fill="#667085" font-weight="400" text-anchor="end">
+<tspan x="2495" dy="0">Monad Testnet · Rain sandbox · controlled demo fixtures</tspan>
 </text>
 </svg>

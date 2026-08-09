@@ -85,27 +85,43 @@ A company can:
 - Keep Rain, existing checkout, invoice, or escrow flows for larger purchases
 - Publish a hosted, machine-readable agent-commerce contract
 
+## The selling-agent loop
+
+```mermaid
+flowchart LR
+    S[OpenAPI or commerce catalog] --> I[Import products and operations]
+    I --> P[Set prices, floors, discounts, and payment rails]
+    P --> H{Human review before publishing}
+    H --> A[A2A Agent Card, JSON-RPC, and streaming]
+    A --> C[Hosted catalog and commerce contract]
+    C --> N[Seller agent negotiates inside approved boundaries]
+    N --> X{Settlement path}
+    X -->|API or data| M[Monad x402]
+    X -->|Traditional purchase| R[Rain, invoice, or existing checkout]
+    X -->|Optional high-value terms| E[Monad Solidity escrow]
+```
+
+The hosted commerce contract publishes products, prices, negotiation limits, payment assignments, and discovery links. It is not itself a Solidity contract. Solidity is an optional escrow mechanism when a high-value product needs on-chain commercial terms.
+
 ## The buying-agent loop
 
 The model helps interpret the request and prepare a purchasing plan. Deterministic application code controls the budget, eligible providers, approval threshold, authorization, and payment execution.
 
 ```mermaid
-flowchart TD
-    H[Human describes the outcome] --> B[Buyer agent creates a structured mandate]
-    B --> M[Budget, quantity, quality, and approval rules]
-    M --> D[Discover and compare configured providers]
-    D --> N[A2A seller negotiation]
+flowchart LR
+    H[Describe the outcome] --> B[Buyer agent creates the mandate]
+    B --> D[Discover and compare providers]
+    D --> N[Negotiate through A2A]
     N --> P{Within company policy?}
     P -->|Yes| A[AP2 exact payment permission]
-    P -->|No| R{Human review}
+    P -->|Needs approval| R{Human review}
     R -->|Approve| A
     R -->|Reject| S[Stop without moving money]
-    A --> X{Select the approved payment rail}
-    X -->|API or data| MX[Monad x402]
-    X -->|Traditional merchant| RC[Rain scoped card]
-    MX --> V[Verify delivery against the mandate]
-    RC --> V
-    V --> T[Authorization, payment, and delivery receipt]
+    A --> X{Approved payment rail}
+    X -->|API or data| M[Monad x402]
+    X -->|Traditional merchant| C[Rain scoped card]
+    M --> V[Verify delivery and issue receipt]
+    C --> V
 ```
 
 For the controlled demonstration, provider offers are configured fixtures and the A2A buyer and seller run inside the application. The negotiation, policy enforcement, approval stop, AP2 authorization, and payment integrations are working components.
@@ -262,6 +278,8 @@ Before card creation, Raingentic verifies the exact AP2 procurement authorizatio
 
 Rain operations use sandbox funds. Treasury movements are simulations, not real bank transfers.
 
+The dashboard also includes a governed treasury strategy experiment covering operating reserves, allocation limits, human approval, provider eligibility, bridges, and leverage controls. It is a concept preview: investment providers are not connected and no funds, investments, bridges, or trades are executed.
+
 ## Live PreFlight product catalog
 
 The selling demonstration uses a deployed aviation and drone-operations API:
@@ -334,7 +352,6 @@ The mission-readiness result used in the controlled walkthrough is synthetic. Th
 | Rain payment accounts, routes, onramp, and offramp | Sandbox simulation |
 | PreFlight OpenAPI and 18 callable operations | Deployed |
 | Delivery verification | Working against controlled demo results |
-| Treasury strategy policy and provider routing | Concept preview; no investment accounts, bridging, or trading execution connected |
 | External unrelated A2A counterparty | Not yet tested |
 | Production Rain banking and cards | Requires production onboarding |
 | Mainnet stablecoin payments | Not enabled |
