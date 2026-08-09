@@ -1,0 +1,47 @@
+.heroWord {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(36%);
+  animation: wordReveal 1050ms cubic-bezier(.16, 1, .3, 1) forwards;
+}
+
+.heroVisual {
+  opacity: 0;
+  transform: translateY(18px) scale(.99);
+  animation: visualEnter 1400ms cubic-bezier(.16, 1, .3, 1) 520ms forwards;
+}
+
+.statusStep {
+  opacity: 0;
+  transform: translateY(5px);
+  animation: statusEnter 850ms cubic-bezier(.16, 1, .3, 1) forwards;
+}
+
+.flowCard {
+  transition: border-color 500ms ease, background 500ms ease;
+}
+
+.flowCard:hover {
+  border-color: hsl(180 5% 26%);
+  background: hsl(180 8% 8% / .45);
+}
+
+@keyframes wordReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes visualEnter {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes statusEnter {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroWord, .heroVisual, .statusStep {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}

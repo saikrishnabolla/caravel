@@ -1,5 +1,5 @@
-import { CommerceDashboard } from "@/components/commerce-dashboard";
+import { LandingPage } from "@/components/landing-page";
 
 export default function Home() {
-  return <CommerceDashboard />;
+  return <LandingPage />;
 }

@@ -1,0 +1,14 @@
+{
+  "network": "Monad Testnet",
+  "chainId": 10143,
+  "address": "0x2403498812e217ab86dd0e937e60fe09bfe73fb1",
+  "deploymentTransaction": "0xe0053d6ee393c28124a48366f2c7a97dee0fd2759cdfbedfb07495e0d90aba3a",
+  "sampleOrderTransaction": "0xfe61e7c10d5b7b5bd6bb92b674123f9e0162060489bba7feb6c4fb9a4914e2a6",
+  "sampleOrderId": "0xf70a3b539d08cb0a32241a718108248f45c31254c624ef828beaa65edfa919cc",
+  "termsHash": "0xcb2c96e843a1cbfcf71c900c14bba77840838ed9b3e00bc8cc1ead9a85f7c93a",
+  "buyer": "0xAc1B1b53A823658c980648aA9BcDD73b29dF5268",
+  "merchant": "0x7C5E716D7050BD7a75c074397a9d5f1258532e33",
+  "totalAmountUSDC": "28900",
+  "depositRequiredUSDC": "500",
+  "explorerUrl": "https://monadvision.com/address/0x2403498812e217ab86dd0e937e60fe09bfe73fb1"
+}

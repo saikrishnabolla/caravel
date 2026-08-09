@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Dialog } from "radix-ui";
 import {
@@ -9,6 +9,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   BadgeCheck,
+  Bot,
   Building2,
   Check,
   CircleDollarSign,
@@ -17,14 +18,18 @@ import {
   CreditCard,
   Database,
   FileCheck2,
+  FileJson2,
+  Globe2,
   Landmark,
   Loader2,
   MoreHorizontal,
   PackageCheck,
   Play,
   Plus,
+  Plug,
   RefreshCcw,
   Search,
+  SlidersHorizontal,
   ShieldCheck,
   ShoppingCart,
   Store,
@@ -217,9 +222,17 @@ export function BuyingWorkbench() {
 }
 
 type ProductType = "API" | "Data" | "Software" | "Service" | "Hardware";
+type HighTicketResult = { requiresApproval: boolean; reason?: string; paymentMode?: string; depositCents?: number; remainingCents?: number; fullAmountDeclinedReason?: string; product: { name: string; merchant: string; productUrl: string; catalogUrl: string; amountCents: number }; ap2AuthorizationId?: string; card?: { id: string; last4: string }; transaction?: { id: string; type: string } };
+type EscrowDeployment = { address: string; explorerUrl: string; sampleOrderTransaction: string; sampleOrderId: string; totalAmountUSDC: string; depositRequiredUSDC: string; order?: { status: number; termsHash: string } };
 
 const products: Array<{ id: string; name: string; type: ProductType; category: string; description: string; price: string; floor: string; discount: string; unit: string; payment: string; status: "Active" | "Draft" }> = [
-  { id: "preflight-api", name: "PreFlight Operations API", type: "API", category: "Developer platform", description: "One commercial API for complete flight-readiness assessments. Weather, winds aloft, airspace, restrictions, traffic, terrain, land rules, obstacles, and GNSS are included capabilities, not separate products.", price: "0.25", floor: "0.15", discount: "25", unit: "per assessment", payment: "Monad x402", status: "Active" },
+  { id: "weather-conditions", name: "Current Weather Conditions", type: "API", category: "GET /v1/weather/conditions", description: "Current wind, temperature, visibility, precipitation, and operating conditions for a coordinate and altitude.", price: "0.02", floor: "0.01", discount: "20", unit: "per request", payment: "Monad x402", status: "Active" },
+  { id: "winds-aloft", name: "Winds Aloft", type: "API", category: "GET /v1/weather/winds-aloft", description: "Forecast wind speed and direction at requested operating altitudes for mission planning.", price: "0.03", floor: "0.02", discount: "20", unit: "per request", payment: "Monad x402", status: "Active" },
+  { id: "airspace-status", name: "Airspace Status", type: "API", category: "GET /v1/airspace/status", description: "Controlled airspace, temporary restrictions, advisories, and authorization requirements near a mission area.", price: "0.04", floor: "0.03", discount: "15", unit: "per request", payment: "Monad x402", status: "Active" },
+  { id: "nearby-traffic", name: "Nearby Aviation Traffic", type: "API", category: "GET /v1/traffic/nearby", description: "Recent cooperative aircraft activity around a proposed drone operation.", price: "0.05", floor: "0.03", discount: "20", unit: "per request", payment: "Monad x402", status: "Active" },
+  { id: "terrain-elevation", name: "Terrain Elevation", type: "API", category: "GET /v1/terrain/elevation", description: "Terrain elevation and clearance context for coordinates along a planned route.", price: "0.01", floor: "0.005", discount: "20", unit: "per request", payment: "Monad x402", status: "Active" },
+  { id: "gnss-integrity", name: "GNSS Integrity", type: "API", category: "GET /v1/gnss/integrity", description: "Expected satellite geometry, signal reliability, and navigation integrity for a mission window.", price: "0.02", floor: "0.01", discount: "20", unit: "per request", payment: "Monad x402", status: "Active" },
+  { id: "mission-readiness", name: "Mission Readiness Assessment", type: "API", category: "POST /v1/mission/readiness", description: "A combined assessment across weather, winds, airspace, traffic, terrain, obstacles, GNSS, and aircraft limits.", price: "0.25", floor: "0.15", discount: "25", unit: "per assessment", payment: "Monad x402", status: "Active" },
   { id: "preflight-fleet", name: "PreFlight Fleet", type: "Software", category: "Team software", description: "A shared operations workspace for aircraft profiles, launch sites, company policies, readiness history, and team purchasing controls.", price: "299.00", floor: "249.00", discount: "15", unit: "per month", payment: "Rain card or invoice", status: "Active" },
   { id: "preflight-enterprise", name: "PreFlight Enterprise", type: "Software", category: "Enterprise software", description: "Fleet-wide readiness workflows, custom policy, API volume, organization controls, onboarding, and priority support.", price: "1500.00", floor: "1200.00", discount: "20", unit: "per month", payment: "Rain card or invoice", status: "Active" },
   { id: "mission-report", name: "Mission Readiness Report", type: "Service", category: "Operational deliverable", description: "A customer-ready report covering weather, airspace, hazards, aviation activity, terrain, obstacles, and aircraft-specific limits for one mission.", price: "29.00", floor: "20.00", discount: "20", unit: "per report", payment: "Rain card or invoice", status: "Active" },
@@ -236,6 +249,87 @@ function ProductGlyph({ type }: { type: ProductType }) {
   return <div className="flex size-10 items-center justify-center rounded-md bg-secondary"><Icon className="size-5 text-primary" /></div>;
 }
 
+type CatalogSource = "openapi" | "commerce" | "billing" | "api" | "website";
+type SetupPlanResult = { businessSummary: string; catalogStrategy: string; pricingStrategy: string; paymentAssignments: Array<{ productCategory: string; paymentRail: string; reason: string }>; approvalRule: string; nextActions: string[]; source: string };
+
+const catalogSources: Array<{ id: CatalogSource; name: string; description: string; icon: typeof Code2 }> = [
+  { id: "openapi", name: "OpenAPI document", description: "Import every path, operation, schema, and endpoint.", icon: FileJson2 },
+  { id: "commerce", name: "Commerce platform", description: "Connect any store through an app, plugin, or API.", icon: Store },
+  { id: "billing", name: "Billing platform", description: "Import products, plans, prices, and subscriptions.", icon: CreditCard },
+  { id: "api", name: "Custom API or database", description: "Connect a REST endpoint or your internal catalog service.", icon: Plug },
+  { id: "website", name: "Website catalog", description: "Extract public products and review them before publishing.", icon: Globe2 },
+];
+
+const importedApiOperations = [
+  ["GET", "/v1/weather/conditions", "Current Weather Conditions", "$0.02"],
+  ["GET", "/v1/weather/winds-aloft", "Winds Aloft", "$0.03"],
+  ["GET", "/v1/airspace/status", "Airspace Status", "$0.04"],
+  ["GET", "/v1/traffic/nearby", "Nearby Aviation Traffic", "$0.05"],
+  ["GET", "/v1/terrain/elevation", "Terrain Elevation", "$0.01"],
+  ["GET", "/v1/gnss/integrity", "GNSS Integrity", "$0.02"],
+  ["POST", "/v1/mission/readiness", "Mission Readiness Assessment", "$0.25"],
+];
+
+export function CatalogSetup({ onLoadDemo }: { onLoadDemo?: () => void }) {
+  const [source, setSource] = useState<CatalogSource>("openapi");
+  const [location, setLocation] = useState("/api/openapi");
+  const [imported, setImported] = useState(false);
+  const [operations, setOperations] = useState(importedApiOperations);
+  const [commerceProducts, setCommerceProducts] = useState<Array<{ id: string; name: string; vendor: string; type: string; variants: Array<{ id: string; name: string; price: string; available: boolean }> }>>([]);
+  const [connecting, setConnecting] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [setupRequest, setSetupRequest] = useState("Import this catalog, price API endpoints individually, preserve live store prices for hardware, use Monad x402 for small API purchases, use Rain for controlled physical-product payments, and require human approval for high-value orders.");
+  const [setupPlan, setSetupPlan] = useState<SetupPlanResult | null>(null);
+  const [setupRunning, setSetupRunning] = useState(false);
+  const [publishingAll, setPublishingAll] = useState(false);
+  const [publishedCount, setPublishedCount] = useState(0);
+
+  function selectSource(next: CatalogSource) {
+    setSource(next); setImported(false); setImportError(null);
+    setLocation(next === "openapi" ? "/api/openapi" : next === "commerce" ? "https://raptordynamic.com/collections/xag-drones" : next === "billing" ? "https://billing.example.com" : next === "api" ? "https://api.example.com/catalog" : "https://raptordynamic.com/collections/xag-drones");
+  }
+
+  async function connectSource() {
+    setConnecting(true); setImportError(null);
+    try {
+      const response = await fetch("/api/catalog/import", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ source, location }) });
+      const document = await response.json() as { error?: string; operations?: Array<{ method: string; path: string; name: string; price?: { amount?: string } | null }>; products?: Array<{ id: string; name: string; vendor: string; type: string; variants: Array<{ id: string; name: string; price: string; available: boolean }> }> };
+      if (!response.ok) throw new Error(document.error ?? "Catalog import failed");
+      if (source === "openapi") setOperations((document.operations ?? []).map(operation => [operation.method,operation.path,operation.name,`$${operation.price?.amount ?? "Configure"}`]));
+      if (source === "commerce" || source === "website") setCommerceProducts(document.products ?? []);
+      setImported(true);
+    } catch (reason) {
+      setImported(false); setImportError(reason instanceof Error ? reason.message : "The catalog could not be imported");
+    } finally { setConnecting(false); }
+  }
+
+  async function prepareSetup() {
+    setSetupRunning(true); setImportError(null);
+    try { setSetupPlan(await jsonRequest<SetupPlanResult>("/api/setup/plan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ request: setupRequest, catalog: source === "openapi" ? operations : commerceProducts }) })); }
+    catch (reason) { setImportError(reason instanceof Error ? reason.message : "The setup agent could not prepare a plan"); }
+    finally { setSetupRunning(false); }
+  }
+
+  async function publishImportedCatalog() {
+    setPublishingAll(true); setImportError(null); setPublishedCount(0);
+    try {
+      const importedProducts = source === "openapi"
+        ? operations.map(([method,path,name,displayPrice]) => { const price = Math.max(0.001, Number(String(displayPrice).replace("$", "")) || 0.01); return { id: `${method}-${path}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""), name, type: "API", price, floor: Math.max(0.001, Number((price * 0.8).toFixed(3))), maximumDiscountPercent: 20 }; })
+        : commerceProducts.map(product => { const price = Math.max(0.01, Number(product.variants[0]?.price ?? 0)); return { id: product.id, name: product.name, type: "Hardware", price, floor: Number((price * 0.9).toFixed(2)), maximumDiscountPercent: 10 }; });
+      const results = await Promise.all(importedProducts.map(product => fetch("/api/catalog", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(product) })));
+      const failure = results.find(response => !response.ok);
+      if (failure) throw new Error(`Catalog publishing stopped with status ${failure.status}`);
+      setPublishedCount(results.length);
+    } catch (reason) {
+      setImportError(reason instanceof Error ? reason.message : "The imported catalog could not be published");
+    } finally {
+      setPublishingAll(false);
+    }
+  }
+
+  return <div><div className="mb-8"><h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Connect your catalog</h1><p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">Bring the products your company already sells. Raingentic normalizes them into one catalog for humans and purchasing agents.</p><div className="dashboard-header-line mt-8" /></div><div className="grid gap-5 lg:grid-cols-[21rem_minmax(0,1fr)]"><Card><CardHeader><CardTitle>Catalog source</CardTitle><CardDescription>Choose the interface your existing system provides.</CardDescription></CardHeader><CardContent className="space-y-2">{catalogSources.map(item => { const Icon = item.icon; return <button type="button" key={item.id} onClick={() => selectSource(item.id)} className={`flex w-full gap-3 rounded-xl border p-4 text-left transition-colors ${source === item.id ? "border-primary/45 bg-primary/[0.06]" : "border-border hover:bg-white/[0.03]"}`}><Icon className={`mt-0.5 size-5 shrink-0 ${source === item.id ? "text-primary" : "text-muted-foreground"}`} /><div><p className="font-medium">{item.name}</p><p className="mt-1 text-sm leading-5 text-muted-foreground">{item.description}</p></div></button>; })}</CardContent></Card><div className="space-y-5"><Card><CardHeader><CardTitle>{catalogSources.find(item => item.id === source)?.name}</CardTitle><CardDescription>{source === "openapi" ? "Provide an OpenAPI URL or upload the document. Each operation becomes independently configurable." : source === "commerce" ? "Use a native connector when available, or provide the store API and credentials." : source === "website" ? "Public website imports require review because inventory and private pricing may be unavailable." : "Connect the source without replacing its existing checkout or fulfillment system."}</CardDescription></CardHeader><CardContent className="space-y-4"><div className="space-y-2"><Label htmlFor="catalog-location">{source === "billing" ? "Connection" : source === "openapi" ? "OpenAPI document" : "Catalog location"}</Label><Input id="catalog-location" value={location} onChange={event => { setLocation(event.target.value); setImported(false); setImportError(null); }} /></div><div className="flex flex-wrap gap-3"><Button onClick={() => void connectSource()} disabled={connecting}>{connecting ? <Loader2 className="animate-spin" /> : <Plug />}{connecting ? "Connecting" : source === "openapi" ? "Import endpoints" : "Connect source"}</Button>{onLoadDemo && <Button variant="outline" onClick={onLoadDemo}>Load complete demo instead</Button>}</div>{importError && <ErrorNotice message={importError} />}<p className="text-sm leading-6 text-muted-foreground">Credentials are requested through the connector and remain server-side. The original system stays the source of truth for inventory, fulfillment, taxes, and checkout.</p></CardContent></Card>{imported && <Card><CardHeader><div className="flex items-start justify-between gap-4"><div><CardTitle>{source === "openapi" ? `${operations.length} operations found` : `${commerceProducts.length || "Catalog"} products connected`}</CardTitle><CardDescription>{source === "openapi" ? "Review the imported endpoints and configure pricing before publishing." : "Live products, variants, prices, and availability were read from the source."}</CardDescription></div><Badge variant="secondary"><Check className="text-primary" />Connected</Badge></div></CardHeader><CardContent>{source === "openapi" ? <div className="overflow-x-auto rounded-xl border"><table className="w-full min-w-[650px] text-sm"><thead><tr className="border-b text-left text-muted-foreground"><th className="px-4 py-3 font-medium">Method</th><th className="px-4 py-3 font-medium">Endpoint</th><th className="px-4 py-3 font-medium">Product</th><th className="px-4 py-3 text-right font-medium">Suggested price</th></tr></thead><tbody>{operations.map(([method,path,name,price]) => <tr key={path} className="border-b last:border-0"><td className="px-4 py-3"><Badge variant="outline">{method}</Badge></td><td className="px-4 py-3 font-mono text-sm">{path}</td><td className="px-4 py-3">{name}</td><td className="px-4 py-3 text-right font-medium">{price}</td></tr>)}</tbody></table></div> : commerceProducts.length > 0 ? <div className="space-y-3">{commerceProducts.slice(0,6).map(product => <div key={product.id} className="flex flex-col gap-3 rounded-xl border p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-medium">{product.name}</p><p className="mt-1 text-sm text-muted-foreground">{product.vendor}, {product.variants.length} variants</p></div><div className="sm:text-right"><p className="font-semibold">${Number(product.variants[0]?.price ?? 0).toLocaleString()}</p><p className="mt-1 text-sm text-muted-foreground">{product.variants.some(variant => variant.available) ? "Available" : "Unavailable"}</p></div></div>)}</div> : <div className="grid gap-3 sm:grid-cols-3">{[["Products","Ready to sync"],["Prices and variants","Use source values"],["Orders","Return to existing fulfillment"]].map(([title,detail]) => <div key={title} className="rounded-xl border p-4"><p className="font-medium">{title}</p><p className="mt-1 text-sm text-muted-foreground">{detail}</p></div>)}</div>}<div className="mt-6 border-t border-border pt-6"><div className="flex items-center gap-2 font-semibold"><Bot className="size-5 text-primary" />Ask the setup agent</div><p className="mt-2 text-sm leading-6 text-muted-foreground">Describe how this business should sell. The configured OpenAI agent will map the catalog to pricing, approvals, and payment rails.</p><Textarea className="mt-4 min-h-28" value={setupRequest} onChange={event => setSetupRequest(event.target.value)} /><Button variant="outline" className="mt-3" onClick={() => void prepareSetup()} disabled={setupRunning}>{setupRunning ? <Loader2 className="animate-spin" /> : <Bot />}{setupRunning ? "Preparing setup" : "Prepare commerce setup"}</Button>{setupPlan && <div className="mt-5 rounded-xl border border-primary/20 bg-primary/[0.04] p-5"><div className="flex items-center justify-between gap-3"><p className="font-semibold">Proposed setup</p><Badge variant="secondary">{setupPlan.source}</Badge></div><div className="mt-4 space-y-4 text-sm"><div><p className="text-muted-foreground">Catalog</p><p className="mt-1">{setupPlan.catalogStrategy}</p></div><div><p className="text-muted-foreground">Pricing</p><p className="mt-1">{setupPlan.pricingStrategy}</p></div><div><p className="text-muted-foreground">Approval</p><p className="mt-1">{setupPlan.approvalRule}</p></div>{setupPlan.paymentAssignments.map(item => <div key={item.productCategory} className="rounded-lg border p-3"><p className="font-medium">{item.productCategory}: {item.paymentRail}</p><p className="mt-1 text-muted-foreground">{item.reason}</p></div>)}</div></div>}</div><div className="mt-5 flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">{publishedCount > 0 ? <div><p className="font-medium">{publishedCount} products published</p><p className="mt-1 text-sm text-muted-foreground">They are now available through the catalog API and agent discovery layer.</p></div> : <p className="text-sm text-muted-foreground">Review the imported catalog, then publish every product in one controlled action.</p>}<div className="flex flex-wrap gap-3"><Button variant="outline" onClick={onLoadDemo}><SlidersHorizontal />Configure individually</Button><Button onClick={() => void publishImportedCatalog()} disabled={publishingAll}>{publishingAll ? <Loader2 className="animate-spin" /> : <Store />}{publishingAll ? "Publishing catalog" : "Publish all products"}</Button></div></div></CardContent></Card>}</div></div></div>;
+}
+
 export function SellingWorkbench() {
   const [selectedId, setSelectedId] = useState(products[0].id);
   const selected = products.find(product => product.id === selectedId) ?? products[0];
@@ -246,14 +340,30 @@ export function SellingWorkbench() {
   const [floor, setFloor] = useState(selected.floor);
   const [discount, setDiscount] = useState(selected.discount);
   const [negotiationEnabled, setNegotiationEnabled] = useState(true);
+  const [policyText, setPolicyText] = useState("Approved customers buying more than 10,000 requests per month may receive up to 20% off. Never sell below the configured floor. New customers must prepay. Require human approval above $1,000.");
+  const [compiledPolicy, setCompiledPolicy] = useState<Record<string, string | number | boolean> | null>(null);
+  const [policyCompiling, setPolicyCompiling] = useState(false);
   const [paymentChoice, setPaymentChoice] = useState(selected.payment);
   const [published, setPublished] = useState<Record<string, unknown> | null>(null);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [highTicket, setHighTicket] = useState<HighTicketResult | null>(null);
+  const [highTicketRunning, setHighTicketRunning] = useState(false);
+  const [highTicketError, setHighTicketError] = useState<string | null>(null);
+  const [escrow, setEscrow] = useState<EscrowDeployment | null>(null);
+
+  useEffect(() => { fetch("/api/contracts/escrow").then(response => response.json()).then(data => setEscrow(data as EscrowDeployment)).catch(() => undefined); }, []);
 
   function choose(id: string) {
     const product = products.find(item => item.id === id) ?? products[0];
-    setSelectedId(id); setPrice(product.price); setFloor(product.floor); setDiscount(product.discount); setPaymentChoice(product.payment); setNegotiationEnabled(true); setPublished(null); setEditorOpen(true);
+    setSelectedId(id); setPrice(product.price); setFloor(product.floor); setDiscount(product.discount); setPaymentChoice(product.payment); setNegotiationEnabled(true); setCompiledPolicy(null); setPublished(null); setEditorOpen(true);
+  }
+
+  async function compilePolicy() {
+    setPolicyCompiling(true); setError(null);
+    try { setCompiledPolicy(await jsonRequest<Record<string, string | number | boolean>>("/api/policies/compile", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ instructions: policyText, product: selected.name, resource: selected.category, basePrice: Number(price), minimumPrice: Number(floor), maximumDiscountPercent: Number(discount), settlement: paymentChoice, currency: selected.type === "API" ? "USDC" : "USD" }) })); }
+    catch (reason) { setError(reason instanceof Error ? reason.message : "The policy could not be compiled"); }
+    finally { setPolicyCompiling(false); }
   }
 
   async function publish() {
@@ -264,19 +374,28 @@ export function SellingWorkbench() {
     finally { setRunning(false); }
   }
 
+  async function runHighTicketPurchase(approved: boolean) {
+    setHighTicketRunning(true); setHighTicketError(null);
+    try { setHighTicket(await jsonRequest<HighTicketResult>("/api/demo/high-ticket", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ approved }) })); }
+    catch (reason) { setHighTicketError(reason instanceof Error ? reason.message : "The Rain purchase could not be completed"); }
+    finally { setHighTicketRunning(false); }
+  }
+
   const filtered = products.filter(product => (filter === "All" || product.type === filter) && `${product.name} ${product.category} ${product.description}`.toLowerCase().includes(query.toLowerCase()));
 
   return (
     <div className="not-prose my-8 space-y-5">
-      <div className="grid gap-4 sm:grid-cols-3"><Card><CardContent className="p-5"><p className="text-sm text-muted-foreground">Catalog</p><p className="mt-2 text-2xl font-semibold">{products.length} products</p><p className="mt-1 text-sm text-muted-foreground">Platform, services, and hardware</p></CardContent></Card><Card><CardContent className="p-5"><p className="text-sm text-muted-foreground">Published</p><p className="mt-2 text-2xl font-semibold">{products.filter(product => product.status === "Active").length} active</p><p className="mt-1 text-sm text-muted-foreground">Available to customers and agents</p></CardContent></Card><Card><CardContent className="p-5"><p className="text-sm text-muted-foreground">Commercial model</p><p className="mt-2 text-2xl font-semibold">4 categories</p><p className="mt-1 text-sm text-muted-foreground">API, software, services, hardware</p></CardContent></Card></div>
+      <div className="grid gap-4 sm:grid-cols-3"><Card><CardContent className="p-5"><p className="text-sm text-muted-foreground">Catalog</p><p className="mt-2 text-2xl font-semibold">{products.length} products</p><p className="mt-1 text-sm text-muted-foreground">7 API endpoints plus software, services, and hardware</p></CardContent></Card><Card><CardContent className="p-5"><p className="text-sm text-muted-foreground">Published</p><p className="mt-2 text-2xl font-semibold">{products.filter(product => product.status === "Active").length} active</p><p className="mt-1 text-sm text-muted-foreground">Available to customers and agents</p></CardContent></Card><Card><CardContent className="p-5"><p className="text-sm text-muted-foreground">Connected sources</p><p className="mt-2 text-2xl font-semibold">3 systems</p><p className="mt-1 text-sm text-muted-foreground">OpenAPI, commerce store, and billing</p></CardContent></Card></div>
 
       <Card>
-        <CardHeader><div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div><CardTitle>Product catalog</CardTitle><CardDescription>PreFlight sells packaged outcomes. Its weather, airspace, traffic, terrain, and GNSS sources remain capabilities inside the platform.</CardDescription></div><Button onClick={() => { choose(products[0].id); setEditorOpen(true); }}><Plus />Add product</Button></div></CardHeader>
+        <CardHeader><div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div><CardTitle>Product catalog</CardTitle><CardDescription>Products imported from existing systems. Every API operation can have its own price and agent policy.</CardDescription></div><Button onClick={() => { choose(products[0].id); setEditorOpen(true); }}><Plus />Add product</Button></div></CardHeader>
         <CardContent className="p-0">
           <div className="flex flex-col gap-3 border-y px-5 py-4 lg:flex-row lg:items-center lg:justify-between"><div className="relative max-w-md flex-1"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input aria-label="Search products" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search products" className="pl-9" /></div><div className="flex flex-wrap gap-2">{(["All","API","Software","Service","Hardware"] as const).map(value => <Button key={value} size="sm" variant={filter === value ? "secondary" : "ghost"} onClick={() => setFilter(value)}>{value}</Button>)}</div></div>
           <div className="overflow-x-auto"><table className="w-full min-w-[820px] text-sm"><thead><tr className="border-b bg-muted/30 text-left text-muted-foreground"><th className="px-6 py-3 font-medium">Product</th><th className="px-4 py-3 font-medium">Type</th><th className="px-4 py-3 font-medium">Price</th><th className="px-4 py-3 font-medium">Payment</th><th className="px-4 py-3 font-medium">Status</th><th className="w-12 px-4 py-3" /></tr></thead><tbody>{filtered.map(product => <tr key={product.id} className="cursor-pointer border-b last:border-0 hover:bg-muted/25" onClick={() => choose(product.id)}><td className="px-6 py-4"><div className="flex items-center gap-3"><ProductGlyph type={product.type} /><div><p className="font-medium">{product.name}</p><p className="mt-1 max-w-md text-muted-foreground">{product.category}</p></div></div></td><td className="px-4 py-4"><Badge variant="outline">{product.type}</Badge></td><td className="px-4 py-4"><p className="font-medium">${Number(product.price).toLocaleString()}</p><p className="mt-1 text-muted-foreground">{product.unit}</p></td><td className="px-4 py-4">{product.payment}</td><td className="px-4 py-4"><Badge variant={product.status === "Active" ? "secondary" : "outline"}>{product.status}</Badge></td><td className="px-4 py-4"><Button variant="ghost" size="icon" aria-label={`Edit ${product.name}`} onClick={event => { event.stopPropagation(); choose(product.id); }}><MoreHorizontal /></Button></td></tr>)}</tbody></table>{filtered.length === 0 && <div className="flex min-h-40 items-center justify-center text-sm text-muted-foreground">No products match this search.</div>}</div>
         </CardContent>
       </Card>
+
+      <Card><CardHeader><div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"><div><div className="flex flex-wrap items-center gap-2"><CardTitle>Live high-ticket commerce example</CardTitle><Badge variant="outline">Live Shopify catalog</Badge>{escrow && <Badge variant="outline">Monad escrow live</Badge>}</div><CardDescription className="mt-2">Use an AP2-authorized Rain card for an actual XAG listing. If the sandbox credit ceiling blocks the full amount, the agent pays an approved reservation deposit and leaves the balance for invoice settlement. No real store order is submitted.</CardDescription></div><Button asChild variant="outline"><Link href="https://raptordynamic.com/collections/xag-drones" target="_blank">View source catalog<ArrowRight /></Link></Button></div></CardHeader><CardContent><div className="grid gap-5 rounded-xl border p-5 lg:grid-cols-[1fr_auto] lg:items-center"><div><p className="text-lg font-semibold">XAG P150 MAX Starter Kit (7Kw 2B2C)</p><p className="mt-2 text-sm text-muted-foreground">Raptor Dynamic, imported from its public Shopify collection endpoint</p><div className="mt-4 flex flex-wrap gap-2"><Badge variant="outline">Available</Badge><Badge variant="outline">5 kit variants</Badge><Badge variant="outline">Physical fulfillment</Badge></div></div><div className="lg:text-right"><p className="text-3xl font-semibold">$28,900</p><p className="mt-1 text-sm text-muted-foreground">Exact approved amount</p></div></div>{escrow && <div className="mt-5 grid gap-4 rounded-xl border border-primary/20 bg-primary/[0.035] p-5 sm:grid-cols-[1fr_auto] sm:items-center"><div><p className="font-semibold">Optional on-chain purchase terms</p><p className="mt-2 text-sm leading-6 text-muted-foreground">The $28,900 order, $500 deposit requirement, buyer, merchant, expiry, and commercial terms hash are recorded in a deployed Monad escrow contract.</p><div className="mt-3 flex flex-wrap gap-2"><Badge variant="outline">Total ${escrow.totalAmountUSDC}</Badge><Badge variant="outline">Deposit ${escrow.depositRequiredUSDC}</Badge><Badge variant="outline">Order recorded</Badge></div></div><Button asChild variant="outline"><Link href={escrow.explorerUrl} target="_blank">View contract<ArrowRight /></Link></Button></div>}{highTicketError && <div className="mt-5"><ErrorNotice message={highTicketError} /></div>}{highTicket && <div className="mt-5 rounded-xl border border-primary/20 bg-primary/[0.04] p-5">{highTicket.requiresApproval ? <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold">Human approval required</p><p className="mt-1 text-sm text-muted-foreground">{highTicket.reason}</p></div><Button onClick={() => void runHighTicketPurchase(true)} disabled={highTicketRunning}>{highTicketRunning ? <Loader2 className="animate-spin" /> : <FileCheck2 />}Approve and execute</Button></div> : <div><div className="flex items-center gap-2 font-semibold"><BadgeCheck className="size-5 text-primary" />{highTicket.paymentMode === "reservation_deposit" ? "High-ticket checkout secured with a Rain deposit" : "Rain sandbox purchase settled"}</div><div className="mt-4 grid gap-4 text-sm sm:grid-cols-3"><div><p className="text-muted-foreground">Scoped card</p><p className="mt-1 font-medium">Ending {highTicket.card?.last4}</p></div><div><p className="text-muted-foreground">AP2 authorization</p><p className="mt-1 break-all font-medium">{highTicket.ap2AuthorizationId}</p></div><div><p className="text-muted-foreground">Rain transaction</p><p className="mt-1 break-all font-medium">{highTicket.transaction?.id}</p></div></div></div>}</div>} {!highTicket && <div className="mt-5 flex justify-end"><Button onClick={() => void runHighTicketPurchase(false)} disabled={highTicketRunning}>{highTicketRunning ? <Loader2 className="animate-spin" /> : <ShieldCheck />}Prepare controlled purchase</Button></div>}</CardContent></Card>
 
       <Dialog.Root open={editorOpen} onOpenChange={setEditorOpen}>
         <Dialog.Portal>
@@ -290,9 +409,9 @@ export function SellingWorkbench() {
             <div className="space-y-8 px-6 py-7 sm:px-8">
               <section><div className="mb-4 flex items-center gap-3"><div className="flex size-7 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">1</div><div><h3 className="font-semibold">Product and price</h3><p className="text-sm text-muted-foreground">Set the standard customer price.</p></div></div><div className="rounded-lg border p-5"><p className="font-medium">{selected.name}</p><p className="mt-1 text-sm leading-6 text-muted-foreground">{selected.description}</p><div className="mt-5 space-y-2"><Label htmlFor="selling-price">Customer price</Label><div className="grid grid-cols-[1fr_auto] gap-2"><div className="relative"><span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span><Input id="selling-price" type="number" value={price} onChange={event => setPrice(event.target.value)} className="pl-7" /></div><div className="flex min-w-32 items-center rounded-md border bg-muted/30 px-3 text-sm text-muted-foreground">{selected.unit}</div></div></div></div></section>
 
-              <section><div className="mb-4 flex items-center gap-3"><div className="flex size-7 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">2</div><div><h3 className="font-semibold">Agent negotiation</h3><p className="text-sm text-muted-foreground">Choose whether buying agents can request a better price.</p></div></div><div className="rounded-lg border p-5"><div className="flex items-center justify-between gap-5"><div><p className="font-medium">Allow automatic negotiation</p><p className="mt-1 text-sm text-muted-foreground">Your seller agent can approve discounts inside the limits below.</p></div><Switch checked={negotiationEnabled} onCheckedChange={setNegotiationEnabled} aria-label="Allow automatic negotiation" /></div>{negotiationEnabled && <div className="mt-5 grid gap-4 border-t pt-5 sm:grid-cols-2"><div className="space-y-2"><Label htmlFor="selling-discount">Largest allowed discount</Label><div className="relative"><Input id="selling-discount" type="number" value={discount} onChange={event => setDiscount(event.target.value)} className="pr-9" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span></div></div><div className="space-y-2"><Label htmlFor="selling-floor">Never sell below</Label><div className="relative"><span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span><Input id="selling-floor" type="number" value={floor} onChange={event => setFloor(event.target.value)} className="pl-7" /></div></div><div className="rounded-md bg-secondary/55 p-4 text-sm leading-6 sm:col-span-2">The agent may negotiate from <strong>${Number(price || 0).toLocaleString()}</strong> down to <strong>${Number(floor || 0).toLocaleString()}</strong>, with a maximum discount of <strong>{discount || 0}%</strong>.</div></div>}</div></section>
+              <section><div className="mb-4 flex items-center gap-3"><div className="flex size-7 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">2</div><div><h3 className="font-semibold">Agent sales policy</h3><p className="text-sm text-muted-foreground">Describe the commercial contract in normal language, then review the enforceable policy.</p></div></div><div className="rounded-lg border p-5"><Label htmlFor="selling-policy">Selling instructions</Label><Textarea id="selling-policy" className="mt-2 min-h-32" value={policyText} onChange={event => setPolicyText(event.target.value)} /><Button variant="outline" className="mt-3" onClick={() => void compilePolicy()} disabled={policyCompiling}>{policyCompiling ? <Loader2 className="animate-spin" /> : <SlidersHorizontal />}{policyCompiling ? "Generating policy" : "Generate policy contract"}</Button>{compiledPolicy && <div className="mt-5 rounded-xl border border-primary/20 bg-primary/[0.04] p-4"><div className="flex items-center gap-2 font-medium"><FileCheck2 className="size-4 text-primary" />Human review required before publishing</div><div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">{Object.entries(compiledPolicy).map(([key,value]) => <div key={key}><p className="text-muted-foreground">{key}</p><p className="mt-1 break-words font-medium">{String(value)}</p></div>)}</div><p className="mt-4 border-t border-border pt-4 text-sm leading-6 text-muted-foreground">This structured policy is enforced by application code. AP2 signs the exact purchase authority. Monad settles x402 API payments, while Rain or the existing checkout handles larger purchases.</p></div>}<div className="mt-5 flex items-center justify-between gap-5 border-t pt-5"><div><p className="font-medium">Allow automatic negotiation</p><p className="mt-1 text-sm text-muted-foreground">The seller agent may negotiate only inside the approved policy.</p></div><Switch checked={negotiationEnabled} onCheckedChange={setNegotiationEnabled} aria-label="Allow automatic negotiation" /></div>{negotiationEnabled && <div className="mt-5 grid gap-4 sm:grid-cols-2"><div className="space-y-2"><Label htmlFor="selling-discount">Largest allowed discount</Label><div className="relative"><Input id="selling-discount" type="number" value={discount} onChange={event => setDiscount(event.target.value)} className="pr-9" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span></div></div><div className="space-y-2"><Label htmlFor="selling-floor">Never sell below</Label><div className="relative"><span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span><Input id="selling-floor" type="number" value={floor} onChange={event => setFloor(event.target.value)} className="pl-7" /></div></div></div>}</div></section>
 
-              <section><div className="mb-4 flex items-center gap-3"><div className="flex size-7 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">3</div><div><h3 className="font-semibold">Payment and delivery</h3><p className="text-sm text-muted-foreground">Choose the checkout experience for this product.</p></div></div><div className="space-y-3">{[["Monad x402","Instant stablecoin payment","Best for APIs and data products"],["Rain card or invoice","Business payment","Best for services, subscriptions, and hardware"],["Existing checkout","Current payment processor","Keep the checkout already used by your company"]].map(([value,title,description]) => <button type="button" key={value} onClick={() => setPaymentChoice(value)} className={`flex w-full items-center justify-between gap-5 rounded-lg border p-4 text-left transition-colors ${paymentChoice === value ? "border-primary bg-secondary/55 ring-1 ring-primary" : "hover:bg-muted/35"}`}><div><p className="font-medium">{title}</p><p className="mt-1 text-sm text-muted-foreground">{description}</p></div>{paymentChoice === value && <div className="flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground"><Check className="size-4" /></div>}</button>)}</div><div className="mt-4 rounded-lg border bg-muted/25 p-4"><p className="text-sm text-muted-foreground">After payment</p><p className="mt-1 font-medium">{selected.type === "API" || selected.type === "Data" ? "Return the purchased API response automatically" : selected.type === "Software" ? "Activate the customer workspace automatically" : selected.type === "Service" ? "Create a fulfillment request for the operations team" : "Create a paid hardware order for fulfillment"}</p></div></section>
+              <section><div className="mb-4 flex items-center gap-3"><div className="flex size-7 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">3</div><div><h3 className="font-semibold">Payment and delivery</h3><p className="text-sm text-muted-foreground">Choose the checkout experience for this product.</p></div></div><div className="space-y-3">{[["Monad x402","Instant stablecoin payment","Best for APIs and data products"],["Monad escrow + Rain settlement","On-chain commercial terms","Best for high-value products, deposits, escrow, and controlled merchant payment"],["Rain card or invoice","Business payment","Best for services, subscriptions, and hardware"],["Existing checkout","Current payment processor","Keep the checkout already used by your company"]].map(([value,title,description]) => <button type="button" key={value} onClick={() => setPaymentChoice(value)} className={`flex w-full items-center justify-between gap-5 rounded-lg border p-4 text-left transition-colors ${paymentChoice === value ? "border-primary bg-secondary/55 ring-1 ring-primary" : "hover:bg-muted/35"}`}><div><p className="font-medium">{title}</p><p className="mt-1 text-sm text-muted-foreground">{description}</p></div>{paymentChoice === value && <div className="flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground"><Check className="size-4" /></div>}</button>)}</div><div className="mt-4 rounded-lg border bg-muted/25 p-4"><p className="text-sm text-muted-foreground">After payment</p><p className="mt-1 font-medium">{selected.type === "API" || selected.type === "Data" ? "Return the purchased API response automatically" : selected.type === "Software" ? "Activate the customer workspace automatically" : selected.type === "Service" ? "Create a fulfillment request for the operations team" : "Create a paid hardware order for fulfillment"}</p></div></section>
 
               <details className="rounded-lg border"><summary className="cursor-pointer px-5 py-4 font-medium">Advanced agent infrastructure</summary><div className="grid gap-4 border-t px-5 py-4 text-sm sm:grid-cols-2"><div><p className="text-muted-foreground">Product discovery</p><p className="mt-1 font-medium">Agent Card</p></div><div><p className="text-muted-foreground">Negotiation</p><p className="mt-1 font-medium">A2A</p></div><div><p className="text-muted-foreground">Payment authorization</p><p className="mt-1 font-medium">AP2 mandate</p></div><div><p className="text-muted-foreground">Settlement</p><p className="mt-1 font-medium">{paymentChoice}</p></div></div></details>
 

@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "contract:compile": "node scripts/compile-escrow.mjs",
+    "contract:deploy": "node --env-file=.env scripts/deploy-escrow.mjs"
   },
   "dependencies": {
     "@a2a-js/sdk": "^1.0.1",
@@ -37,6 +39,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "solc": "^0.8.36",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.10"
