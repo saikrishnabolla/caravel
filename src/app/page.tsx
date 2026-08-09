@@ -1,5 +1,5 @@
-import { PurchasingConsole } from "@/components/purchasing-console";
+import { CommerceDashboard } from "@/components/commerce-dashboard";
 
 export default function Home() {
-  return <PurchasingConsole />;
+  return <CommerceDashboard />;
 }

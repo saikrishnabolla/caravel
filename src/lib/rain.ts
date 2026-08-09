@@ -15,7 +15,7 @@ type RainConfig = {
   contractId: string;
 };
 
-type RainTransactionResult = {
+export type RainTransactionResult = {
   transactionId: string;
   status: "authorized" | "declined" | "settled";
   declinedReason?: string;
@@ -30,21 +30,33 @@ type ScopedCardResult = {
   status: string;
 };
 
-type PaymentAccount = {
+export type PaymentAccount = {
   id: string;
   nickname: string;
   type: "externalFiatAccount";
+  createdAt?: string;
+  externalFiatAccount?: {
+    currency?: string;
+    bankName?: string;
+    accountNumber?: string;
+  };
 };
 
-type PaymentRoute = {
+export type PaymentRoute = {
   id: string;
   status: string;
+  userId?: string;
+  companyId?: string;
   source: { currency: string; rail: string };
   destination: {
     currency: string;
     rail: string;
     address?: { type: string; id?: string; address?: string };
   };
+  transferMessage?: string;
+  refundAddress?: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 type PaymentRouteList = {
@@ -229,31 +241,93 @@ export async function settleAuthorization(transactionId: string, amountCents: nu
   );
 }
 
-export async function getTreasurySandboxStatus() {
-  const [accounts, routes] = await Promise.all([
-    rainRequest<PaymentAccount[]>("/payment-accounts"),
-    rainRequest<PaymentRouteList>("/payment-routes"),
-  ]);
-  const paymentRoutes = routes.paymentRoutes ?? routes.automations ?? [];
-  return {
-    paymentAccounts: accounts.length,
-    paymentRoutes: paymentRoutes.length,
-    onramps: paymentRoutes.filter(route => route.source.currency === "usd").length,
-    offramps: paymentRoutes.filter(route => route.destination.currency === "usd").length,
-  };
+export async function getTransaction(transactionId: string) {
+  return rainRequest<{
+    id: string;
+    type: string;
+    spend?: {
+      amount?: number;
+      currency?: string;
+      merchantName?: string;
+      merchantCategoryCode?: string;
+      cardId?: string;
+      declinedReason?: string;
+      postedAt?: string;
+      authorizedAt?: string;
+    };
+  }>(`/issuing/transactions/${transactionId}`);
 }
 
-async function ensureDemoPaymentAccount() {
-  const accounts = await rainRequest<PaymentAccount[]>("/payment-accounts");
-  const existing = accounts.find(account => account.nickname === "Raingentic Demo Treasury");
-  if (existing) return existing;
+export async function reverseAuthorization(transactionId: string, newAmountCents = 0) {
+  return rainRequest<RainTransactionResult>(
+    `/simulate/transactions/${transactionId}/reverse`,
+    { method: "POST", body: JSON.stringify({ newAmount: newAmountCents }) },
+    idempotencyHeaders(),
+  );
+}
 
+export async function refundTransaction(transactionId: string, amountCents?: number) {
+  return rainRequest<RainTransactionResult>(
+    `/simulate/transactions/${transactionId}/refund`,
+    {
+      method: "POST",
+      body: JSON.stringify(amountCents === undefined ? {} : { amount: amountCents }),
+    },
+    idempotencyHeaders(),
+  );
+}
+
+export async function listPaymentRoutes() {
+  const response = await rainRequest<PaymentRouteList>("/payment-routes");
+  return response.paymentRoutes ?? response.automations ?? [];
+}
+
+export async function getPaymentRoute(paymentRouteId: string) {
+  return rainRequest<PaymentRoute>(`/payment-routes/${paymentRouteId}`);
+}
+
+export async function createPaymentRoute(input: {
+  source: PaymentRoute["source"];
+  destination: PaymentRoute["destination"];
+  refundAddress?: string;
+}) {
+  const config = getRainConfig();
+  return rainRequest<PaymentRoute>("/payment-routes", {
+    method: "POST",
+    body: JSON.stringify({ userId: config.userId, ...input }),
+  }, idempotencyHeaders());
+}
+
+export async function updatePaymentRoute(paymentRouteId: string, input: {
+  transferMessage?: string;
+  refundAddress?: string;
+}) {
+  return rainRequest<PaymentRoute>(`/payment-routes/${paymentRouteId}`, {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  }, idempotencyHeaders());
+}
+
+export async function deletePaymentRoute(paymentRouteId: string) {
+  await rainRequest<Record<string, never>>(`/payment-routes/${paymentRouteId}`, { method: "DELETE" });
+  return { deleted: true, id: paymentRouteId };
+}
+
+export async function listPaymentAccounts() {
+  return rainRequest<PaymentAccount[]>("/payment-accounts");
+}
+
+export async function getPaymentAccount(paymentAccountId: string) {
+  return rainRequest<PaymentAccount>(`/payment-accounts/${paymentAccountId}`);
+}
+
+export async function createDemoPaymentAccount(nickname = "Raingentic Demo Treasury") {
   const config = getRainConfig();
   return rainRequest<PaymentAccount>("/payment-accounts", {
     method: "POST",
     body: JSON.stringify({
       type: "externalFiatAccount",
-      nickname: "Raingentic Demo Treasury",
+      nickname,
       externalFiatAccount: {
         beneficiaryType: "business",
         beneficiaryBusinessName: "Raingentic Demo Operations",
@@ -284,10 +358,34 @@ async function ensureDemoPaymentAccount() {
   }, idempotencyHeaders());
 }
 
+export async function deletePaymentAccount(paymentAccountId: string) {
+  await rainRequest<Record<string, never>>(`/payment-accounts/${paymentAccountId}`, { method: "DELETE" });
+  return { deleted: true, id: paymentAccountId };
+}
+
+export async function getTreasurySandboxStatus() {
+  const [accounts, routes] = await Promise.all([
+    rainRequest<PaymentAccount[]>("/payment-accounts"),
+    rainRequest<PaymentRouteList>("/payment-routes"),
+  ]);
+  const paymentRoutes = routes.paymentRoutes ?? routes.automations ?? [];
+  return {
+    paymentAccounts: accounts.length,
+    paymentRoutes: paymentRoutes.length,
+    onramps: paymentRoutes.filter(route => route.source.currency === "usd").length,
+    offramps: paymentRoutes.filter(route => route.destination.currency === "usd").length,
+  };
+}
+
+async function ensureDemoPaymentAccount() {
+  const accounts = await listPaymentAccounts();
+  const existing = accounts.find(account => account.nickname === "Raingentic Demo Treasury");
+  if (existing) return existing;
+  return createDemoPaymentAccount();
+}
+
 async function ensureDemoRoutes(paymentAccountId: string, destinationAddress: string) {
-  const config = getRainConfig();
-  const response = await rainRequest<PaymentRouteList>("/payment-routes");
-  const routes = response.paymentRoutes ?? response.automations ?? [];
+  const routes = await listPaymentRoutes();
 
   let onramp = routes.find(route =>
     route.source.currency === "usd" &&
@@ -297,18 +395,14 @@ async function ensureDemoRoutes(paymentAccountId: string, destinationAddress: st
     route.destination.address?.address?.toLowerCase() === destinationAddress.toLowerCase(),
   );
   if (!onramp) {
-    onramp = await rainRequest<PaymentRoute>("/payment-routes", {
-      method: "POST",
-      body: JSON.stringify({
-        userId: config.userId,
-        source: { currency: "usd", rail: "ach" },
-        destination: {
-          currency: "rusd",
-          rail: "base",
-          address: { type: "onchain", address: destinationAddress },
-        },
-      }),
-    }, idempotencyHeaders());
+    onramp = await createPaymentRoute({
+      source: { currency: "usd", rail: "ach" },
+      destination: {
+        currency: "rusd",
+        rail: "base",
+        address: { type: "onchain", address: destinationAddress },
+      },
+    });
   }
 
   let offramp = routes.find(route =>
@@ -319,19 +413,15 @@ async function ensureDemoRoutes(paymentAccountId: string, destinationAddress: st
     route.destination.address?.id === paymentAccountId,
   );
   if (!offramp) {
-    offramp = await rainRequest<PaymentRoute>("/payment-routes", {
-      method: "POST",
-      body: JSON.stringify({
-        userId: config.userId,
-        source: { currency: "rusd", rail: "base" },
-        destination: {
-          currency: "usd",
-          rail: "ach",
-          address: { type: "paymentAccount", id: paymentAccountId },
-        },
-        refundAddress: destinationAddress,
-      }),
-    }, idempotencyHeaders());
+    offramp = await createPaymentRoute({
+      source: { currency: "rusd", rail: "base" },
+      destination: {
+        currency: "usd",
+        rail: "ach",
+        address: { type: "paymentAccount", id: paymentAccountId },
+      },
+      refundAddress: destinationAddress,
+    });
   }
 
   return { onramp, offramp };

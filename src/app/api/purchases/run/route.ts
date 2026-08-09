@@ -1,4 +1,4 @@
-import { authorizeCard, createScopedCard, RainApiError, settleAuthorization } from "@/lib/rain";
+import { authorizeCard, createScopedCard, getTransaction, RainApiError, settleAuthorization } from "@/lib/rain";
 import {
   mandateSchema,
   successfulDelivery,
@@ -217,7 +217,15 @@ export async function POST(request: Request) {
         status: "complete",
         providerId: settlement.transactionId,
       });
-      rain = { upstreamProcurementCents, card, declined, authorization, settlement };
+      const transaction = await getTransaction(settlement.transactionId);
+      timeline.push({
+        id: "transaction",
+        title: "Posted Rain transaction retrieved",
+        detail: `Rain returned the final ${transaction.type} record for ${transaction.spend?.merchantName ?? "the approved upstream provider"}.`,
+        status: "verified",
+        providerId: transaction.id,
+      });
+      rain = { upstreamProcurementCents, card, declined, authorization, settlement, transaction };
       ap2 = { sale: saleAuthorization, procurement: procurementAuthorization };
     } else {
       timeline.push(
