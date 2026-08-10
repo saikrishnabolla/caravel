@@ -50,6 +50,7 @@ type TimelineItem = {
   title: string;
   detail: string;
   status: string;
+  providerId?: string;
 };
 
 type PurchaseResult = {
@@ -150,7 +151,7 @@ const defaultMandate = {
 };
 
 export function GuidedDemo() {
-  const [live, setLive] = useState(false);
+  const [live, setLive] = useState(true);
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<PurchaseResult | null>(null);
   const [approvalGranted, setApprovalGranted] = useState(false);
@@ -178,9 +179,13 @@ export function GuidedDemo() {
     <div className="not-prose my-8 space-y-5">
       <div className="relative overflow-hidden rounded-2xl border border-border bg-[linear-gradient(120deg,hsl(184_16%_12%/0.96),hsl(180_16%_8%/0.82))] p-7 shadow-[0_20px_70px_rgba(0,0,0,0.22)] backdrop-blur-2xl md:p-9"><div aria-hidden="true" className="absolute -right-12 -top-24 size-72 rounded-full bg-primary/10 blur-3xl" /><div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"><div className="max-w-3xl"><Badge variant="outline">Company story</Badge><h2 className="mt-5 text-3xl font-semibold tracking-tight">PreFlight sells to a customer, buys what it needs, and delivers the result.</h2><p className="mt-3 text-base leading-7 text-muted-foreground">One run demonstrates the selling product, the buying product, human approval, Monad payment, Rain-controlled procurement, and verified delivery.</p></div><Button size="lg" onClick={() => void run(false)} disabled={running}>{running ? <Loader2 className="animate-spin" /> : <Play />}{running ? "Running customer order" : result ? "Run story again" : "Run the full story"}</Button></div></div>
 
+      <div className="flex flex-col gap-3 rounded-xl border border-primary/20 bg-primary/[0.035] p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-medium">Payment execution</p><p className="mt-1 text-sm text-muted-foreground">{live ? "Approval creates real Rain sandbox and Monad Testnet transactions." : "Preview mode does not move sandbox or testnet funds."}</p></div><div className="flex items-center gap-3"><Badge variant={live ? "secondary" : "outline"}>{live ? "Live sandbox execution" : "Preview only"}</Badge><Switch aria-label="Use sandbox and testnet payments" checked={live} onCheckedChange={setLive} /></div></div>
+
       <Card><CardHeader><div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between"><div><CardTitle>Today&apos;s customer order</CardTitle><CardDescription>The exact business story shown to judges and customers.</CardDescription></div><details className="text-sm"><summary className="cursor-pointer font-medium text-muted-foreground">Demo settings</summary><div className="mt-3 flex items-center gap-3 rounded-lg border p-3"><div><Label htmlFor="live-demo">Use sandbox and testnet payments</Label><p className="mt-1 text-sm text-muted-foreground">Leave off for a safe rehearsal.</p></div><Switch id="live-demo" checked={live} onCheckedChange={setLive} /></div></details></div></CardHeader><CardContent><div className="grid gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr]"><div className="rounded-lg border p-5"><div className="flex items-center gap-3"><div className="flex size-10 items-center justify-center rounded-md bg-secondary"><ShoppingCart className="size-5 text-primary" /></div><div><p className="text-sm text-muted-foreground">Customer</p><p className="font-semibold">FarmFleet Operations</p></div></div><p className="mt-5 text-lg font-semibold">Buys 100 mission-readiness reports</p><p className="mt-2 text-sm leading-6 text-muted-foreground">Airspace, weather, compliance, risk, and telemetry for planned agricultural drone missions.</p><div className="mt-4 flex items-center justify-between border-t pt-4"><span className="text-sm text-muted-foreground">Order value</span><span className="font-semibold">$1,450</span></div></div><ArrowRight className="mx-auto hidden size-5 self-center text-muted-foreground md:block" /><div className="rounded-lg border border-primary/25 bg-secondary/35 p-5"><div className="flex items-center gap-3"><div className="flex size-10 items-center justify-center rounded-md bg-primary text-primary-foreground"><Store className="size-5" /></div><div><p className="text-sm text-muted-foreground">Your company</p><p className="font-semibold">PreFlight</p></div></div><p className="mt-5 text-lg font-semibold">Negotiates and controls fulfillment</p><p className="mt-2 text-sm leading-6 text-muted-foreground">The seller agent agrees on customer terms. The buying agent sources the required upstream coverage.</p><div className="mt-4 flex items-center justify-between border-t pt-4"><span className="text-sm text-muted-foreground">Approval limit</span><span className="font-semibold">$500</span></div></div><ArrowRight className="mx-auto hidden size-5 self-center text-muted-foreground md:block" /><div className="rounded-lg border p-5"><div className="flex items-center gap-3"><div className="flex size-10 items-center justify-center rounded-md bg-secondary"><PackageCheck className="size-5 text-primary" /></div><div><p className="text-sm text-muted-foreground">Customer receives</p><p className="font-semibold">Verified delivery</p></div></div><p className="mt-5 text-lg font-semibold">100 completed reports</p><p className="mt-2 text-sm leading-6 text-muted-foreground">The delivered package is checked against quantity and readiness requirements before completion.</p><div className="mt-4 flex items-center justify-between border-t pt-4"><span className="text-sm text-muted-foreground">Readiness coverage</span><span className="font-semibold">96%</span></div></div></div></CardContent></Card>
 
       {error && <ErrorNotice message={error} />}
+
+      {result && approvalGranted && result.timeline.some(item => item.providerId) && <Card className="border-primary/20"><CardHeader><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><CardTitle>Payment and authorization evidence</CardTitle><CardDescription>Identifiers returned by AP2, Monad, and Rain during this execution.</CardDescription></div><Badge variant="secondary">Retrieved from providers</Badge></div></CardHeader><CardContent className="space-y-1">{result.timeline.filter(item => item.providerId).map(item => <div key={`evidence-${item.id}`} className="border-b py-3 last:border-0"><p className="text-sm font-medium">{item.title}</p><code className="mt-2 block break-all text-xs text-muted-foreground">{item.providerId}</code></div>)}</CardContent></Card>}
 
       <Card><CardHeader><div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div><CardTitle>Live order status</CardTitle><CardDescription>{!result ? "Ready to receive the customer order" : !approvalGranted ? "The order is prepared and waiting for a human decision" : "The order completed with a verified delivery record"}</CardDescription></div>{result && !approvalGranted && <Button onClick={() => void run(true)} disabled={running}>{running ? <Loader2 className="animate-spin" /> : <FileCheck2 />}Approve and continue</Button>}</div></CardHeader><CardContent>{!result ? <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[[ShoppingCart,"1. Customer order","Waiting"],[Store,"2. Sell and negotiate","Waiting"],[WalletCards,"3. Buy upstream inputs","Waiting"],[PackageCheck,"4. Verify delivery","Waiting"]].map(([Glyph,title,status]) => { const Icon = Glyph as typeof ShoppingCart; return <div key={String(title)} className="rounded-lg border p-4"><Icon className="size-5 text-muted-foreground" /><p className="mt-4 font-medium">{String(title)}</p><p className="mt-1 text-sm text-muted-foreground">{String(status)}</p></div>; })}</div> : <div className="space-y-5"><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[["Customer order","Received",true],["Seller agreement","$1,450 agreed",true],["Human approval",approvalGranted ? "Approved" : "Waiting",approvalGranted],["Delivery",approvalGranted && result.delivery?.passed ? "Verified" : "Not started",Boolean(approvalGranted && result.delivery?.passed)]].map(([title,status,complete]) => <div key={String(title)} className={`rounded-lg border p-4 ${complete ? "border-primary/20 bg-secondary/40" : ""}`}><div className={`flex size-7 items-center justify-center rounded-full ${complete ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>{complete ? <Check className="size-4" /> : <span className="text-sm">{String(title).charAt(0)}</span>}</div><p className="mt-4 font-medium">{String(title)}</p><p className="mt-1 text-sm text-muted-foreground">{String(status)}</p></div>)}</div>{!approvalGranted && <div className="flex flex-col gap-4 rounded-lg border border-primary/25 bg-secondary/35 p-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold">Approve the $1,450 customer fulfillment plan</p><p className="mt-1 text-sm text-muted-foreground">The purchase is above PreFlight&apos;s $500 automatic limit. No money has moved.</p></div><Button onClick={() => void run(true)} disabled={running}>Approve and continue<ArrowRight /></Button></div>}{approvalGranted && <div className="flex flex-col gap-4 rounded-lg border border-primary/25 bg-secondary/35 p-5 sm:flex-row sm:items-center sm:justify-between"><div><div className="flex items-center gap-2 font-semibold"><BadgeCheck className="size-5 text-primary" />Customer order completed</div><p className="mt-1 text-sm text-muted-foreground">100 mission reports were delivered with 96% readiness coverage and passed the customer&apos;s requirements.</p></div><Badge variant="secondary">Verified delivery</Badge></div>}<details className="rounded-lg border"><summary className="cursor-pointer px-5 py-4 font-medium">Technical receipt</summary><div className="space-y-1 border-t px-5 py-2">{result.timeline.map((item,index) => <div key={item.id} className="grid gap-3 border-b py-4 last:border-0 md:grid-cols-[1.5rem_1fr_auto]"><div className="flex size-6 items-center justify-center rounded-full bg-muted text-xs font-medium">{index + 1}</div><div><p className="font-medium">{item.title}</p><p className="mt-1 text-sm leading-6 text-muted-foreground">{item.detail}</p></div><Badge variant={item.status === "warning" ? "outline" : "secondary"}>{item.status}</Badge></div>)}</div></details></div>}</CardContent></Card>
     </div>
@@ -469,6 +474,11 @@ type RainLifecycle = {
   steps: Array<{ title: string; detail: string; status: string; id?: string }>;
 };
 
+type CreatedScopedCard = {
+  card: { id: string; last4: string; expirationMonth: number | string; expirationYear: number | string; status: string };
+  controls: { amountCents: number; allowedMccs: string[]; expirationMinutes: number; expiresAt: string };
+};
+
 function RainResults({ data }: { data: RainLifecycle | null }) {
   if (!data) return null;
   return <Card className="border-primary/15 bg-secondary/20"><CardHeader><div className="flex items-center justify-between gap-4"><div><CardTitle className="text-base">Sandbox execution record</CardTitle><CardDescription>{data.title}</CardDescription></div><Badge variant="secondary">Completed</Badge></div></CardHeader><CardContent className="space-y-1">{data.steps.map((step,index) => <div key={`${step.title}-${index}`} className="grid gap-3 border-b py-3 last:border-0 md:grid-cols-[1.5rem_1fr_auto] md:items-start"><div className="flex size-6 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">{index + 1}</div><div><p className="font-medium">{step.title}</p><p className="mt-1 text-sm leading-6 text-muted-foreground">{step.detail}</p>{step.id && <code className="mt-2 block break-all text-xs text-muted-foreground">{step.id}</code>}</div><Badge variant="outline">{step.status}</Badge></div>)}</CardContent></Card>;
@@ -479,6 +489,12 @@ export function RainOperations({ defaultTab = "transactions" }: { defaultTab?: "
   const [resources, setResources] = useState<RainLifecycle | null>(null);
   const [running, setRunning] = useState<"transaction" | "resources" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [cardDialogOpen, setCardDialogOpen] = useState(false);
+  const [cardAmount, setCardAmount] = useState("20.00");
+  const [cardMcc, setCardMcc] = useState("5734");
+  const [cardExpiration, setCardExpiration] = useState("60");
+  const [creatingCard, setCreatingCard] = useState(false);
+  const [createdCard, setCreatedCard] = useState<CreatedScopedCard | null>(null);
 
   async function run(kind: "transaction" | "resources") {
     setRunning(kind); setError(null);
@@ -489,17 +505,35 @@ export function RainOperations({ defaultTab = "transactions" }: { defaultTab?: "
     finally { setRunning(null); }
   }
 
+  async function createCard() {
+    setCreatingCard(true); setError(null);
+    try {
+      const amountCents = Math.round(Number(cardAmount) * 100);
+      const allowedMccs = cardMcc.split(",").map(value => value.trim()).filter(Boolean);
+      const data = await jsonRequest<CreatedScopedCard>("/api/rain/cards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amountCents, allowedMccs, expirationMinutes: Number(cardExpiration) }),
+      });
+      setCreatedCard(data);
+      setCardDialogOpen(false);
+    } catch (reason) { setError(reason instanceof Error ? reason.message : "The Rain scoped card could not be created"); }
+    finally { setCreatingCard(false); }
+  }
+
   return (
     <div className="not-prose my-8 space-y-5">
       {error && <ErrorNotice message={error} />}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div><h2 className="text-xl font-semibold">Rain payments</h2><p className="mt-1 text-sm text-muted-foreground">Manage balances, cards, bank accounts, and payment routes.</p></div>
-        <div className="flex flex-wrap gap-2"><Button variant="outline"><ArrowDownLeft />Add funds</Button><Button variant="outline"><ArrowUpRight />Withdraw</Button><Button><Plus />Create scoped card</Button></div>
+        <div className="flex flex-wrap gap-2"><Button variant="outline"><ArrowDownLeft />Add funds</Button><Button variant="outline"><ArrowUpRight />Withdraw</Button><Button onClick={() => setCardDialogOpen(true)}><Plus />Create scoped card</Button></div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[["Available balance","$10,000.00","RUSD on Base"],["Pending settlement","$0.00","No pending transfers"],["August volume","$7,494.00","49.9% from July"],["Active routes","2","USD and RUSD"]].map(([label,value,detail]) => <Card key={label}><CardContent className="p-5"><p className="text-sm text-muted-foreground">{label}</p><p className="mt-2 text-2xl font-semibold tracking-tight">{value}</p><p className="mt-1 text-sm text-muted-foreground">{detail}</p></CardContent></Card>)}
       </div>
+
+      {createdCard && <Card className="border-primary/20 bg-secondary/20"><CardContent className="flex flex-col gap-5 p-5 lg:flex-row lg:items-center lg:justify-between"><div className="flex items-start gap-4"><div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground"><CreditCard className="size-5" /></div><div><div className="flex flex-wrap items-center gap-2"><p className="font-semibold">Scoped Rain card created</p><Badge variant="secondary">{createdCard.card.status}</Badge></div><p className="mt-2 text-sm leading-6 text-muted-foreground">Card ending {createdCard.card.last4} can spend up to ${(createdCard.controls.amountCents / 100).toFixed(2)} at MCC {createdCard.controls.allowedMccs.join(", ")} and expires in {createdCard.controls.expirationMinutes} minutes.</p><code className="mt-2 block break-all text-xs text-muted-foreground">{createdCard.card.id}</code></div></div><Button variant="outline" onClick={() => setCardDialogOpen(true)}>Create another</Button></CardContent></Card>}
 
       <Tabs defaultValue={defaultTab}>
         <div className="flex flex-col gap-3 border-b sm:flex-row sm:items-center sm:justify-between">
@@ -527,6 +561,23 @@ export function RainOperations({ defaultTab = "transactions" }: { defaultTab?: "
           <RainResults data={resources} />
         </TabsContent>
       </Tabs>
+
+      <Dialog.Root open={cardDialogOpen} onOpenChange={setCardDialogOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border bg-popover p-6 shadow-2xl outline-none sm:p-8">
+            <div className="flex size-11 items-center justify-center rounded-xl border border-primary/20 bg-primary/10"><CreditCard className="size-5 text-primary" /></div>
+            <Dialog.Title className="mt-5 text-2xl font-semibold tracking-tight">Create a scoped Rain card</Dialog.Title>
+            <Dialog.Description className="mt-2 text-sm leading-6 text-muted-foreground">Set the exact amount, permitted merchant categories, and expiration. Rain creates the card in the configured sandbox account.</Dialog.Description>
+            <div className="mt-6 space-y-5">
+              <div className="space-y-2"><Label htmlFor="scoped-card-amount">Maximum spend</Label><div className="relative"><span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span><Input id="scoped-card-amount" type="number" min="0.01" step="0.01" value={cardAmount} onChange={event => setCardAmount(event.target.value)} className="pl-7" /></div></div>
+              <div className="space-y-2"><Label htmlFor="scoped-card-mcc">Allowed merchant category codes</Label><Input id="scoped-card-mcc" inputMode="numeric" value={cardMcc} onChange={event => setCardMcc(event.target.value)} placeholder="5734" /><p className="text-xs leading-5 text-muted-foreground">Use four-digit MCCs. Separate multiple codes with commas.</p></div>
+              <div className="space-y-2"><Label htmlFor="scoped-card-expiration">Expiration</Label><select id="scoped-card-expiration" value={cardExpiration} onChange={event => setCardExpiration(event.target.value)} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">1 hour</option><option value="240">4 hours</option><option value="1440">24 hours</option></select></div>
+            </div>
+            <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><Dialog.Close asChild><Button variant="outline">Cancel</Button></Dialog.Close><Button onClick={() => void createCard()} disabled={creatingCard || !cardAmount || !cardMcc}>{creatingCard ? <Loader2 className="animate-spin" /> : <Plus />}{creatingCard ? "Creating card" : "Create scoped card"}</Button></div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }

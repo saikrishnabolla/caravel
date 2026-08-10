@@ -187,8 +187,10 @@ export async function fundCollateral(amountCents = 100_000) {
 export async function createScopedCard(input: {
   amountCents: number;
   allowedMccs: string[];
+  expirationMinutes?: number;
 }) {
   const config = getRainConfig();
+  const expirationMinutes = input.expirationMinutes ?? 60;
   const response = await rainRequest<ScopedCardResult & Record<string, unknown>>(
     `/issuing/users/${config.userId}/cards/scoped`,
     {
@@ -196,7 +198,7 @@ export async function createScopedCard(input: {
       body: JSON.stringify({
         amountInUSDCents: input.amountCents,
         allowedMccs: input.allowedMccs,
-        expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        expiresAt: new Date(Date.now() + expirationMinutes * 60 * 1000).toISOString(),
       }),
     },
     { ...idempotencyHeaders(), sessionid: generateSessionId() },
