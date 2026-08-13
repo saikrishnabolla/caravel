@@ -408,6 +408,4 @@ The current test suite covers purchasing controls, A2A-driven planning behavior,
 
 ## License
 
-Bound is licensed under the [GNU Affero General Public License v3.0 only](LICENSE), identified by the SPDX expression `AGPL-3.0-only`.
-
-If you modify Bound and make the modified version available to users over a network, the AGPL requires you to offer those users the corresponding source code under the same license.
+Bound is licensed under the [MIT License](LICENSE).
