@@ -1,4 +1,4 @@
-# Raingentic API reference
+# Caravel API reference
 
 ## Discovery
 
@@ -19,7 +19,7 @@
 
 Supported source values: `openapi`, `commerce`, `website`, `billing`, and `api`.
 
-For public Shopify collections, pass the collection page URL. Raingentic resolves the public `products.json` endpoint and returns products, variants, prices, and availability.
+For public Shopify collections, pass the collection page URL. Caravel resolves the public `products.json` endpoint and returns products, variants, prices, and availability.
 
 ## Policy compilation
 

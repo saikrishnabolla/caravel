@@ -323,7 +323,7 @@ export async function getPaymentAccount(paymentAccountId: string) {
   return rainRequest<PaymentAccount>(`/payment-accounts/${paymentAccountId}`);
 }
 
-export async function createDemoPaymentAccount(nickname = "Raingentic Demo Treasury") {
+export async function createDemoPaymentAccount(nickname = "Caravel Demo Treasury") {
   const config = getRainConfig();
   return rainRequest<PaymentAccount>("/payment-accounts", {
     method: "POST",
@@ -332,7 +332,7 @@ export async function createDemoPaymentAccount(nickname = "Raingentic Demo Treas
       nickname,
       externalFiatAccount: {
         beneficiaryType: "business",
-        beneficiaryBusinessName: "Raingentic Demo Operations",
+        beneficiaryBusinessName: "Caravel Demo Operations",
         currency: "usd",
         rail: "ach",
         thirdParty: false,
@@ -381,7 +381,7 @@ export async function getTreasurySandboxStatus() {
 
 async function ensureDemoPaymentAccount() {
   const accounts = await listPaymentAccounts();
-  const existing = accounts.find(account => account.nickname === "Raingentic Demo Treasury");
+  const existing = accounts.find(account => account.nickname === "Caravel Demo Treasury");
   if (existing) return existing;
   return createDemoPaymentAccount();
 }

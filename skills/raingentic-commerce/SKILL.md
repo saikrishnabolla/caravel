@@ -1,11 +1,11 @@
 ---
 name: raingentic-commerce
-description: Connect an existing API, Shopify-compatible store, public product catalog, billing system, or custom commerce source to Raingentic; import and normalize products; compile natural-language selling rules; publish agent-ready products; and verify A2A, AP2, Monad x402, and Rain payment flows. Use when an agent needs to onboard a business catalog, monetize OpenAPI operations, configure agent negotiation policy, test live commerce endpoints, or prepare a Raingentic demo.
+description: Connect an existing API or product catalog to Caravel; import and normalize products; compile natural-language commercial rules; publish agent-ready products; and verify payment flows.
 ---
 
-# Raingentic Commerce
+# Caravel Commerce
 
-Use the running Raingentic deployment as the control plane. Default to `http://localhost:3021` during local development and use `RAINGENTIC_BASE_URL` when supplied.
+Use the running Caravel deployment as the control plane. Default to `http://localhost:3021` during local development and use `RAINGENTIC_BASE_URL` when supplied for compatibility with the existing prototype.
 
 ## Workflow
 

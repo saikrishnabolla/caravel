@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export function RaingenticMark({ className, title = "Raingentic" }: { className?: string; title?: string }) {
+export function CaravelMark({ className, title = "Caravel" }: { className?: string; title?: string }) {
   return (
     <svg
       viewBox="0 0 40 40"

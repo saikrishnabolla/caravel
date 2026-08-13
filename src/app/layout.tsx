@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Raingentic Agent Commerce Control Plane",
-  description: "Agent negotiation, controlled Rain fulfillment, and Monad x402 settlement.",
+  title: "Caravel | Make your API agent-ready",
+  description: "Turn an OpenAPI specification into a documented, priced, agent-ready API.",
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",

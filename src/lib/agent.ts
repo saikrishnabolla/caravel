@@ -67,7 +67,7 @@ export async function planPurchase(mandate: Mandate): Promise<PurchasingAgentPla
   });
 
   const purchasingAgent = new Agent({
-    name: "Raingentic mission commerce agent",
+    name: "Caravel mission commerce agent",
     model: process.env.OPENAI_AGENT_MODEL ?? "gpt-5.6",
     instructions: [
       "You are a purchasing agent for an agricultural drone operator.",

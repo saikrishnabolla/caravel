@@ -1,4 +1,4 @@
 interface:
-  display_name: "Raingentic Commerce"
+  display_name: "Caravel Commerce"
   short_description: "Connect catalogs and publish agent commerce"
   default_prompt: "Use $raingentic-commerce to connect this business catalog and publish agent-ready products."

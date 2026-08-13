@@ -27,7 +27,7 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { RaingenticMark } from "@/components/raingentic-mark";
+import { CaravelMark } from "@/components/caravel-mark";
 import { formatUsd, type Negotiation, type QuoteDecision } from "@/lib/purchasing";
 
 type View = "overview" | "buying" | "selling" | "treasury" | "developers";
@@ -161,7 +161,7 @@ export function PurchasingConsole() {
 
   return <div className="dark min-h-screen bg-background text-foreground">
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r bg-sidebar p-4 md:flex md:flex-col">
-      <div className="flex h-12 items-center gap-3 px-2"><RaingenticMark className="size-9" /><div><p className="font-semibold">Raingentic</p><p className="text-sm text-muted-foreground">PreFlight workspace</p></div></div>
+      <div className="flex h-12 items-center gap-3 px-2"><CaravelMark className="size-9" /><div><p className="font-semibold">Caravel</p><p className="text-sm text-muted-foreground">PreFlight workspace</p></div></div>
       <Separator className="my-4" />
       <nav className="space-y-1">{navigation.map(item => { const Glyph = item.icon; return <Button key={item.id} variant={activeView === item.id ? "secondary" : "ghost"} className="h-10 w-full justify-start gap-3 px-3 text-sm" onClick={() => navigate(item.id)}><Glyph className="size-4" />{item.label}</Button>; })}</nav>
       <div className="mt-auto"><Separator className="mb-4" /><div className="flex items-center justify-between px-2"><span className="text-sm text-muted-foreground">Test mode</span><Button variant="outline" size="sm" onClick={() => navigate("developers")}>Configure</Button></div></div>

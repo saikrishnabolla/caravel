@@ -35,7 +35,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { RaingenticMark } from "@/components/raingentic-mark";
+import { CaravelMark } from "@/components/caravel-mark";
 import {
   CatalogSetup,
   GuidedDemo,
@@ -211,7 +211,7 @@ export function CommerceDashboard({ initialDemoPrompt = false }: { initialDemoPr
     <div aria-hidden="true" className="pointer-events-none fixed -left-24 -top-32 z-0 size-80 rounded-full bg-[radial-gradient(circle,hsl(58_100%_65%/0.15),hsl(185_80%_55%/0.05)_42%,transparent_72%)] blur-3xl" />
     <div aria-hidden="true" className="pointer-events-none fixed -bottom-64 -right-64 z-0 size-[44rem] rounded-full bg-[radial-gradient(circle,hsl(185_80%_55%/0.08),hsl(58_100%_65%/0.06)_38%,transparent_70%)] blur-3xl" />
     <aside className={`fixed inset-y-0 left-0 z-40 w-[17.5rem] border-r border-border bg-sidebar p-4 shadow-[24px_0_80px_rgba(0,0,0,0.12)] backdrop-blur-2xl transition-transform lg:translate-x-0 ${mobileNav ? "translate-x-0" : "-translate-x-full"}`}>
-      <div className="flex h-14 items-center gap-3 px-3"><RaingenticMark /><div><p className="text-base font-semibold leading-5 tracking-tight">Raingentic</p><p className="mt-0.5 text-sm text-muted-foreground">PreFlight workspace</p></div></div>
+      <div className="flex h-14 items-center gap-3 px-3"><CaravelMark /><div><p className="text-base font-semibold leading-5 tracking-tight">Caravel</p><p className="mt-0.5 text-sm text-muted-foreground">PreFlight workspace</p></div></div>
 
       <div className="mt-5 grid grid-cols-2 rounded-xl border border-border bg-black/20 p-1" aria-label="Commerce mode">
         <button type="button" aria-pressed={world === "buying"} onClick={() => switchWorld("buying")} className={`flex h-10 items-center justify-center gap-2 rounded-lg border px-2 text-sm font-medium outline-none transition-all focus-visible:ring-2 focus-visible:ring-ring ${world === "buying" ? "border-border bg-white/[0.08] text-foreground shadow-sm" : "border-transparent text-muted-foreground hover:bg-white/[0.04] hover:text-foreground"}`}><ShoppingBag className="size-4" />Buying</button>
@@ -489,7 +489,7 @@ function Treasury() {
       </Card>
     </div>
 
-    <div className="mt-5 rounded-xl border border-border bg-black/15 p-5"><p className="font-medium">Demonstration boundary</p><p className="mt-2 text-sm leading-6 text-muted-foreground">Raingentic currently demonstrates the policy and routing design only. It does not connect investment accounts, assess legal eligibility, provide investment advice, bridge funds, or execute trades. Monad appears only when it actually authorizes, records, or settles part of a route; providers operating on other networks remain external integrations.</p></div>
+    <div className="mt-5 rounded-xl border border-border bg-black/15 p-5"><p className="font-medium">Demonstration boundary</p><p className="mt-2 text-sm leading-6 text-muted-foreground">Caravel currently demonstrates the policy and routing design only. It does not connect investment accounts, assess legal eligibility, provide investment advice, bridge funds, or execute trades. Monad appears only when it actually authorizes, records, or settles part of a route; providers operating on other networks remain external integrations.</p></div>
   </Section>;
 }
 

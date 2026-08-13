@@ -1,5 +1,6 @@
 {
-  "name": "raingentic",
+  "name": "caravel",
+  "description": "Turn an OpenAPI specification into a documented, priced, agent-ready API.",
   "version": "0.1.0",
   "license": "MIT",
   "private": true,

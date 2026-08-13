@@ -42,7 +42,7 @@ export function createMissionClearAgentCard(origin: string): AgentCard {
       tenant: "",
       protocolVersion: A2A_PROTOCOL_VERSION,
     }],
-    provider: { organization: "Raingentic", url: origin },
+    provider: { organization: "Caravel", url: origin },
     version: "1.0.0",
     capabilities: {
       streaming: true,

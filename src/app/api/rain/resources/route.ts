@@ -17,7 +17,7 @@ export async function POST() {
 
   try {
     const suffix = crypto.randomUUID().slice(0, 8);
-    const account = await createDemoPaymentAccount(`Raingentic lifecycle ${suffix}`);
+    const account = await createDemoPaymentAccount(`Caravel lifecycle ${suffix}`);
     accountId = account.id;
     steps.push({ title: "Temporary payment account created", detail: "A sandbox USD payout destination was created for the lifecycle proof.", status: "created", id: account.id });
 
