@@ -25,6 +25,15 @@ describe("Caravel installer", () => {
     expect(await readFile(resolve(target, "lib/caravel-access.ts"), "utf8")).toContain("CARAVEL_API_KEYS");
     expect(await readFile(resolve(target, "public/.well-known/agent-card.json"), "utf8")).toContain("Seller Agent");
     expect(await readFile(resolve(target, "src/app/caravel-docs/page.tsx"), "utf8")).toContain("DocsPage");
+    expect(await readFile(resolve(target, "src/app/caravel-docs/reference/[operation]/page.tsx"), "utf8")).toContain("OpenAPIReference");
+    expect(await readFile(resolve(target, "src/app/caravel-docs/openapi-reference.tsx"), "utf8")).toContain("createOpenAPIPage");
+    expect(await readFile(resolve(target, "src/app/caravel-docs/loading.tsx"), "utf8")).toContain("Loading documentation");
+    expect(await readFile(resolve(target, "src/app/caravel-docs/caravel-docs.css"), "utf8")).toContain("height: 52px");
+    expect(await readFile(resolve(target, "src/app/caravel-docs/quickstart/page.tsx"), "utf8")).toContain("Quickstart");
+    expect(await readFile(resolve(target, "src/app/caravel-docs/sdks/page.tsx"), "utf8")).toContain("SDKs");
+    expect(await readFile(resolve(target, "src/app/caravel-docs/guides/[operation]/page.tsx"), "utf8")).toContain("When to use this endpoint");
+    expect(await readFile(resolve(target, "src/app/caravel-docs/snippets/page.tsx"), "utf8")).toContain("Embeds");
+    expect(await readFile(resolve(target, "public/caravel-openapi.json"), "utf8")).toContain('"openapi": "3.1.0"');
     await uninstallApiProduct(target);
     await expect(readFile(resolve(target, "public/.well-known/caravel.json"), "utf8")).rejects.toThrow();
   });

@@ -14,7 +14,7 @@ export async function ensureTargetDependencies(target, options = {}) {
   const root = resolve(target);
   const packagePath = resolve(root, "package.json");
   const packageJson = JSON.parse(await readFile(packagePath, "utf8"));
-  const required = ["fumadocs-core", "fumadocs-ui", ...(options.x402 ? ["@x402/core", "@x402/evm", "@x402/extensions", "@x402/next"] : [])];
+  const required = ["fumadocs-core", "fumadocs-ui", "fumadocs-openapi", "@scalar/api-client-react", "json-schema-typed", ...(options.x402 ? ["@x402/core", "@x402/evm", "@x402/extensions", "@x402/next"] : [])];
   const missing = required.filter(name => !packageJson.dependencies?.[name] && !packageJson.devDependencies?.[name]);
   if (missing.length && options.install !== false) await run(options.packageManager ?? await detectPackageManager(root), ["add", ...missing], { cwd: root });
   return missing;

@@ -10,6 +10,6 @@ describe("Caravel Pi extension", () => {
       },
     } as never);
 
-    expect(tools.map((tool) => tool.name)).toEqual(["caravel_connect", "caravel_report", "caravel_build", "caravel_generate", "caravel_install", "caravel_configure", "caravel_doctor", "caravel_uninstall"]);
+    expect(tools.map((tool) => tool.name)).toEqual(["caravel_connect", "caravel_write_guide", "caravel_write_snippet", "caravel_report", "caravel_build", "caravel_generate", "caravel_install", "caravel_configure", "caravel_doctor", "caravel_uninstall"]);
   });
 });

@@ -9,8 +9,9 @@ import { writeWorkspace } from "./workspace.mjs";
 
 const document = {
   openapi: "3.1.0",
-  info: { title: "Weather API", version: "1.0.0" },
-  paths: { "/weather": { get: { operationId: "getWeather", summary: "Get weather", description: "Returns current weather." } } },
+  info: { title: "Weather API", version: "1.0.0", description: "Weather data for applications." },
+  tags: [{ name: "Weather", description: "Current conditions and forecasts." }],
+  paths: { "/weather": { get: { operationId: "getWeather", summary: "Get weather", description: "Returns current weather.", tags: ["Weather"], parameters: [{ name: "city", in: "query", required: true, description: "City name.", schema: { type: "string" }, example: "New York" }], responses: { "200": { description: "Current weather", content: { "application/json": { schema: { type: "object", properties: { temperature: { type: "number", example: 72 } } } } } } } } } },
 };
 
 describe("Caravel product build", () => {
@@ -35,6 +36,22 @@ describe("Caravel product build", () => {
     expect(await readFile(resolve(result.output, "fern/generators.yml"), "utf8")).toContain("fern-typescript-sdk");
     expect(await readFile(resolve(result.output, "fern/fern.config.json"), "utf8")).toContain('"version": "5.95.0"');
     expect(await readFile(resolve(result.output, "docs/endpoints.mdx"), "utf8")).toContain("GET /weather");
+    expect(await readFile(resolve(result.output, "docs-app/api-docs.ts"), "utf8")).toContain('"name": "city"');
+    expect(await readFile(resolve(result.output, "docs-app/layout.tsx"), "utf8")).toContain("API Reference");
+    expect(await readFile(resolve(result.output, "docs-app/reference/[operation]/page.tsx"), "utf8")).toContain("OpenAPIReference");
+    expect(await readFile(resolve(result.output, "docs-app/openapi-reference.tsx"), "utf8")).toContain("createOpenAPIPage");
+    expect(await readFile(resolve(result.output, "docs-app/loading.tsx"), "utf8")).toContain("Loading documentation");
+    expect(await readFile(resolve(result.output, "docs-app/caravel-docs.css"), "utf8")).toContain("height: 52px");
+    expect(await readFile(resolve(result.output, "docs-app/caravel-docs.css"), "utf8")).toContain("caravel-reference-grid");
+    expect(await readFile(resolve(result.output, "docs-app/openapi-reference.tsx"), "utf8")).toContain("renderOperationLayout");
+    expect(await readFile(resolve(result.output, "docs-app/layout.tsx"), "utf8")).toContain('"name": "Weather"');
+    expect(await readFile(resolve(result.output, "docs-app/quickstart/page.tsx"), "utf8")).toContain("Make your first request");
+    expect(await readFile(resolve(result.output, "docs-app/sdks/page.tsx"), "utf8")).toContain("Fern");
+    expect(await readFile(resolve(result.output, "docs-app/guides/[operation]/page.tsx"), "utf8")).toContain("When to use this endpoint");
+    expect(await readFile(resolve(result.output, "docs-app/snippets/page.tsx"), "utf8")).toContain("Embeds");
+    expect(await readFile(resolve(result.output, "docs-app/layout.tsx"), "utf8")).toContain('"name": "Embeds"');
+    expect(await readFile(resolve(result.output, "docs-app/openapi.json"), "utf8")).toContain('"openapi": "3.1.0"');
+    expect(await readFile(resolve(result.output, "docs-app/openapi.json"), "utf8")).toContain('"/api/caravel/weather"');
     expect(await readFile(resolve(result.output, "access/next.ts"), "utf8")).toContain("CARAVEL_API_KEYS");
     expect(await readFile(resolve(result.output, "access/gateway-route.ts"), "utf8")).toContain("upstreamBaseUrl");
     expect(JSON.parse(await readFile(resolve(result.output, ".well-known/agent-card.json"), "utf8")).skills).toHaveLength(1);

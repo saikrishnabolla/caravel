@@ -9,6 +9,7 @@ import { uninstallApiProduct } from "./install.mjs";
 import { configureProduct } from "./configure.mjs";
 import { formatDoctor, inspectEnvironment } from "./doctor.mjs";
 import { runSetup } from "./setup.mjs";
+import { saveEditorialGuide, saveSnippet } from "./editorial.mjs";
 
 export async function connectAndReport(source, options = {}) {
   const root = resolve(options.root ?? process.cwd());
@@ -56,4 +57,14 @@ export async function doctorAndFormat(root = process.cwd()) {
 export async function setupAndFormat(root = process.cwd(), options = {}) {
   const result = await runSetup(resolve(root), options);
   return { ...result, text: `Caravel setup complete\n\n${result.output}` };
+}
+
+export async function saveGuideAndFormat(root = process.cwd(), guide) {
+  const saved = await saveEditorialGuide(resolve(root), guide);
+  return { guide: saved, text: `Caravel guide saved\n\n${saved.operationId}` };
+}
+
+export async function saveSnippetAndFormat(root = process.cwd(), snippet) {
+  const saved = await saveSnippet(resolve(root), snippet);
+  return { snippet: saved, text: `Caravel snippet saved\n\n${saved.id}` };
 }

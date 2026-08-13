@@ -1,6 +1,6 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
-import { buildAndFormat, configureAndFormat, connectAndReport, doctorAndFormat, generateAndFormat, installAndFormat, loadAndFormatReport, uninstallAndFormat } from "../src/caravel/tools.mjs";
+import { buildAndFormat, configureAndFormat, connectAndReport, doctorAndFormat, generateAndFormat, installAndFormat, loadAndFormatReport, saveGuideAndFormat, saveSnippetAndFormat, uninstallAndFormat } from "../src/caravel/tools.mjs";
 
 export default function caravelExtension(pi: ExtensionAPI) {
   pi.registerTool({
@@ -17,6 +17,43 @@ export default function caravelExtension(pi: ExtensionAPI) {
         content: [{ type: "text", text: `${result.text}\n\nWorkspace: ${result.directory}` }],
         details: { report: result.report, catalog: result.catalog },
       };
+    },
+  });
+
+  pi.registerTool({
+    name: "caravel_write_guide",
+    label: "Write API guide",
+    description: "Save an editable, source-grounded usage guide for one imported OpenAPI operation. Explain use cases and workflow, but do not invent API behavior.",
+    parameters: Type.Object({
+      operationId: Type.String(),
+      title: Type.String(),
+      overview: Type.String(),
+      useCases: Type.Array(Type.String()),
+      workflow: Type.Array(Type.String()),
+      notes: Type.Array(Type.String()),
+    }),
+    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+      const result = await saveGuideAndFormat(ctx.cwd, params);
+      return { content: [{ type: "text", text: result.text }], details: { guide: result.guide } };
+    },
+  });
+
+  pi.registerTool({
+    name: "caravel_write_snippet",
+    label: "Write UI snippet",
+    description: "Save an editable UI snippet definition grounded in an imported API operation.",
+    parameters: Type.Object({
+      id: Type.String(),
+      operationId: Type.String(),
+      name: Type.String(),
+      description: Type.String(),
+      framework: Type.Union([Type.Literal("react"), Type.Literal("html"), Type.Literal("nextjs")]),
+      prompt: Type.String(),
+      code: Type.Optional(Type.String()),
+    }),
+    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+      const result = await saveSnippetAndFormat(ctx.cwd, params);
+      return { content: [{ type: "text", text: result.text }], details: { snippet: result.snippet } };
     },
   });
 

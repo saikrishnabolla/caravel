@@ -13,8 +13,10 @@ Use Caravel to prepare an existing API for AI agents. Do not turn the task into 
 2. Run the bundled connection script with the source URL or local file.
 3. Read `.caravel/catalog.json` and `.caravel/report.json`.
 4. Report what was imported, where every product came from, and what still requires review.
-5. Run `caravel build` after the user chooses access methods.
-6. Keep API-key access unless the user asks to remove it. Add x402 only with an approved price, network, and payment address.
+5. Read existing documentation when the user supplies it. Otherwise draft endpoint guides from the source and mark them for review.
+6. Use `caravel_write_guide` for editable guides and `caravel_write_snippet` for requested UI examples.
+7. Run `caravel build` after the user chooses access methods.
+8. Keep API-key access unless the user asks to remove it. Add x402 only with an approved price, network, and payment address.
 
 ## Connect
 
@@ -60,6 +62,8 @@ node skills/caravel-agentic-commerce/scripts/caravel.mjs install
 
 Set `CARAVEL_API_KEYS`. If x402 is enabled, also set `X402_FACILITATOR_URL`.
 
+The installed portal uses Fumadocs for authored guides and `fumadocs-openapi` for interactive endpoint pages. Fumadocs uses Scalar's request client internally. Fern remains the SDK generator. Do not recreate those systems inside Caravel.
+
 Use `caravel doctor` to check the workspace. Use `caravel update` to replace only installed Caravel files. Use `caravel uninstall` to remove the files recorded in `.caravel-installed.json`.
 
 The first release supports OpenAPI. Broader SaaS and commerce connectors remain future agent-commerce work.
@@ -67,7 +71,8 @@ The first release supports OpenAPI. Broader SaaS and commerce connectors remain 
 ## Rules
 
 - Preserve the existing API behavior, authentication, billing, and operational systems.
-- Never invent missing operations, descriptions, prices, credentials, or policies.
+- Never invent missing operations, parameters, responses, authentication, prices, credentials, or policies.
+- Editorial inference is allowed only for plain-language use cases and workflows that follow directly from documented behavior. Mark uncertain claims for review.
 - Record source provenance for every imported product.
 - Keep commercial configuration as a draft until a person confirms it.
 - Review generated files before deploying them.
