@@ -1,4 +1,4 @@
 interface:
   display_name: "Caravel Agentic Commerce"
-  short_description: "Prepare an existing API for AI agents"
-  default_prompt: "Use $caravel-agentic-commerce to connect this API and produce a source-backed readiness report."
+  short_description: "Turn an existing API into an agent product"
+  default_prompt: "Use $caravel-agentic-commerce to connect this API, report missing data, and generate its discovery, SDK, docs, and access files."

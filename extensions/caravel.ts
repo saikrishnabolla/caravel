@@ -1,6 +1,6 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
-import { connectAndReport, loadAndFormatReport } from "../src/caravel/tools.mjs";
+import { buildAndFormat, connectAndReport, loadAndFormatReport } from "../src/caravel/tools.mjs";
 
 export default function caravelExtension(pi: ExtensionAPI) {
   pi.registerTool({
@@ -31,6 +31,22 @@ export default function caravelExtension(pi: ExtensionAPI) {
         content: [{ type: "text", text: result.text }],
         details: { report: result.report },
       };
+    },
+  });
+
+  pi.registerTool({
+    name: "caravel_build",
+    label: "Build API product",
+    description: "Generate agent discovery, Fern, Fumadocs content, and an API-key or x402 Next.js access wrapper from the connected API.",
+    parameters: Type.Object({
+      apiKeyHeader: Type.Optional(Type.String()),
+      x402Price: Type.Optional(Type.String()),
+      x402PayTo: Type.Optional(Type.String()),
+      x402Network: Type.Optional(Type.String()),
+    }),
+    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+      const result = await buildAndFormat(ctx.cwd, params);
+      return { content: [{ type: "text", text: result.text }], details: { manifest: result.manifest } };
     },
   });
 }

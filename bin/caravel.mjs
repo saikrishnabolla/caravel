@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { resolve } from "node:path";
 import { launchPi } from "../src/caravel/pi.mjs";
-import { connectAndReport, loadAndFormatReport } from "../src/caravel/tools.mjs";
+import { buildAndFormat, connectAndReport, loadAndFormatReport } from "../src/caravel/tools.mjs";
 
 export function help() {
-  console.log(`Caravel\n\nTurn an existing API into a product AI agents can discover, pay for, and use.\n\nUsage:\n  caravel\n  caravel connect <openapi-source> [--dir path]\n  caravel report [--dir path]\n  caravel help\n\nExamples:\n  caravel\n  caravel connect https://example.com/openapi.json\n  caravel report`);
+  console.log(`Caravel\n\nTurn an existing API into a product AI agents can discover, pay for, and use.\n\nUsage:\n  caravel\n  caravel connect <openapi-source> [--dir path]\n  caravel build [--api-key-header name] [--x402-pay-to address] [--x402-price amount] [--dir path]\n  caravel report [--dir path]\n  caravel help\n\nExamples:\n  caravel connect https://example.com/openapi.json\n  caravel build\n  caravel build --x402-pay-to 0x1234\n  caravel report`);
 }
 
 function option(args, name) {
@@ -31,6 +31,18 @@ async function main() {
 
   if (command === "report") {
     console.log((await loadAndFormatReport(root)).text);
+    return;
+  }
+
+  if (command === "build") {
+    const result = await buildAndFormat(root, {
+      apiKey: !args.includes("--no-api-key"),
+      apiKeyHeader: option(args, "--api-key-header"),
+      x402Price: option(args, "--x402-price"),
+      x402PayTo: option(args, "--x402-pay-to"),
+      x402Network: option(args, "--x402-network"),
+    });
+    console.log(result.text);
     return;
   }
 

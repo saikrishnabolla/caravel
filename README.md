@@ -32,4 +32,20 @@ Read the report again with:
 pnpm caravel report
 ```
 
-Today, Caravel imports OpenAPI operations, records their source, and reports missing descriptions, prices, commercial rules, and publication work. Fern SDK generation, Fumadocs publishing, x402 payments, and wider agent commerce come next.
+Build the product files with:
+
+```bash
+pnpm caravel build
+pnpm caravel build --x402-price 0.01 --x402-pay-to 0x1234
+```
+
+Caravel writes agent discovery, Fern SDK config, Fumadocs content, and a Next.js access wrapper. Existing API keys remain valid. x402 is optional.
+
+Generate SDKs locally without a Fern account:
+
+```bash
+cd .caravel/generated/fern
+fern generate --group local --local
+```
+
+This requires Docker or Podman.

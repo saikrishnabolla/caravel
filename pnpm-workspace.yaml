@@ -1,7 +1,12 @@
 allowBuilds:
   '@google/genai': false
+  '@scarf/scarf': false
   esbuild: true
   koffi: false
   protobufjs: false
   sharp: false
   unrs-resolver: false
+minimumReleaseAgeExclude:
+  - '@fumari/image-size@0.1.0'
+  - fumadocs-core@16.14.4
+  - fumadocs-ui@16.14.4

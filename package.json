@@ -11,10 +11,19 @@
   "bin": {
     "caravel": "bin/caravel.mjs"
   },
-  "keywords": ["pi-package", "api", "agent-commerce", "x402"],
+  "keywords": [
+    "pi-package",
+    "api",
+    "agent-commerce",
+    "x402"
+  ],
   "pi": {
-    "extensions": ["./extensions"],
-    "skills": ["./skills/caravel-agentic-commerce"]
+    "extensions": [
+      "./extensions"
+    ],
+    "skills": [
+      "./skills/caravel-agentic-commerce"
+    ]
   },
   "scripts": {
     "caravel": "node bin/caravel.mjs",
@@ -37,6 +46,10 @@
     "@x402/next": "^2.21.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "fern-api": "5.95.0",
+    "fumadocs-core": "16.14.4",
+    "fumadocs-mdx": "15.2.3",
+    "fumadocs-ui": "16.14.4",
     "gsap": "^3.15.0",
     "lucide-react": "^1.30.0",
     "next": "16.3.0",
