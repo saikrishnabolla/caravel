@@ -49,3 +49,12 @@ fern generate --group local --local
 ```
 
 This requires Docker or Podman.
+
+Or run:
+
+```bash
+pnpm caravel generate
+pnpm caravel install
+```
+
+The installer adds the agent discovery file, Fumadocs content, and a Next.js gateway under `/api/caravel`. The gateway keeps the upstream API unchanged and accepts an existing API key or x402 payment.

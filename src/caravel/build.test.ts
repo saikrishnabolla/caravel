@@ -31,9 +31,11 @@ describe("Caravel product build", () => {
     const result = await buildApiProduct(root, { apiKeyHeader: "Authorization" });
     const discovery = JSON.parse(await readFile(resolve(result.output, ".well-known/caravel.json"), "utf8"));
     expect(discovery.products).toHaveLength(1);
+    expect(discovery.products[0].endpoint).toBe("/api/caravel/weather");
     expect(await readFile(resolve(result.output, "fern/generators.yml"), "utf8")).toContain("fern-typescript-sdk");
     expect(await readFile(resolve(result.output, "fern/fern.config.json"), "utf8")).toContain('"version": "5.95.0"');
     expect(await readFile(resolve(result.output, "docs/endpoints.mdx"), "utf8")).toContain("GET /weather");
     expect(await readFile(resolve(result.output, "access/next.ts"), "utf8")).toContain("CARAVEL_API_KEYS");
+    expect(await readFile(resolve(result.output, "access/gateway-route.ts"), "utf8")).toContain("upstreamBaseUrl");
   });
 });

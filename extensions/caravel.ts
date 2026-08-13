@@ -1,6 +1,6 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
-import { buildAndFormat, connectAndReport, loadAndFormatReport } from "../src/caravel/tools.mjs";
+import { buildAndFormat, connectAndReport, generateAndFormat, installAndFormat, loadAndFormatReport } from "../src/caravel/tools.mjs";
 
 export default function caravelExtension(pi: ExtensionAPI) {
   pi.registerTool({
@@ -43,10 +43,33 @@ export default function caravelExtension(pi: ExtensionAPI) {
       x402Price: Type.Optional(Type.String()),
       x402PayTo: Type.Optional(Type.String()),
       x402Network: Type.Optional(Type.String()),
+      upstreamBaseUrl: Type.Optional(Type.String()),
     }),
     async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
       const result = await buildAndFormat(ctx.cwd, params);
       return { content: [{ type: "text", text: result.text }], details: { manifest: result.manifest } };
+    },
+  });
+
+  pi.registerTool({
+    name: "caravel_generate",
+    label: "Generate SDKs",
+    description: "Generate TypeScript and Python SDKs locally with Fern using Docker or Podman.",
+    parameters: Type.Object({ runner: Type.Optional(Type.Union([Type.Literal("docker"), Type.Literal("podman")])) }),
+    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+      const result = await generateAndFormat(ctx.cwd, params);
+      return { content: [{ type: "text", text: result.text }], details: { directory: result.directory } };
+    },
+  });
+
+  pi.registerTool({
+    name: "caravel_install",
+    label: "Install API product",
+    description: "Install the generated discovery file, Next.js gateway, access wrapper, and Fumadocs content into a target project.",
+    parameters: Type.Object({ target: Type.Optional(Type.String()), force: Type.Optional(Type.Boolean()) }),
+    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+      const result = await installAndFormat(ctx.cwd, params);
+      return { content: [{ type: "text", text: result.text }], details: { files: result.files } };
     },
   });
 }

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { resolve } from "node:path";
 import { launchPi } from "../src/caravel/pi.mjs";
-import { buildAndFormat, connectAndReport, loadAndFormatReport } from "../src/caravel/tools.mjs";
+import { buildAndFormat, connectAndReport, generateAndFormat, installAndFormat, loadAndFormatReport } from "../src/caravel/tools.mjs";
 
 export function help() {
-  console.log(`Caravel\n\nTurn an existing API into a product AI agents can discover, pay for, and use.\n\nUsage:\n  caravel\n  caravel connect <openapi-source> [--dir path]\n  caravel build [--api-key-header name] [--x402-pay-to address] [--x402-price amount] [--dir path]\n  caravel report [--dir path]\n  caravel help\n\nExamples:\n  caravel connect https://example.com/openapi.json\n  caravel build\n  caravel build --x402-pay-to 0x1234\n  caravel report`);
+  console.log(`Caravel\n\nTurn an existing API into a product AI agents can discover, pay for, and use.\n\nUsage:\n  caravel\n  caravel connect <openapi-source> [--dir path]\n  caravel build [--upstream url] [--api-key-header name] [--x402-pay-to address] [--x402-price amount] [--dir path]\n  caravel generate [--runner docker|podman] [--dir path]\n  caravel install [--target path] [--force] [--dir path]\n  caravel report [--dir path]`);
 }
 
 function option(args, name) {
@@ -41,8 +41,19 @@ async function main() {
       x402Price: option(args, "--x402-price"),
       x402PayTo: option(args, "--x402-pay-to"),
       x402Network: option(args, "--x402-network"),
+      upstreamBaseUrl: option(args, "--upstream"),
     });
     console.log(result.text);
+    return;
+  }
+
+  if (command === "generate") {
+    console.log((await generateAndFormat(root, { runner: option(args, "--runner") })).text);
+    return;
+  }
+
+  if (command === "install") {
+    console.log((await installAndFormat(root, { target: option(args, "--target"), docsDir: option(args, "--docs-dir"), force: args.includes("--force") })).text);
     return;
   }
 

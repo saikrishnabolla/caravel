@@ -52,6 +52,14 @@ fern generate --group local --local
 
 Require Docker or Podman for this step.
 
+Install the generated gateway and docs into a Next.js project:
+
+```bash
+node skills/caravel-agentic-commerce/scripts/caravel.mjs install
+```
+
+Set `CARAVEL_API_KEYS`. If x402 is enabled, also set `X402_FACILITATOR_URL`.
+
 The first release supports OpenAPI. Broader SaaS and commerce connectors remain future agent-commerce work.
 
 ## Rules
