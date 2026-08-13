@@ -60,6 +60,8 @@ node skills/caravel-agentic-commerce/scripts/caravel.mjs install
 
 Set `CARAVEL_API_KEYS`. If x402 is enabled, also set `X402_FACILITATOR_URL`.
 
+Use `caravel doctor` to check the workspace. Use `caravel update` to replace only installed Caravel files. Use `caravel uninstall` to remove the files recorded in `.caravel-installed.json`.
+
 The first release supports OpenAPI. Broader SaaS and commerce connectors remain future agent-commerce work.
 
 ## Rules

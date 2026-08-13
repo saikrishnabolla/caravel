@@ -12,6 +12,12 @@ pnpm caravel
 
 This launches the branded Pi coding agent with Caravel's system prompt, skill, and deterministic catalog tools.
 
+Or start the guided setup:
+
+```bash
+caravel setup
+```
+
 ## First working CLI slice
 
 Connect an API directly:
@@ -58,3 +64,15 @@ pnpm caravel install
 ```
 
 The installer adds the agent discovery file, Fumadocs content, and a Next.js gateway under `/api/caravel`. The gateway keeps the upstream API unchanged and accepts an existing API key or x402 payment.
+
+Useful lifecycle commands:
+
+```bash
+caravel doctor
+caravel update
+caravel uninstall
+```
+
+Monad testnet is available with `--x402-preset monad-testnet`. Production credentials are never written to Caravel configuration; only environment-variable names are stored.
+
+Verified on Monad testnet with a real 0.01 test-USDC settlement through a generated gateway. Transaction: [`0x1e5464ff94cfaff7f49d17dd1e6aed173d19c774d831bcad3ef640262c35bb22`](https://monadvision.com/tx/0x1e5464ff94cfaff7f49d17dd1e6aed173d19c774d831bcad3ef640262c35bb22).

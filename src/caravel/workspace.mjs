@@ -25,3 +25,7 @@ export async function writeWorkspace(root, catalog, report) {
 export async function readReport(root = process.cwd()) {
   return JSON.parse(await readFile(resolve(workspacePath(root), "report.json"), "utf8"));
 }
+
+export async function readCatalog(root = process.cwd()) {
+  return JSON.parse(await readFile(resolve(workspacePath(root), "catalog.json"), "utf8"));
+}

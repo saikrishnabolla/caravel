@@ -1,6 +1,6 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
-import { buildAndFormat, connectAndReport, generateAndFormat, installAndFormat, loadAndFormatReport } from "../src/caravel/tools.mjs";
+import { buildAndFormat, configureAndFormat, connectAndReport, doctorAndFormat, generateAndFormat, installAndFormat, loadAndFormatReport, uninstallAndFormat } from "../src/caravel/tools.mjs";
 
 export default function caravelExtension(pi: ExtensionAPI) {
   pi.registerTool({
@@ -69,6 +69,44 @@ export default function caravelExtension(pi: ExtensionAPI) {
     parameters: Type.Object({ target: Type.Optional(Type.String()), force: Type.Optional(Type.Boolean()) }),
     async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
       const result = await installAndFormat(ctx.cwd, params);
+      return { content: [{ type: "text", text: result.text }], details: { files: result.files } };
+    },
+  });
+
+  pi.registerTool({
+    name: "caravel_configure",
+    label: "Configure API product",
+    description: "Save API-key, upstream, and optional x402 settings without storing credential values.",
+    parameters: Type.Object({
+      upstreamBaseUrl: Type.Optional(Type.String()),
+      apiKeyHeader: Type.Optional(Type.String()),
+      x402Preset: Type.Optional(Type.Literal("monad-testnet")),
+      x402PayTo: Type.Optional(Type.String()),
+    }),
+    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+      const result = await configureAndFormat(ctx.cwd, params);
+      return { content: [{ type: "text", text: result.text }], details: { config: result.config } };
+    },
+  });
+
+  pi.registerTool({
+    name: "caravel_doctor",
+    label: "Check Caravel",
+    description: "Check the local Caravel workspace and SDK-generation runtime.",
+    parameters: Type.Object({}),
+    async execute(_toolCallId, _params, _signal, _onUpdate, ctx) {
+      const result = await doctorAndFormat(ctx.cwd);
+      return { content: [{ type: "text", text: result.text }], details: { checks: result.checks } };
+    },
+  });
+
+  pi.registerTool({
+    name: "caravel_uninstall",
+    label: "Uninstall Caravel files",
+    description: "Remove only files recorded by a previous Caravel installation.",
+    parameters: Type.Object({ target: Type.Optional(Type.String()) }),
+    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+      const result = await uninstallAndFormat(params.target ?? ctx.cwd);
       return { content: [{ type: "text", text: result.text }], details: { files: result.files } };
     },
   });

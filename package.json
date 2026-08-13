@@ -1,5 +1,5 @@
 {
-  "name": "caravel",
+  "name": "caravel-workspace",
   "description": "An open-source Pi-based coding agent that turns existing APIs into products AI agents can discover, pay for, and use.",
   "version": "0.1.0",
   "license": "MIT",
@@ -34,7 +34,9 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "contract:compile": "node scripts/compile-escrow.mjs",
-    "contract:deploy": "node --env-file=.env scripts/deploy-escrow.mjs"
+    "contract:deploy": "node --env-file=.env scripts/deploy-escrow.mjs",
+    "package:prepare": "node scripts/prepare-caravel-package.mjs",
+    "package:pack": "pnpm package:prepare && npm pack ./packages/caravel"
   },
   "dependencies": {
     "@a2a-js/sdk": "^1.0.1",
@@ -42,6 +44,7 @@
     "@openai/agents": "^0.14.3",
     "@x402/core": "^2.21.0",
     "@x402/evm": "^2.21.0",
+    "@x402/extensions": "^2.21.0",
     "@x402/fetch": "^2.21.0",
     "@x402/next": "^2.21.0",
     "class-variance-authority": "^0.7.1",

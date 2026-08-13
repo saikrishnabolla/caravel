@@ -1,0 +1,35 @@
+{
+  "name": "@saikrishnabolla/caravel",
+  "version": "0.1.0",
+  "description": "An open-source Pi-based coding agent that turns existing APIs into products AI agents can discover, pay for, and use.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "bin": {
+    "caravel": "bin/caravel.mjs"
+  },
+  "files": [
+    "bin",
+    "extensions",
+    "runtime",
+    "skills",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": ["pi-package", "api", "agent-commerce", "x402"],
+  "pi": {
+    "extensions": ["./extensions"],
+    "skills": ["./skills/caravel-agentic-commerce"]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "0.84.1",
+    "fern-api": "5.95.0",
+    "typebox": "1.3.7"
+  }
+}

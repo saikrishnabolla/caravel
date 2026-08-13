@@ -1,7 +1,8 @@
-import { access, copyFile, mkdir } from "node:fs/promises";
+import { access, copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { constants } from "node:fs";
 import { resolve } from "node:path";
 import { workspacePath } from "./workspace.mjs";
+import { ensureTargetDependencies } from "./package.mjs";
 
 async function exists(path) {
   try {
@@ -22,15 +23,33 @@ async function copy(source, target, force) {
 export async function installApiProduct(root = process.cwd(), options = {}) {
   const target = resolve(options.target ?? root);
   const generated = resolve(workspacePath(root), "generated");
+  const product = JSON.parse(await readFile(resolve(generated, ".well-known", "caravel.json"), "utf8"));
+  await ensureTargetDependencies(target, { x402: product.access.some(method => method.type === "x402"), install: options.installDependencies });
   const files = await Promise.all([
     copy(resolve(generated, ".well-known", "caravel.json"), resolve(target, "public", ".well-known", "caravel.json"), options.force),
+    copy(resolve(generated, ".well-known", "agent-card.json"), resolve(target, "public", ".well-known", "agent-card.json"), options.force),
     copy(resolve(generated, "access", "next.ts"), resolve(target, "lib", "caravel-access.ts"), options.force),
     copy(resolve(generated, "access", "gateway-route.ts"), resolve(target, "src", "app", "api", "caravel", "[...path]", "route.ts"), options.force),
     copy(resolve(generated, "docs", "index.mdx"), resolve(target, options.docsDir ?? "content/docs/caravel", "index.mdx"), options.force),
     copy(resolve(generated, "docs", "endpoints.mdx"), resolve(target, options.docsDir ?? "content/docs/caravel", "endpoints.mdx"), options.force),
     copy(resolve(generated, "docs", "meta.json"), resolve(target, options.docsDir ?? "content/docs/caravel", "meta.json"), options.force),
+    copy(resolve(generated, "docs-app", "layout.tsx"), resolve(target, "src/app/caravel-docs/layout.tsx"), options.force),
+    copy(resolve(generated, "docs-app", "page.tsx"), resolve(target, "src/app/caravel-docs/page.tsx"), options.force),
+    copy(resolve(generated, "docs-app", "endpoints", "page.tsx"), resolve(target, "src/app/caravel-docs/endpoints/page.tsx"), options.force),
   ]);
+  const manifestPath = resolve(target, ".caravel-installed.json");
+  await writeFile(manifestPath, `${JSON.stringify({ schema: "caravel/install/v1", files, installedAt: new Date().toISOString() }, null, 2)}\n`);
+  files.push(manifestPath);
   return { target, files };
+}
+
+export async function uninstallApiProduct(targetRoot = process.cwd()) {
+  const target = resolve(targetRoot);
+  const manifestPath = resolve(target, ".caravel-installed.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  for (const path of manifest.files ?? []) await rm(path, { force: true });
+  await rm(manifestPath, { force: true });
+  return { target, files: manifest.files ?? [] };
 }
 
 export function formatInstallResult(result) {

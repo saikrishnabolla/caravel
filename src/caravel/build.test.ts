@@ -37,5 +37,6 @@ describe("Caravel product build", () => {
     expect(await readFile(resolve(result.output, "docs/endpoints.mdx"), "utf8")).toContain("GET /weather");
     expect(await readFile(resolve(result.output, "access/next.ts"), "utf8")).toContain("CARAVEL_API_KEYS");
     expect(await readFile(resolve(result.output, "access/gateway-route.ts"), "utf8")).toContain("upstreamBaseUrl");
+    expect(JSON.parse(await readFile(resolve(result.output, ".well-known/agent-card.json"), "utf8")).skills).toHaveLength(1);
   });
 });
