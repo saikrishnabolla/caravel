@@ -1,0 +1,4 @@
+interface:
+  display_name: "Caravel Agentic Commerce"
+  short_description: "Connect and prepare products for AI agents"
+  default_prompt: "Use $caravel-agentic-commerce to connect this business and produce an agentic-commerce readiness report."

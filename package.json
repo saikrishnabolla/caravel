@@ -4,7 +4,12 @@
   "version": "0.1.0",
   "license": "MIT",
   "private": true,
+  "type": "module",
+  "bin": {
+    "caravel": "bin/caravel.mjs"
+  },
   "scripts": {
+    "caravel": "node bin/caravel.mjs",
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
