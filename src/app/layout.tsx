@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Caravel | Make your API agent-ready",
-  description: "Turn an OpenAPI specification into a documented, priced, agent-ready API.",
+  title: "Caravel | Agentic commerce for your existing business",
+  description: "Connect your SaaS product, API, or online store and make it discoverable, negotiable, and payable by AI agents.",
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",

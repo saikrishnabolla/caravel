@@ -1,5 +1,7 @@
 # Caravel
 
-Turn an OpenAPI specification into a documented, priced, agent-ready API.
+Turn the products and services you already sell into agentic commerce.
 
-Caravel is being rebuilt as an open-source developer tool. The current repository preserves the working prototype while the new CLI and product structure are developed.
+Caravel connects to an existing SaaS product, API, or online store, including platforms such as Shopify, WooCommerce, and BigCommerce. It makes the existing catalog discoverable, negotiable, and payable by AI agents without requiring the business to rebuild its product or checkout.
+
+OpenAPI is one supported input for software products. It is not the product itself.

@@ -1,6 +1,6 @@
 ---
 name: raingentic-commerce
-description: Connect an existing API or product catalog to Caravel; import and normalize products; compile natural-language commercial rules; publish agent-ready products; and verify payment flows.
+description: Connect an existing SaaS product, API, Shopify-compatible store, WooCommerce store, BigCommerce store, billing system, or custom catalog to Caravel; normalize what the business sells; configure commercial rules; and publish it for agentic commerce.
 ---
 
 # Caravel Commerce

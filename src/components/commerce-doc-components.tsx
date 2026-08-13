@@ -123,7 +123,7 @@ export function CommerceStory() {
           <div className="max-w-2xl">
             <Badge variant="secondary">PreFlight reference implementation</Badge>
             <h2 className="mt-5 text-2xl font-semibold tracking-tight md:text-3xl">One control layer for company agents that buy and sell.</h2>
-            <p className="mt-3 text-base leading-7 text-muted-foreground">Caravel turns an existing API into a documented, priced product that agents can discover, pay for, and use.</p>
+            <p className="mt-3 text-base leading-7 text-muted-foreground">Caravel connects to the SaaS product, API, or online store a business already operates and makes its products discoverable, negotiable, and payable by AI agents.</p>
           </div>
           <Button asChild size="lg"><Link href="/demo">Open the guided demo<ArrowRight /></Link></Button>
         </div>
