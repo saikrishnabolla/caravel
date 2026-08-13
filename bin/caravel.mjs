@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 import { resolve } from "node:path";
-import { connectSource } from "../src/caravel/connectors.mjs";
-import { createReadinessReport, formatReadinessReport } from "../src/caravel/report.mjs";
-import { readReport, writeWorkspace } from "../src/caravel/workspace.mjs";
+import { launchPi } from "../src/caravel/pi.mjs";
+import { connectAndReport, loadAndFormatReport } from "../src/caravel/tools.mjs";
 
-function help() {
-  console.log(`Caravel\n\nConnect an existing business to agentic commerce.\n\nUsage:\n  caravel connect <source> [--type openapi|shopify] [--dir path]\n  caravel report [--dir path]\n  caravel help\n\nExamples:\n  caravel connect https://example.com/openapi.json\n  caravel connect https://store.example.com --type shopify\n  caravel report`);
+export function help() {
+  console.log(`Caravel\n\nTurn an existing API into a product AI agents can discover, pay for, and use.\n\nUsage:\n  caravel\n  caravel connect <openapi-source> [--dir path]\n  caravel report [--dir path]\n  caravel help\n\nExamples:\n  caravel\n  caravel connect https://example.com/openapi.json\n  caravel report`);
 }
 
 function option(args, name) {
@@ -14,29 +13,28 @@ function option(args, name) {
 }
 
 async function main() {
-  const [, , command = "help", ...args] = process.argv;
+  const [, , command, ...args] = process.argv;
+  if (!command) return process.exitCode = await launchPi();
   const root = resolve(option(args, "--dir") ?? process.cwd());
   if (command === "help" || command === "--help" || command === "-h") return help();
 
   if (command === "connect") {
     const source = args.find((arg, index) => !arg.startsWith("-") && args[index - 1] !== "--type" && args[index - 1] !== "--dir");
-    if (!source) throw new Error("Usage: caravel connect <source> [--type openapi|shopify]");
+    if (!source) throw new Error("Usage: caravel connect <openapi-source>");
     console.log(`Connecting ${source}...`);
-    const catalog = await connectSource(source, { type: option(args, "--type") });
-    const report = createReadinessReport(catalog);
-    const directory = await writeWorkspace(root, catalog, report);
+    const result = await connectAndReport(source, { root, type: option(args, "--type") });
     console.log("");
-    console.log(formatReadinessReport(report));
-    console.log(`\nWorkspace: ${directory}`);
+    console.log(result.text);
+    console.log(`\nWorkspace: ${result.directory}`);
     return;
   }
 
   if (command === "report") {
-    console.log(formatReadinessReport(await readReport(root)));
+    console.log((await loadAndFormatReport(root)).text);
     return;
   }
 
-  throw new Error(`Unknown command: ${command}`);
+  process.exitCode = await launchPi([command, ...args]);
 }
 
 main().catch((error) => {

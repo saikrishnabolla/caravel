@@ -1,18 +1,23 @@
 # Caravel
 
-Turn the products and services you already sell into agentic commerce.
+Caravel is an open-source Pi-based coding agent that turns existing APIs into products AI agents can discover, pay for, and use.
 
-Caravel connects to an existing SaaS product, API, or online store, including platforms such as Shopify, WooCommerce, and BigCommerce. It makes the existing catalog discoverable, negotiable, and payable by AI agents without requiring the business to rebuild its product or checkout.
+The first release focuses on APIs. Broader agent commerce is the direction, not the current claim.
 
-OpenAPI is one supported input for software products. It is not the product itself.
+Run Caravel in an API repository:
+
+```bash
+pnpm caravel
+```
+
+This launches the branded Pi coding agent with Caravel's system prompt, skill, and deterministic catalog tools.
 
 ## First working CLI slice
 
-Connect an API or Shopify-compatible store:
+Connect an API directly:
 
 ```bash
 pnpm caravel connect https://preflight.saibolla.com/openapi.json
-pnpm caravel connect https://store.example.com --type shopify
 ```
 
 Caravel creates a local `.caravel` workspace containing:
@@ -27,4 +32,4 @@ Read the report again with:
 pnpm caravel report
 ```
 
-The first slice supports OpenAPI and public Shopify-compatible catalogs. Additional SaaS, ecommerce, billing, configuration, publication, and verification workflows will use the same catalog and report contracts.
+Today, Caravel imports OpenAPI operations, records their source, and reports missing descriptions, prices, commercial rules, and publication work. Fern SDK generation, Fumadocs publishing, x402 payments, and wider agent commerce come next.

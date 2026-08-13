@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { normalizeOpenApi, normalizeShopify } from "./connectors.mjs";
 import { createReadinessReport } from "./report.mjs";
+import { piArguments } from "./pi.mjs";
 
 describe("Caravel catalog connection", () => {
   it("normalizes OpenAPI operations with provenance", () => {
@@ -23,5 +24,22 @@ describe("Caravel catalog connection", () => {
     expect(report.status).toBe("needs-review");
     expect(report.summary.missingPrices).toBe(1);
     expect(report.warnings.some((warning) => warning.id === "policy")).toBe(true);
+  });
+});
+
+describe("Caravel Pi runtime", () => {
+  it("loads the Caravel prompt, extension, skill, and user arguments", () => {
+    const args = piArguments(["--print", "Inspect this API"], "/tmp/caravel");
+    expect(args).toEqual([
+      "/tmp/caravel/node_modules/@earendil-works/pi-coding-agent/dist/cli.js",
+      "--append-system-prompt",
+      "/tmp/caravel/runtime/SYSTEM.md",
+      "--extension",
+      "/tmp/caravel/extensions/caravel.ts",
+      "--skill",
+      "/tmp/caravel/skills/caravel-agentic-commerce",
+      "--print",
+      "Inspect this API",
+    ]);
   });
 });
